@@ -20,23 +20,25 @@ header{display:flex;justify-content:space-between;align-items:flex-start;gap:10p
 .controls{padding:17px 16px 19px;text-align:center;min-height:145px}.controls h2{font-size:21px;line-height:1.12;letter-spacing:-.04em;margin:0 0 8px}.controls p{font-size:14px;color:#6c6070;line-height:1.48;margin:0 auto 13px;max-width:490px}.mainbtn{border:2px solid var(--ink);border-radius:11px;background:var(--gold);color:var(--ink);padding:13px 22px;font-weight:1000;box-shadow:0 4px 0 var(--ink);min-height:50px}.mainbtn:active{transform:translateY(3px);box-shadow:0 1px 0 var(--ink)}.mainbtn.secondary{background:var(--mint)}.hold{width:min(100%,340px);-webkit-touch-callout:none;touch-action:none;user-select:none;-webkit-user-select:none}.help{font-size:12px;color:#756875;margin-top:10px;min-height:16px}.result{max-width:410px;margin:0 auto}.result .number{font-size:76px;line-height:.92;font-weight:1000;color:var(--teal);letter-spacing:-.08em}.result .number span{font-size:19px;color:var(--muted);letter-spacing:-.03em}.breakdown{display:grid;grid-template-columns:1fr auto;gap:8px 12px;margin:14px 0;padding:12px;background:#f9eddc;border:1px solid #e7d1be;border-radius:10px;text-align:left;font-size:13px}.breakdown b{font-variant-numeric:tabular-nums}.subtitle{font-size:11px;letter-spacing:.15em;font-weight:1000;text-transform:uppercase;color:#8c6670}.foot{text-align:center;margin-top:13px;color:#83717b;font-size:12px;line-height:1.4}
 [hidden]{display:none!important}
 @media(max-width:425px){.header-note{max-width:125px;font-size:11px}.bar{padding:9px 11px}.bar strong{font-size:13px}.bar .ticket{padding:5px 6px;font-size:11px}.readout .amount{font-size:19px}.controls{padding:14px 14px 18px}h1{font-size:40px}}
+
+.shift-breakdown{border:1px solid #dcc8b4;border-radius:10px;overflow:hidden;margin:12px 0;background:#fdf5e9}.shift-breakdown div{display:flex;justify-content:space-between;padding:8px 11px;border-bottom:1px solid #dcc8b4;font-size:12px}.shift-breakdown div:last-child{border:0}.shift-breakdown b{font-variant-numeric:tabular-nums}
 </style>
 </head>
 <body>
 <div class="app">
-  <header><div><div class="eyebrow">Perks · Café test kitchen 05</div><h1>Pour <em>Over.</em></h1></div><div class="header-note">A gentle hand.<br>A steady circle.<br>A very good cup.</div></header>
+  <header><div><div class="eyebrow">Perks · Café shift · Three cups</div><h1>Pour <em>Over.</em></h1></div><div class="header-note">A gentle hand.<br>A steady circle.<br>A very good cup.</div></header>
   <main class="game">
-    <div class="bar"><div class="order"><span class="ticket">ORDER #05</span><div><small>House coffee</small><strong>One careful pour-over</strong></div></div><div class="best"><small>Personal best</small><strong id="best">—</strong></div></div>
+    <div class="bar"><div class="order"><span class="ticket" id="orderTicket">CUP 1 / 3</span><div><small>House coffee</small><strong id="coffeeName">House Medium · 250g</strong></div></div><div class="best"><small>Personal best</small><strong id="best">—</strong></div></div>
     <div class="steps"><div class="step" id="stepBloom">01 · BLOOM</div><div class="step" id="stepPour">02 · POUR</div></div>
     <div class="readout"><div class="phase" id="phase">Ready when you are</div><div class="amount" id="grams">0 <span>/ 250g</span></div></div>
     <div class="fill-track" aria-label="Water added"><div id="fill"></div></div>
     <div class="scene"><div class="sign">PERKS<small>POUR WITH PURPOSE</small></div><canvas id="brew" width="480" height="370" aria-label="Top-down illustration of coffee grounds in a pour-over dripper. During the pour, drag your finger in gentle circles over the marked ring."></canvas></div>
     <div class="metrics"><div class="metric"><small>Water level</small><strong id="level">—</strong></div><div class="metric"><small>Pour pattern</small><strong id="even">—</strong></div><div class="metric"><small>Current step</small><strong id="stepMetric">Ready</strong></div></div>
     <section class="controls" id="controls" aria-live="polite">
-      <div id="intro"><div class="subtitle">Barista practice · one cup</div><h2>Make a lovely pour-over.</h2><p>First, give the grounds a little water to bloom. Then move your finger in gentle circles to pour the rest. Lift your finger whenever the water gets too high.</p><button class="mainbtn" id="startBtn">Start order</button></div>
-      <div id="bloomUI" hidden><h2>Wake up those grounds.</h2><p>Press and hold to add <b>about 40g</b> of water. Release when you're happy.</p><button class="mainbtn hold" id="bloomBtn">PRESS &amp; HOLD TO BLOOM</button><div class="help" id="bloomHint">A little water goes a long way.</div></div>
-      <div id="pourUI" hidden><h2>Now, the slow circle.</h2><p>Drag your finger around the <b>dotted ring</b> on the coffee bed. Lift to pause and let the water drain. Get to <b>250g</b> without flooding the filter.</p><div class="help" id="pourHint">Touch the coffee grounds to start pouring.</div></div>
-      <div id="resultUI" hidden class="result"><div class="subtitle">Order complete</div><h2 id="resultTitle">A very respectable cup.</h2><div class="number" id="score">0<span> / 100</span></div><div class="breakdown"><span>Bloom accuracy</span><b id="bloomScore">—</b><span>Even circle</span><b id="evenScore">—</b><span>Water control</span><b id="levelScore">—</b></div><button class="mainbtn secondary" id="againBtn">Make another</button><div class="help" id="resultNote"></div></div>
+      <div id="intro"><div class="subtitle">Barista practice · three cups</div><h2>Make a lovely pour-over.</h2><p>Bloom the grounds, then pour in steady circles. Three customers, three little cups.</p><button class="mainbtn" id="startBtn">Start order</button></div>
+      <div id="bloomUI" hidden><h2>Wake up those grounds.</h2><p>Press and hold to add <b>about <span id="bloomGoal">40g</span></b> of water. Release when you're happy.</p><button class="mainbtn hold" id="bloomBtn">PRESS &amp; HOLD TO BLOOM</button><div class="help" id="bloomHint">A little water goes a long way.</div></div>
+      <div id="pourUI" hidden><h2>Now, the slow circle.</h2><p>Drag your finger around the <b>dotted ring</b> on the coffee bed. Lift to pause and let the water drain. Get to <b id="pourGoal">250g</b> without flooding the filter.</p><div class="help" id="pourHint">Touch the coffee grounds to start pouring.</div></div>
+      <div id="resultUI" hidden class="result"><div class="subtitle">Order complete</div><h2 id="resultTitle">A very respectable cup.</h2><div class="number" id="score">0<span> / 100</span></div><div class="breakdown"><span>Bloom accuracy</span><b id="bloomScore">—</b><span>Even circle</span><b id="evenScore">—</b><span>Water control</span><b id="levelScore">—</b></div><div id="shiftBreakdown" class="shift-breakdown" hidden></div><button class="mainbtn secondary" id="againBtn" hidden>Another three-cup shift ↻</button><div class="help" id="resultNote"></div></div>
     </section>
   </main>
   <div class="foot">A tiny Perks experiment. No shift schedule. No management responsibilities.</div>
@@ -44,14 +46,19 @@ header{display:flex;justify-content:space-between;align-items:flex-start;gap:10p
 <script>
 (()=>{'use strict';
 const $=id=>document.getElementById(id),canvas=$('brew'),ctx=canvas.getContext('2d');
-const CX=240,CY=182,R=113,TARGET=250,BLOOM_TARGET=40;
+const CX=240,CY=182,R=113;
+const RECIPES=[{name:'House Medium',target:250,bloom:40},{name:'Morning Light',target:230,bloom:35},{name:'Evening Dark',target:270,bloom:45}];
+let TARGET=250,BLOOM_TARGET=40,shiftIndex=-1,shiftScores=[],shiftRecipes=[],nextTimer=null,shiftNumber=0;
 let stage='intro',grams=0,bloomGrams=0,waterLevel=0,overSeconds=0,edgeWater=0,goodWater=0,covered=Array(8).fill(0),pointer=null,bloomHeld=false,prev=performance.now(),ripples=[],best=null,shotCount=0;
 try{const b=localStorage.getItem('perks-pour-over-best-v1');if(b!==null&&Number.isFinite(+b))best=Math.max(0,Math.min(100,Number(b)))}catch{}
 function readBest(){$('best').textContent=best===null?'—':best+' / 100'}readBest();
 function show(id){for(const x of ['intro','bloomUI','pourUI','resultUI'])$(x).hidden=x!==id}
 function clamp(v,a,b){return Math.max(a,Math.min(b,v))}
 function reset(){stage='intro';grams=0;bloomGrams=0;waterLevel=0;overSeconds=0;edgeWater=0;goodWater=0;covered=Array(8).fill(0);pointer=null;bloomHeld=false;ripples=[];prev=performance.now();show('intro');updateUI()}
-function start(){stage='bloom';grams=0;bloomGrams=0;waterLevel=0;overSeconds=0;edgeWater=0;goodWater=0;covered=Array(8).fill(0);pointer=null;bloomHeld=false;ripples=[];shotCount++;show('bloomUI');updateUI()}
+function beginShift(){clearTimeout(nextTimer);shiftIndex=-1;shiftScores=[];shiftNumber++;shiftRecipes=[...RECIPES];const offset=(shiftNumber-1)%3;shiftRecipes.push(...shiftRecipes.splice(0,offset));nextCup()}
+function nextCup(){clearTimeout(nextTimer);shiftIndex++;if(shiftIndex>=3){endShift();return}const r=shiftRecipes[shiftIndex];TARGET=r.target;BLOOM_TARGET=r.bloom;stage='bloom';grams=0;bloomGrams=0;waterLevel=0;overSeconds=0;edgeWater=0;goodWater=0;covered=Array(8).fill(0);pointer=null;bloomHeld=false;ripples=[];shotCount++;$('orderTicket').textContent='CUP '+(shiftIndex+1)+' / 3';$('coffeeName').textContent=r.name+' · '+TARGET+'g';$('bloomGoal').textContent=BLOOM_TARGET+'g';$('pourGoal').textContent=TARGET+'g';$('bloomHint').textContent='A little water goes a long way.';$('pourHint').textContent='Touch the coffee grounds to start pouring.';show('bloomUI');updateUI()}
+function endShift(){stage='shift-end';const avg=Math.round(shiftScores.reduce((a,r)=>a+r.score,0)/3);$('resultTitle').textContent='Three cups brewed!';$('score').innerHTML=avg+'<span> avg / 100</span>';$('shiftBreakdown').hidden=false;$('shiftBreakdown').innerHTML=shiftScores.map((r,i)=>'<div><span>Cup '+(i+1)+' · '+r.name+'</span><b>'+r.score+' / 100</b></div>').join('');$('againBtn').hidden=false;document.querySelector('.breakdown').hidden=true;$('resultNote').textContent='Nice work. All three orders are out.';show('resultUI');updateUI()}
+
 function beginBloom(ev){if(stage!=='bloom')return;ev.preventDefault();clearSelection();bloomHeld=true;try{ev.currentTarget.setPointerCapture(ev.pointerId)}catch{};$('bloomBtn').textContent='POURING… RELEASE TO STOP'}
 function endBloom(ev){if(stage!=='bloom'||!bloomHeld)return;if(ev)ev.preventDefault();bloomHeld=false;$('bloomBtn').textContent='PRESS & HOLD TO BLOOM';if(grams<17){$('bloomHint').textContent='Just a little more. Keep holding!';return;}bloomGrams=grams;stage='pour';show('pourUI');updateUI();clearSelection()}
 function clearSelection(){try{window.getSelection()?.removeAllRanges()}catch{}}
@@ -62,7 +69,7 @@ function pointerMove(e){if(stage!=='pour'||!pointer||e.pointerId!==pointer.id)re
 function pointerUp(e){if(stage!=='pour'||!pointer||e.pointerId!==pointer.id)return;e.preventDefault();pointer=null;$('pourHint').textContent='Let it settle, then pour again.';clearSelection()}
 function scoreEven(){const avg=covered.reduce((a,b)=>a+b,0)/8;if(avg<0.01)return 0;const variance=covered.reduce((a,b)=>a+(b-avg)**2,0)/8;const cv=Math.sqrt(variance)/avg;return clamp(Math.round(50*(1-Math.max(0,cv-.14)/1.14)),0,50)}
 function tick(now){let dt=clamp((now-prev)/1000,0,.05);prev=now;
- if(stage==='bloom'&&bloomHeld){const inc=Math.min(75-grams,26*dt);grams+=inc;waterLevel=Math.min(22,waterLevel+inc*.4);if(grams>=75){endBloom()}};
+ if(stage==='bloom'&&bloomHeld){const inc=Math.min(BLOOM_TARGET+35-grams,26*dt);grams+=inc;waterLevel=Math.min(22,waterLevel+inc*.4);if(grams>=BLOOM_TARGET+35){endBloom()}};
  if(stage==='pour'){
    const drain=pointer?7.7:14;waterLevel=Math.max(0,waterLevel-drain*dt);
    if(pointer&&grams<TARGET){const inc=Math.min(TARGET-grams,21*dt);grams+=inc;waterLevel+=inc;
@@ -76,14 +83,14 @@ function tick(now){let dt=clamp((now-prev)/1000,0,.05);prev=now;
  ripples=ripples.filter(r=>{r.r+=dt*44;r.a-=dt*.85;return r.a>0});
  draw(now/1000);if(stage==='bloom'||stage==='pour')updateUI();requestAnimationFrame(tick)
 }
-function complete(){stage='result';bloomHeld=false;let bScore=clamp(Math.round(25*(1-Math.abs(bloomGrams-BLOOM_TARGET)/29)),0,25),eScore=scoreEven();const missed=edgeWater/Math.max(1,goodWater+edgeWater);const flow=Math.round(25*(1-clamp(.75*missed+overSeconds/3.4,0,1)));const final=bScore+eScore+flow;
+function complete(){stage='result';bloomHeld=false;let bScore=clamp(Math.round(25*(1-Math.abs(bloomGrams-BLOOM_TARGET)/(BLOOM_TARGET*.725))),0,25),eScore=scoreEven();const missed=edgeWater/Math.max(1,goodWater+edgeWater);const flow=Math.round(25*(1-clamp(.75*missed+overSeconds/3.4,0,1)));const final=bScore+eScore+flow;
  $('score').innerHTML=final+'<span> / 100</span>';$('bloomScore').textContent=bScore+' / 25';$('evenScore').textContent=eScore+' / 50';$('levelScore').textContent=flow+' / 25';
  $('resultTitle').textContent=final>=96?'An absolutely lovely pour.':final>=85?'That’s a fine cup of coffee.':final>=70?'Not bad, barista.':final>=50?'A little room to improve.':'Well, it’s definitely coffee.';
- $('resultNote').textContent=final>=96?'The manager would like another.':overSeconds>1.2?'Next time, pause when the water level gets high.':eScore<33?'Try moving in a slow, full circle instead of staying in one spot.':bScore<16?'Aim closer to 40g during the bloom.':'Small adjustments make a lovely difference.';
+ shiftScores.push({name:shiftRecipes[shiftIndex].name,score:final});$('shiftBreakdown').hidden=true;$('againBtn').hidden=true;document.querySelector('.breakdown').hidden=false;$('resultNote').textContent=final>=96?'The manager would like another.':overSeconds>1.2?'Next time, pause when the water level gets high.':eScore<33?'Try moving in a slow, full circle instead of staying in one spot.':bScore<16?'Aim closer to 40g during the bloom.':'Small adjustments make a lovely difference.';
  if(best===null||final>best){best=final;try{localStorage.setItem('perks-pour-over-best-v1',String(best))}catch{}readBest()}
- show('resultUI');updateUI();clearSelection()
+ show('resultUI');updateUI();clearSelection();nextTimer=setTimeout(()=>{if(stage==='result')nextCup()},1400)
 }
-function updateUI(){const bloom=stage==='bloom',pour=stage==='pour',result=stage==='result';$('stepBloom').className='step'+(bloom?' active':(pour||result?' done':''));$('stepPour').className='step'+(pour?' active':(result?' done':''));$('grams').innerHTML=Math.round(grams)+' <span>/ 250g</span>';$('fill').style.width=clamp(grams/TARGET*100,0,100)+'%';$('phase').textContent=bloom?'BLOOM · aim for 40g':pour?'POUR · aim for 250g':result?'One cup complete':'Ready when you are';let levelState=waterLevel>66?'Too high!':waterLevel>48?'Getting high':waterLevel>10?'Looking good':'Nice and low';$('level').textContent=stage==='intro'?'—':levelState;$('level').parentElement.classList.toggle('warn',waterLevel>66);const e=scoreEven();$('even').textContent=(stage==='pour'||result)?(e>=43?'Very even':e>=31?'Getting there':'Keep circling'):'—';$('stepMetric').textContent=stage==='intro'?'Ready':bloom?'Bloom':pour?'Pour':'Finished'}
+function updateUI(){const bloom=stage==='bloom',pour=stage==='pour',result=stage==='result';$('stepBloom').className='step'+(bloom?' active':(pour||result?' done':''));$('stepPour').className='step'+(pour?' active':(result?' done':''));$('grams').innerHTML=Math.round(grams)+' <span>/ '+TARGET+'g</span>';$('fill').style.width=clamp(grams/TARGET*100,0,100)+'%';$('phase').textContent=bloom?'BLOOM · aim for '+BLOOM_TARGET+'g':pour?'POUR · aim for 250g':result?'Cup complete':'Ready when you are';let levelState=waterLevel>66?'Too high!':waterLevel>48?'Getting high':waterLevel>10?'Looking good':'Nice and low';$('level').textContent=stage==='intro'?'—':levelState;$('level').parentElement.classList.toggle('warn',waterLevel>66);const e=scoreEven();$('even').textContent=(stage==='pour'||result)?(e>=43?'Very even':e>=31?'Getting there':'Keep circling'):'—';$('stepMetric').textContent=stage==='intro'?'Ready':bloom?'Bloom':pour?'Pour':'Finished'}
 function ellipse(x,y,rx,ry,fill,stroke,width=1){ctx.beginPath();ctx.ellipse(x,y,rx,ry,0,0,Math.PI*2);if(fill){ctx.fillStyle=fill;ctx.fill()}if(stroke){ctx.strokeStyle=stroke;ctx.lineWidth=width;ctx.stroke()}}
 function round(x,y,w,h,r,fill,stroke,width=1){ctx.beginPath();ctx.roundRect(x,y,w,h,r);if(fill){ctx.fillStyle=fill;ctx.fill()}if(stroke){ctx.strokeStyle=stroke;ctx.lineWidth=width;ctx.stroke()}}
 function draw(now){ctx.clearRect(0,0,480,370);
@@ -123,10 +130,10 @@ function draw(now){ctx.clearRect(0,0,480,370);
  // Water stream from kettle spout to pouring hand position.
  if(bloomHeld||pointer){const x=pointer?pointer.x:CX,y=pointer?pointer.y:CY;ctx.beginPath();ctx.moveTo(326,77);ctx.bezierCurveTo(313,120,331,136,x,y);ctx.strokeStyle='#e5ffff';ctx.lineCap='round';ctx.lineWidth=6;ctx.stroke();ctx.strokeStyle='#72b8bb';ctx.lineWidth=2.8;ctx.stroke();ellipse(x,y,7+Math.sin(now*12)*1.5,4,'#f6e8c3a9')}
  // Small foreground labels within the illustration.
- round(22,312,99,30,7,'#fff5dc','#5a465d',2);ctx.fillStyle='#5a465d';ctx.font='900 11px system-ui';ctx.textAlign='center';ctx.fillText('FILTER NO. 01',71,331);
+ round(22,312,99,30,7,'#fff5dc','#5a465d',2);ctx.fillStyle='#5a465d';ctx.font='900 11px system-ui';ctx.textAlign='center';ctx.fillText('FILTER NO. '+Math.max(1,shiftIndex+1),71,331);
  if(stage==='pour'&&!pointer){ctx.textAlign='center';ctx.font='900 12px system-ui';ctx.fillStyle='#fff4de';ctx.strokeStyle='#4d3b4e';ctx.lineWidth=4;ctx.strokeText('DRAG TO POUR',CX,CY+6);ctx.fillText('DRAG TO POUR',CX,CY+6)}
 }
-$('startBtn').addEventListener('click',start);$('againBtn').addEventListener('click',start);
+$('startBtn').addEventListener('click',beginShift);$('againBtn').addEventListener('click',beginShift);
 const bloom=$('bloomBtn');bloom.addEventListener('pointerdown',beginBloom);bloom.addEventListener('pointerup',endBloom);bloom.addEventListener('pointercancel',endBloom);bloom.addEventListener('lostpointercapture',endBloom);bloom.addEventListener('contextmenu',e=>e.preventDefault());
 canvas.addEventListener('pointerdown',pointerDown);canvas.addEventListener('pointermove',pointerMove);canvas.addEventListener('pointerup',pointerUp);canvas.addEventListener('pointercancel',pointerUp);canvas.addEventListener('lostpointercapture',pointerUp);canvas.addEventListener('contextmenu',e=>e.preventDefault());
 document.addEventListener('selectionchange',()=>{if(stage==='bloom'||stage==='pour')clearSelection()});

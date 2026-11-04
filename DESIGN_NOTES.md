@@ -26,3 +26,9 @@ Static HTML and CSS; no install/build step needed. GitHub Pages can host the roo
 
 ## Original design ethos
 The surprising pleasure of small service tasks; a gently absurd town, built from tactile toys first.
+
+## Perks mini-shifts (November 4, 2026)
+- Tea Time: four different customers per shift (drawn without replacement from the existing twelve), drag or tap two ingredient tins to blend, then lift the bag directly in the illustrated cup. Feedback between cups is brief; one summary comes at the end. No separate start-steep or lift button.
+- Latte Lab: three automatic customer designs (heart, swirl, leaf), same speed-sensitive foam drawing. Advance after serving; one shift average at the end. Guide toggle remains optional.
+- Pour Over: three customer coffees per shift with slightly different bloom and water targets, same circular pour and water-control mechanic, automatic cup changes, final shift average.
+- Preserve the old one-cup variants in Git history. Avoid bringing back repetitive buttons for each order.
