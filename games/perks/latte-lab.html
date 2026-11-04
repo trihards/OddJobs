@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <meta name="theme-color" content="#f4e7cf">
-<title>Perks · Latte Lab: Free Pour</title>
+<title>Perks · Latte Lab: House Orders</title>
 <style>
 :root{--ink:#282538;--plum:#392b4e;--cream:#f4e7cf;--paper:#fffaf1;--teal:#0e877d;--mint:#baf1d5;--gold:#ffcc66;--coral:#ed866d;--muted:#6e6871}
 *{box-sizing:border-box}
@@ -45,26 +45,35 @@ h1{font-size:clamp(34px,7vw,48px);letter-spacing:-.065em;line-height:1;margin:3p
 .footer{font-size:12px;line-height:1.5;color:#756a73;text-align:center;padding:14px 8px 0}
 @media(max-width:530px){.app{padding:12px 9px 25px}header{margin-bottom:12px}h1{font-size:37px}.header-note{font-size:11px;max-width:115px}.bar{padding:9px 11px}.bar strong{font-size:14px}.scene{min-height:305px;padding:10px 8px}.cupwrap{width:min(335px,calc(100vw - 42px))}.decor{top:10px;left:10px;font-size:10px}.decor2{font-size:24px;right:10px;top:14px}.scene-label{font-size:9px;bottom:11px;left:9px}.workarea{padding:14px 13px 12px}.pattern{font-size:12px;padding:9px 0}.pattern span{font-size:13px}}
 
+.recipe-picker{display:flex;align-items:center;gap:6px;padding:7px 9px;background:#f8ecda;border-bottom:2px solid #ddc9b8}
+.recipe-picker .recipe-choice{flex:1;min-width:0;padding:8px 3px;border-radius:10px;border:2px solid #cdbcae;background:#fffaf1;color:#5c5261;font-size:12px;font-weight:950;line-height:1.25}
+.recipe-choice[aria-pressed="true"]{background:var(--mint);border-color:var(--ink);color:#245c50}
+.recipe-picker .help-recipe{width:35px;flex:none;min-height:36px;border:2px solid var(--ink);border-radius:50%;background:#ffdf9d;color:var(--ink);font-size:18px;font-weight:950}
+.house-menu{background:#fff5d9;padding:8px 12px;border-bottom:2px solid #d7bc8d;color:#584d56;font-weight:850;font-size:12px;line-height:1.45}
+.house-menu[hidden],.stat[hidden],.flow-row[hidden],.gauge[hidden]{display:none!important}
+.cocoa-note{background:#fff0d8;color:#6e4736;border:2px dashed #d3a481;border-radius:11px;padding:8px 11px;margin:9px 0;font-size:12px;font-weight:900;text-align:center}
+.cocoa-note[hidden]{display:none}
 .latte-shiftbar{display:flex;align-items:center;justify-content:space-between;gap:8px;background:#e9d6ae;padding:9px 12px;font-weight:950;font-size:12px}.latte-shiftbar span:last-child{color:#695a67;font-size:11px;font-weight:700}.latte-shiftbar #shiftIcons{font-size:16px;letter-spacing:3px;color:#248574}.shift-summary{background:#f8efdf;border:2px solid #dfc8b5;border-radius:11px;padding:10px;margin-top:12px;text-align:center}.shift-summary strong{font-size:24px;letter-spacing:-.04em}.shift-summary p{font-size:12px;color:#70656e;margin:3px 0 0}
-@media(max-width:530px){.latte-shiftbar{font-size:11px;gap:4px}.latte-shiftbar span:last-child{font-size:10px}}
+@media(max-width:530px){.latte-shiftbar{font-size:11px;gap:4px}.latte-shiftbar span:last-child{font-size:10px}.recipe-picker .recipe-choice{font-size:11px;padding:7px 2px}}
 </style>
 </head>
 <body>
 <main class="app">
-<header><div><div class="kicker">Perks / Latte shift · 3 cups</div><h1>Latte <em>Lab.</em></h1></div><div class="header-note">Three cups.<br>Three different designs.<br>One little shift.</div></header>
+<header><div><div class="kicker">Perks / Latte shift · 3 cups</div><h1>Latte <em>Lab.</em></h1></div><div class="header-note">Three coffees.<br>Three house finishes.<br>One little shift.</div></header>
 <div class="game">
-<div class="bar"><div><small>Order up</small><strong id="orderLabel">ONE LATTE · HEART</strong></div><div class="best"><small>Personal best</small><strong id="bestLabel">— / 100</strong></div></div>
-<div class="latte-shiftbar"><strong id="shiftProgress">CUP 1 / 3</strong><span id="shiftIcons">○ ○ ○</span><span>Customer chooses the pattern</span></div>
+<div class="bar"><div><small>Order up</small><strong id="orderLabel">FLAT WHITE</strong></div><div class="best"><small>Personal best</small><strong id="bestLabel">— / 100</strong></div></div>
+<div class="latte-shiftbar"><strong id="shiftProgress">CUP 1 / 3</strong><span id="shiftIcons">○ ○ ○</span><span>Choose the house design</span></div>
+<div class="recipe-picker" role="group" aria-label="Choose latte art to pour"><button class="recipe-choice" type="button" data-recipe="heart" aria-pressed="true">♥ Heart</button><button class="recipe-choice" type="button" data-recipe="leaf" aria-pressed="false">🌿 Leaf</button><button class="recipe-choice" type="button" data-recipe="swirl" aria-pressed="false">◉ Swirl</button><button id="recipeHelp" class="help-recipe" type="button" aria-label="Perks house recipes" aria-expanded="false">?</button></div><div class="house-menu" id="houseMenu" hidden>PERKS HOUSE FINISHES · Flat white → ♥ Heart · Cappuccino → 🌿 Leaf · Mocha → ◉ Swirl + cocoa</div>
 <div class="scene"><div class="decor">PERKS<small>FROTH &amp; FOUND</small></div><div class="decor2" aria-hidden="true">☕</div><div class="cupwrap"><canvas id="latteCanvas" width="720" height="720" role="img" tabindex="0" aria-label="Interactive latte cup. Pour a foam pattern with a finger or mouse. Moving slowly makes wider foam; moving quickly makes thinner lines."></canvas></div><div class="scene-label" id="sceneLabel">COFFEE IS YOUR CANVAS</div></div>
 <div class="workarea" id="workarea">
-<div class="titleline"><h2 id="challengeTitle">Pour a heart</h2><span class="badge" id="challengeTag">ONE SMOOTH POUR</span></div>
-<p class="explain" id="instructions">Touch the starting dot and pour your design. Slow movement makes lush foam; fast movement makes fine lines. Lift to serve.</p>
-<div class="flow-row"><strong>MILK IN THE PITCHER</strong><span id="milkText">100%</span></div><div class="gauge" aria-label="Milk remaining"><div class="gauge-fill" id="milkFill"></div></div>
-<div class="result" id="results" aria-live="polite"><h3 id="resultTitle">Nicely done.</h3><div class="grade"><span id="scoreValue">88</span><small>out of<br>100</small></div><div class="stats"><div class="stat"><b id="coverageScore">—</b><small>Shape</small></div><div class="stat"><b id="controlScore">—</b><small>Finesse</small></div><div class="stat"><b id="flowScore">—</b><small>Flow</small></div></div><p id="resultNote"></p></div>
+<div class="titleline"><h2 id="challengeTitle">Choose a finish</h2><span class="badge" id="challengeTag">HOUSE SPECIAL</span></div>
+<p class="explain" id="instructions">Pick a house finish, then pour it into the cup.</p><div id="cocoaNote" class="cocoa-note" hidden>🍫 Cocoa shaker · Sweep across the cup twice</div>
+<div class="flow-row" id="milkRow"><strong>MILK IN THE PITCHER</strong><span id="milkText">100%</span></div><div class="gauge" id="milkGauge" aria-label="Milk remaining"><div class="gauge-fill" id="milkFill"></div></div>
+<div class="result" id="results" aria-live="polite"><h3 id="resultTitle">Nicely done.</h3><div class="grade"><span id="scoreValue">88</span><small>out of<br>100</small></div><div class="stats"><div class="stat"><b id="coverageScore">—</b><small>Shape</small></div><div class="stat"><b id="controlScore">—</b><small>Finesse</small></div><div class="stat"><b id="flowScore">—</b><small>Flow</small></div><div class="stat" id="cocoaStat" hidden><b id="cocoaScore">—</b><small>Cocoa</small></div></div><p id="resultNote"></p></div>
 <div class="shift-summary" id="shiftSummary" hidden></div><div class="actions"><button class="action" id="tryAgain" hidden>Another three-cup shift ↻</button><button class="action secondary" id="guideToggle" aria-pressed="true">Guide: on</button></div>
 <div class="tip" id="tip" aria-live="polite">Slow = wide foam. Fast = fine lines. Start at the yellow dot.</div>
 </div></div>
-<div class="footer">A tiny arcade latte-art toy. Draw with your finger or mouse. Plays offline. No shift schedules, no real milk required.</div>
+<div class="footer">A tiny arcade latte-art toy. Pour and dust with your finger or mouse. Plays offline. No shift schedules, no real milk required.</div>
 </main>
 <script>
 (()=>{
@@ -73,6 +82,8 @@ const $=id=>document.getElementById(id);
 const C=$('latteCanvas'),ctx=C.getContext('2d');
 const foamCanvas=document.createElement('canvas');foamCanvas.width=720;foamCanvas.height=720;
 const foam=foamCanvas.getContext('2d');
+const cocoaCanvas=document.createElement('canvas');cocoaCanvas.width=720;cocoaCanvas.height=720;
+const cocoaPaint=cocoaCanvas.getContext('2d');
 const TAU=Math.PI*2,clamp=(n,a,b)=>Math.min(b,Math.max(a,n));
 const SIZE=720,CX=360,CY=356,INNER=280;
 function heart(t){const a=t*TAU;return [0.68*Math.pow(Math.sin(a),3),-0.043*(13*Math.cos(a)-5*Math.cos(2*a)-2*Math.cos(3*a)-Math.cos(4*a))]}
@@ -83,33 +94,45 @@ const patterns={
  swirl:{name:'SWIRL',title:'Pour a swirl',tag:'KEEP IT FLOWING',f:spiral,note:'Start in the center and spiral outward.'},
  leaf:{name:'LEAF',title:'Pour a leaf',tag:'NICE & LEAFY',f:leaf,note:'Travel around the edge and close the shape at the tip.'}
 };
-let pattern='heart',guideOn=true,points=[],samples=[],drawing=false,done=false,milk=100,best={},startTime=0,lastPointerId=null,lastMoveTime=0,lastSpeed=350,animationFrame=0;
-const SHIFT_LENGTH=3;let shiftIndex=0,shiftPatterns=['heart','swirl','leaf'],shiftScores=[],nextTimer=null,shiftNumber=0;
-try{best=JSON.parse(localStorage.getItem('perks-latte-best-v2')||'{}');if(!best||typeof best!=='object')best={}}catch{best={}}
+const DRINKS={flat:{name:'Flat white',art:'heart',cocoa:false},cap:{name:'Cappuccino',art:'leaf',cocoa:false},mocha:{name:'Mocha',art:'swirl',cocoa:true}};
+let pattern='heart',drink='flat',guideOn=true,points=[],samples=[],drawing=false,done=false,milk=100,best={},startTime=0,lastPointerId=null,lastMoveTime=0,lastSpeed=350,animationFrame=0;
+let stage='foam',cocoaDrawing=false,cocoaPointer=null,cocoaPasses=0,cocoaTravel=0,cocoaLast=null,cocoaZones=new Set(),pendingFoam=null;
+const SHIFT_LENGTH=3;let shiftIndex=0,shiftDrinks=['flat','cap','mocha'],shiftScores=[],nextTimer=null,shiftNumber=0;
+try{best=JSON.parse(localStorage.getItem('perks-latte-best-v3')||'{}');if(!best||typeof best!=='object')best={}}catch{best={}}
 const validScore=n=>Number.isFinite(n)&&n>=0&&n<=100;
 const dist=(a,b)=>Math.hypot(a[0]-b[0],a[1]-b[1]);
 function xy(f,t){const p=f(t);return [CX+p[0]*INNER,CY+p[1]*INNER]}
 function cupPosition(e){const r=C.getBoundingClientRect();return [(e.clientX-r.left)*SIZE/r.width,(e.clientY-r.top)*SIZE/r.height]}
 function path(){const out=[];for(let i=0;i<=170;i++)out.push(xy(patterns[pattern].f,i/170));return out}
-function setBest(){const v=best[pattern];$('bestLabel').textContent=validScore(v)?v+' / 100':'— / 100'}
+function setBest(){const v=best[drink];$('bestLabel').textContent=validScore(v)?v+' / 100':'— / 100'}
 function rebuild(){samples=path();reset()}
 function reset(){
  if(animationFrame)cancelAnimationFrame(animationFrame);animationFrame=0;
- foam.clearRect(0,0,SIZE,SIZE);points=[];drawing=false;done=false;milk=100;startTime=0;lastMoveTime=0;lastSpeed=350;lastPointerId=null;
- $('results').classList.remove('show');$('shiftSummary').hidden=true;$('milkFill').classList.remove('low');$('milkFill').style.width='100%';$('milkText').textContent='100%';
+ foam.clearRect(0,0,SIZE,SIZE);cocoaPaint.clearRect(0,0,SIZE,SIZE);points=[];drawing=false;done=false;milk=100;startTime=0;lastMoveTime=0;lastSpeed=350;lastPointerId=null;stage='foam';cocoaDrawing=false;cocoaPointer=null;cocoaPasses=0;cocoaTravel=0;cocoaLast=null;cocoaZones.clear();pendingFoam=null;
+ $('results').classList.remove('show');$('shiftSummary').hidden=true;$('cocoaNote').hidden=true;$('cocoaStat').hidden=true;$('milkRow').hidden=false;$('milkGauge').hidden=false;$('milkFill').classList.remove('low');$('milkFill').style.width='100%';$('milkText').textContent='100%';
  $('tip').textContent=guideOn?'Slow = wide foam. Fast = fine lines. Start at the yellow dot.':'Free pour! Slow = wide foam. Fast = fine lines.';
  $('sceneLabel').textContent='COFFEE IS YOUR CANVAS';draw();
 }
-function choose(p){
- if(!patterns[p])return;
- pattern=p;
- $('orderLabel').textContent='CUP '+(shiftIndex+1)+' / '+SHIFT_LENGTH+' · '+patterns[p].name;$('challengeTitle').textContent=patterns[p].title;$('challengeTag').textContent=patterns[p].tag;
- $('instructions').textContent='Drag from the yellow dot to pour. Move slowly for wide, soft foam or quickly for a thin line. '+patterns[p].note;
- setBest();rebuild();$('shiftProgress').textContent='CUP '+(shiftIndex+1)+' / '+SHIFT_LENGTH;$('shiftIcons').textContent=Array.from({length:SHIFT_LENGTH},(_,i)=>i<shiftIndex?'●':i===shiftIndex?'◉':'○').join(' ');$('tryAgain').hidden=true;
+function updateRecipeButtons(){document.querySelectorAll('[data-recipe]').forEach(el=>el.setAttribute('aria-pressed',String(el.dataset.recipe===pattern)))}
+function chooseDesign(p){
+ if(!patterns[p]||stage!=='foam'||drawing||done)return;
+ pattern=p;updateRecipeButtons();setBest();rebuild();
+ $('challengeTitle').textContent='Pour your '+patterns[p].name.toLowerCase();
+ $('tip').textContent='Chosen: '+patterns[p].name.toLowerCase()+'. Start at the yellow dot.';
 }
-function beginShift(){clearTimeout(nextTimer);shiftScores=[];shiftIndex=0;shiftNumber++;shiftPatterns=['heart','swirl','leaf'];const move=(shiftNumber-1)%3;shiftPatterns.push(...shiftPatterns.splice(0,move));choose(shiftPatterns[0])}
-function nextCup(){if(shiftIndex>=SHIFT_LENGTH-1)return;shiftIndex++;choose(shiftPatterns[shiftIndex])}
-function endShift(){const avg=Math.round(shiftScores.reduce((a,b)=>a+b,0)/SHIFT_LENGTH);$('shiftSummary').hidden=false;$('shiftSummary').innerHTML='<strong>Shift average: '+avg+' / 100</strong><p>'+shiftPatterns.map((p,i)=>patterns[p].name.toLowerCase()+': '+shiftScores[i]).join(' · ')+'</p>';$('tryAgain').hidden=false;$('tip').textContent='Three lattes served. Lovely work.';$('sceneLabel').textContent='SHIFT COMPLETE ✦'}
+function chooseOrder(d){
+ if(!DRINKS[d])return;
+ drink=d;pattern='heart';const o=DRINKS[d];
+ $('orderLabel').textContent='ORDER '+(shiftIndex+1)+' · '+o.name.toUpperCase();
+ $('challengeTitle').textContent='Choose a finish';$('challengeTag').textContent=o.cocoa?'COCOA FINISH':'HOUSE SIGNATURE';
+ $('instructions').textContent=o.cocoa?'Pour the house pattern, then finish with a cocoa dusting.':'Select the house pattern and pour into the cup.';
+ updateRecipeButtons();setBest();rebuild();
+ $('shiftProgress').textContent='CUP '+(shiftIndex+1)+' / '+SHIFT_LENGTH;
+ $('shiftIcons').textContent=Array.from({length:SHIFT_LENGTH},(_,i)=>i<shiftIndex?'●':i===shiftIndex?'◉':'○').join(' ');$('tryAgain').hidden=true;
+}
+function beginShift(){clearTimeout(nextTimer);shiftScores=[];shiftIndex=0;shiftNumber++;shiftDrinks=['flat','cap','mocha'];const move=(shiftNumber-1)%3;shiftDrinks.push(...shiftDrinks.splice(0,move));chooseOrder(shiftDrinks[0])}
+function nextCup(){if(shiftIndex>=SHIFT_LENGTH-1)return;shiftIndex++;chooseOrder(shiftDrinks[shiftIndex])}
+function endShift(){const avg=Math.round(shiftScores.reduce((a,b)=>a+b,0)/SHIFT_LENGTH);$('shiftSummary').hidden=false;$('shiftSummary').innerHTML='<strong>Shift average: '+avg+' / 100</strong><p>'+shiftDrinks.map((d,i)=>DRINKS[d].name+': '+shiftScores[i]).join(' · ')+'</p>';$('tryAgain').hidden=false;$('tip').textContent='Three coffees served. Nice work.';$('sceneLabel').textContent='SHIFT COMPLETE ✦'}
 
 function circle(x,y,r,fill,stroke='',width=1){ctx.beginPath();ctx.arc(x,y,r,0,TAU);if(fill){ctx.fillStyle=fill;ctx.fill()}if(stroke){ctx.strokeStyle=stroke;ctx.lineWidth=width;ctx.stroke()}}
 function line(coords,color,width,dash=[]){if(coords.length<2)return;ctx.save();ctx.beginPath();ctx.moveTo(...coords[0]);for(let i=1;i<coords.length;i++)ctx.lineTo(...coords[i]);ctx.lineJoin='round';ctx.lineCap='round';ctx.setLineDash(dash);ctx.lineWidth=width;ctx.strokeStyle=color;ctx.stroke();ctx.restore()}
@@ -136,19 +159,27 @@ function draw(){
  ctx.strokeStyle='#dca17c66';ctx.lineWidth=7;ctx.beginPath();ctx.arc(CX,CY,260,0,TAU);ctx.stroke();
  for(let i=0;i<48;i++){const a=i*2.399963,r=20+Math.sqrt(i/48)*225;circle(CX+Math.cos(a)*r,CY+Math.sin(a)*r,2+(i%4),'#e5b18a18')}
  ctx.save();ctx.beginPath();ctx.arc(CX,CY,258,0,TAU);ctx.clip();
- if(guideOn&&!done){line(samples,'#3e2c3160',15);line(samples,'#fff1d4b5',5,[2,15])}
+ if(guideOn&&stage==='foam'&&!done){line(samples,'#3e2c3160',15);line(samples,'#fff1d4b5',5,[2,15])}
  // Two passes give continuous, gently feathered foam with natural crema edges.
  ctx.save();ctx.filter='blur(6px)';ctx.globalAlpha=.48;ctx.drawImage(foamCanvas,0,0);ctx.restore();
  ctx.save();ctx.globalAlpha=.92;ctx.drawImage(foamCanvas,0,0);ctx.restore();
+ ctx.save();ctx.drawImage(cocoaCanvas,0,0);ctx.restore();
  ctx.restore();
  ctx.strokeStyle='#ffffffbb';ctx.lineWidth=9;ctx.beginPath();ctx.arc(CX,CY,309,3.65,5.5);ctx.stroke();
- if(!done&&!drawing&&guideOn){const s=samples[0];circle(s[0],s[1],20,'#ffe07a','#3e3444',5);circle(s[0],s[1],7,'#fffef5')}
- if(drawing){const p=points[points.length-1];if(p){circle(p.x,p.y,Math.max(7,p.r*.47),'#fffdf1','#96705f',3);circle(p.x-4,p.y-4,3,'#ffffff')}}
+ if(stage==='foam'&&!done&&!drawing&&guideOn){const s=samples[0];circle(s[0],s[1],20,'#ffe07a','#3e3444',5);circle(s[0],s[1],7,'#fffef5')}
+ if(stage==='foam'&&drawing){const p=points[points.length-1];if(p){circle(p.x,p.y,Math.max(7,p.r*.47),'#fffdf1','#96705f',3);circle(p.x-4,p.y-4,3,'#ffffff')}}
+ if(stage==='cocoa'&&cocoaDrawing&&cocoaLast){
+   // Cocoa shaker follows the finger: subtle in-world tool feedback.
+   const [x,y]=cocoaLast;ctx.save();ctx.translate(x+25,y-32);ctx.rotate(-.28);
+   ctx.fillStyle='#fff5d9';ctx.strokeStyle='#4b3543';ctx.lineWidth=4;ctx.beginPath();ctx.roundRect(-18,-21,36,43,6);ctx.fill();ctx.stroke();
+   ctx.fillStyle='#87563c';ctx.fillRect(-18,-21,36,10);for(let i=0;i<3;i++)circle(-9+i*9,-16,2,'#fff4d2');ctx.restore();
+ }
  ctx.restore();
 }
 function updateMilk(){milk=clamp(milk,0,100);$('milkText').textContent=Math.round(milk)+'%';$('milkFill').style.width=milk+'%';$('milkFill').classList.toggle('low',milk<23)}
 function down(e){
- if(done||drawing)return;
+ if(stage==='cocoa'){cocoaDown(e);return}
+ if(done||drawing||stage!=='foam')return;
  e.preventDefault();const p=cupPosition(e),s=samples[0];
  if(dist(p,[CX,CY])>275)return;
  if(guideOn&&dist(p,s)>48){$('tip').textContent='Start pouring at the yellow dot.';return}
@@ -159,6 +190,7 @@ function down(e){
  $('sceneLabel').textContent='FROTHING…';$('tip').textContent='Slow for soft foam, quick for delicate lines.';draw();
 }
 function move(e){
+ if(stage==='cocoa'){cocoaMove(e);return}
  if(!drawing||e.pointerId!==lastPointerId)return;
  e.preventDefault();const pos=cupPosition(e),p=[clamp(pos[0],CX-277,CX+277),clamp(pos[1],CY-277,CY+277)];
  const prev=points[points.length-1],d=dist(p,[prev.x,prev.y]);if(d<2)return;
@@ -174,34 +206,75 @@ function move(e){
  }
  milk-=d/26;lastMoveTime=now;updateMilk();draw();if(milk<=0)finish();
 }
-function up(e){if(!drawing||e.pointerId!==lastPointerId)return;e.preventDefault();finish()}
+function up(e){if(stage==='cocoa'){cocoaUp(e);return}if(!drawing||e.pointerId!==lastPointerId)return;e.preventDefault();finish()}
 function finish(){
- if(!drawing)return;drawing=false;done=true;lastPointerId=null;
+ if(!drawing)return;drawing=false;lastPointerId=null;
  const minToPath=(p,poly)=>{let bd=Infinity;for(const s of poly){const d=(p[0]-s[0])**2+(p[1]-s[1])**2;if(d<bd)bd=d}return Math.sqrt(bd)};
  const poured=points.map(p=>[p.x,p.y]);
- // A broad foam pour is allowed to cover more than the middle of the guide;
- // deliberate freehand decoration is encouraged, while aimless scribbles still lose points.
  const covered=samples.filter(s=>points.some((p,i)=>i%3===0&&dist(s,[p.x,p.y])<p.r*.85+16)).length/samples.length;
  const near=poured.length?poured.filter((p,i)=>i%3===0&&minToPath(p,samples)<42).length/Math.ceil(poured.length/3):0;
  const fidelity=clamp(near,0,1);
  const meanRad=points.reduce((t,p)=>t+p.r,0)/Math.max(1,points.length);
- // Enough foam to form a visible design and a continuous stroke: no stopwatch.
  const fluidity=clamp((points.length-8)/45,0,1)*clamp(meanRad/17,0.65,1);
- const shapeScore=Math.round(60*covered),finesseScore=Math.round(30*fidelity),flowScore=Math.round(10*fluidity);
- const final=clamp(shapeScore+finesseScore+flowScore,0,100);
- $('coverageScore').textContent=shapeScore+'/60';$('controlScore').textContent=finesseScore+'/30';$('flowScore').textContent=flowScore+'/10';$('scoreValue').textContent=final;
- $('resultTitle').textContent=final>=96?'Now THAT is a latte.':final>=83?'Well poured!':final>=65?'That has character.':final>=40?'A little freestyle coffee.':'An experimental pour.';
- $('resultNote').textContent=final>=96?'Lovely foam, beautiful shape, and a steady hand.':final>=83?'That foam has finesse! There’s room to refine the edges.':covered<.65?'Your design wandered from the order. Try covering more of the guide, or just enjoy the free-pour art.':'Nice pour. Slow down for fuller foam, speed up for finer details.';
- shiftScores.push(final);$('results').classList.add('show');$('tip').textContent=shiftIndex<SHIFT_LENGTH-1?'Next latte coming up…':'That is the final cup!';$('sceneLabel').textContent='CUP SERVED ✓';
- if(!validScore(best[pattern])||final>best[pattern]){best[pattern]=final;try{localStorage.setItem('perks-latte-best-v2',JSON.stringify(best))}catch{}}setBest();draw();if(shiftIndex<SHIFT_LENGTH-1)nextTimer=setTimeout(()=>{if(done)nextCup()},1450);else endShift();
+ pendingFoam={covered,fidelity,fluidity};
+ if(DRINKS[drink].cocoa){
+   stage='cocoa';$('cocoaNote').hidden=true;$('milkRow').hidden=true;$('milkGauge').hidden=true;
+   $('challengeTitle').textContent='Dust with cocoa';$('challengeTag').textContent='TWO SWEEPS';
+   $('instructions').textContent='Two sweeps, straight across or wherever you like.';
+   $('sceneLabel').textContent='COCOA FINISH';$('tip').textContent='Two gentle passes across the cup.';draw();return;
+ }
+ completeOrder(0);
+}
+function cocoaMark(x,y){
+ const dx=x-CX,dy=y-CY;if(dx*dx+dy*dy>240*240)return;
+ const col=clamp(Math.floor((x-130)/153),0,2),row=clamp(Math.floor((y-126)/153),0,2);
+ cocoaZones.add(row*3+col);
+ const step=cocoaTravel++;const rand=n=>{const v=Math.sin(step*21.47+n*52.91)*43758.545;return v-Math.floor(v)};
+ for(let i=0;i<7;i++){
+  const px=x+(rand(i+1)-.5)*35,py=y+(rand(i+18)-.5)*35;
+  if(Math.hypot(px-CX,py-CY)>255)continue;
+  cocoaPaint.fillStyle=i%3===0?'#6b3424b5':'#79412b90';
+  cocoaPaint.beginPath();cocoaPaint.arc(px,py,1.7+rand(i+45)*3,0,TAU);cocoaPaint.fill();
+ }
+}
+function cocoaDown(e){if(stage!=='cocoa'||cocoaDrawing)return;
+ e.preventDefault();const p=cupPosition(e);if(Math.hypot(p[0]-CX,p[1]-CY)>255)return;
+ cocoaDrawing=true;cocoaPointer=e.pointerId;cocoaLast=p;try{C.setPointerCapture(e.pointerId)}catch{}
+ cocoaMark(...p);draw();
+}
+function cocoaMove(e){if(!cocoaDrawing||e.pointerId!==cocoaPointer)return;e.preventDefault();const p=cupPosition(e),prev=cocoaLast;
+ const d=dist(prev,p),count=Math.max(1,Math.ceil(d/9));for(let i=1;i<=count;i++){const t=i/count;cocoaMark(prev[0]+(p[0]-prev[0])*t,prev[1]+(p[1]-prev[1])*t)}
+ cocoaLast=p;draw();
+}
+function cocoaUp(e){if(!cocoaDrawing||e.pointerId!==cocoaPointer)return;e.preventDefault();
+ cocoaDrawing=false;cocoaPointer=null;cocoaLast=null;cocoaPasses++;$('tip').textContent=cocoaPasses<2?'One more cocoa sweep…':'Cocoa finished ✓';draw();
+ if(cocoaPasses>=2){const dustScore=Math.round(10*cocoaZones.size/9);completeOrder(dustScore)}
+}
+function completeOrder(dustScore){
+ if(stage==='served')return;done=true;stage='served';const {covered,fidelity,fluidity}=pendingFoam;
+ const mocha=DRINKS[drink].cocoa;
+ const shapeMax=mocha?54:60, finesseMax=mocha?27:30, flowMax=mocha?9:10;
+ const shapeScore=Math.round(shapeMax*covered),finesseScore=Math.round(finesseMax*fidelity),flowScore=Math.round(flowMax*fluidity);
+ const match=pattern===DRINKS[drink].art;const matchPenalty=match?0:25;
+ const final=clamp(shapeScore+finesseScore+flowScore+dustScore-matchPenalty,0,100);
+ $('coverageScore').textContent=shapeScore+'/'+shapeMax;$('controlScore').textContent=finesseScore+'/'+finesseMax;
+ $('flowScore').textContent=flowScore+'/'+flowMax;$('cocoaStat').hidden=!mocha;if(mocha)$('cocoaScore').textContent=dustScore+'/10';
+ $('scoreValue').textContent=final;
+ $('resultTitle').textContent=!match?'Lovely pour, wrong signature.':final>=96?'House special!':final>=83?'Well poured!':final>=65?'That has character.':'An experimental pour.';
+ $('resultNote').textContent=!match?'Perks pairs '+DRINKS[drink].name.toLowerCase()+' with a '+patterns[DRINKS[drink].art].name.toLowerCase()+' design.':mocha?'Mocha finished with cocoa. '+(dustScore>=8?'Nicely distributed.':'Try sweeping across more of the cup next time.'):'A little more practice makes for a beautiful '+DRINKS[drink].name.toLowerCase()+'.';
+ shiftScores.push(final);$('results').classList.add('show');$('tip').textContent=shiftIndex<SHIFT_LENGTH-1?'Next order coming up…':'Final order served!';$('sceneLabel').textContent='CUP SERVED ✓';$('cocoaNote').hidden=true;
+ if(!validScore(best[drink])||final>best[drink]){best[drink]=final;try{localStorage.setItem('perks-latte-best-v3',JSON.stringify(best))}catch{}}setBest();draw();
+ if(shiftIndex<SHIFT_LENGTH-1)nextTimer=setTimeout(()=>{if(stage==='served')nextCup()},1450);else endShift();
 }
 C.addEventListener('pointerdown',down);C.addEventListener('pointermove',move);C.addEventListener('pointerup',up);
-C.addEventListener('pointercancel',up);C.addEventListener('lostpointercapture',()=>{if(drawing)finish()});C.addEventListener('contextmenu',e=>e.preventDefault());
-$('workarea').addEventListener('selectstart',e=>e.preventDefault());window.addEventListener('blur',()=>{if(drawing)finish()});
+C.addEventListener('pointercancel',up);C.addEventListener('lostpointercapture',()=>{if(drawing)finish();if(cocoaDrawing)cocoaUp({pointerId:cocoaPointer,preventDefault(){}})});C.addEventListener('contextmenu',e=>e.preventDefault());
+$('workarea').addEventListener('selectstart',e=>e.preventDefault());window.addEventListener('blur',()=>{if(drawing)finish();if(cocoaDrawing)cocoaUp({pointerId:cocoaPointer,preventDefault(){}})});
 $('tryAgain').addEventListener('click',beginShift);
+document.querySelectorAll('[data-recipe]').forEach(btn=>btn.addEventListener('click',()=>chooseDesign(btn.dataset.recipe)));
+$('recipeHelp').addEventListener('click',()=>{const show=$('houseMenu').hidden;$('houseMenu').hidden=!show;$('recipeHelp').setAttribute('aria-expanded',String(show))});
 $('guideToggle').addEventListener('click',()=>{
- guideOn=!guideOn;$('guideToggle').textContent='Guide: '+(guideOn?'on':'off');$('guideToggle').setAttribute('aria-pressed',String(guideOn));
- reset();$('tip').textContent=guideOn?'Start at the yellow dot, then pour.':'Free pour! Your art is still compared with the customer’s order.';
+ if(stage!=='foam'||drawing||done)return;guideOn=!guideOn;$('guideToggle').textContent='Guide: '+(guideOn?'on':'off');$('guideToggle').setAttribute('aria-pressed',String(guideOn));
+ rebuild();$('tip').textContent=guideOn?'Start at the yellow dot, then pour.':'Free pour! Your art is still compared with the customer’s order.';
 });
 beginShift();
 })();
