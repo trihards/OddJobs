@@ -1,0 +1,180 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#45344e">
+<title>The Bookshop · Page Rescue</title>
+<style>
+:root{--ink:#30283d;--plum:#45344e;--paper:#fff9ee;--mint:#bdebd7;--gold:#ffd074;--quiet:#786e7b}
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+html,body{margin:0;min-height:100%;background:#f2e6d8;color:var(--ink);font-family:ui-rounded,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif}
+body{background:radial-gradient(circle at 50% 0,#fff7e9,#edddcf 95%)}
+button{font:inherit;-webkit-user-select:none;user-select:none;touch-action:manipulation;cursor:pointer}
+button:focus-visible{outline:3px solid #eeb464;outline-offset:3px}
+.shell{max-width:540px;margin:0 auto;padding:9px 9px 20px}
+.mast{display:flex;justify-content:space-between;align-items:center;gap:9px;margin-bottom:8px}
+.mast h1{font-size:clamp(27px,7.1vw,37px);margin:0;line-height:1;letter-spacing:-.065em}.mast h1 em{font-style:normal;color:#257d76}
+.eyebrow{font-size:10px;font-weight:1000;letter-spacing:.12em;color:#94717b}
+.motto{color:#846f7b;font-size:11px;max-width:142px;text-align:right;line-height:1.3}
+.frame{border:4px solid var(--ink);border-radius:19px;overflow:hidden;background:var(--paper);box-shadow:7px 8px 0 #c9aa9a}
+.topbar{min-height:43px;display:flex;justify-content:space-between;gap:8px;align-items:center;padding:7px 10px;background:var(--plum);color:#fff9ee}
+.ticket{font-size:12px;font-weight:1000;background:var(--gold);padding:6px 9px;color:var(--ink);border-radius:5px;transform:rotate(-3deg);white-space:nowrap}
+.titleline{font-size:12px;font-weight:950;letter-spacing:-.02em;text-align:center;min-width:0;flex:1}
+.help{background:transparent;color:#fff8eb;border:2px solid #c3b7c7;border-radius:50%;width:30px;height:30px;font-size:18px;font-weight:900;flex:none}
+.helptext{font-size:12px;line-height:1.45;background:#f1e5d6;padding:8px 12px;border-bottom:3px solid var(--ink)}
+[hidden]{display:none!important}
+.work{background:#b9d6cc;position:relative;border-bottom:4px solid var(--ink)}
+canvas{width:100%;height:auto;display:block;aspect-ratio:360/475;touch-action:none;-webkit-user-select:none;user-select:none;-webkit-touch-callout:none;cursor:grab}
+canvas.dragging{cursor:grabbing}
+.bar{display:flex;align-items:center;justify-content:space-between;gap:8px;padding:9px 10px;background:#fff9ef;min-height:61px}
+.instructions{font-size:12px;line-height:1.25;color:#766c72;font-weight:800;max-width:170px}
+.btn{border:3px solid var(--ink);color:var(--ink);font-size:13px;line-height:1.1;font-weight:1000;border-radius:11px;min-height:42px;padding:8px 12px;background:var(--mint);box-shadow:0 3px 0 #8cb5a6;white-space:nowrap}
+.btn.primary{background:var(--gold);box-shadow:0 3px 0 #c3a171}.btn:active{transform:translateY(2px);box-shadow:none}
+.msg{font-size:11px;color:#6a5e6b;text-align:center;margin:14px 6px 0;min-height:18px}
+@media (max-width:365px){.shell{padding:7px 6px 17px}.motto{font-size:10px;max-width:112px}.ticket{font-size:10px}.topbar{padding:5px 7px}.titleline{font-size:11px}.instructions{font-size:11px;max-width:130px}.btn{font-size:12px;padding:7px 9px}}
+@media (prefers-reduced-motion:reduce){*{scroll-behavior:auto!important}}
+</style>
+</head>
+<body>
+<main class="shell">
+<header class="mast"><div><div class="eyebrow">THE BOOKSHOP · REPAIR BENCH</div><h1>Page <em>Rescue</em></h1></div><div class="motto">Some books have seen things.</div></header>
+<section class="frame" aria-label="Book page repair minigame">
+<div class="topbar"><span class="ticket" id="pageNumber">PAGE 01 / 03</span><strong class="titleline" id="bookLabel">An Unreliable Field Guide</strong><button id="helpBtn" class="help" aria-label="Show instructions" aria-expanded="false">?</button></div>
+<div class="helptext" id="helpText" hidden>Drag the torn paper pieces into their matching gaps. Tap a loose piece to rotate it. A piece settles into place when it fits. No timer, and no wrong-answer penalty.</div>
+<div class="work"><canvas id="game" width="720" height="950" aria-label="An open page with torn gaps and paper fragments to repair. Drag fragments into place and tap to rotate them."></canvas></div>
+<div class="bar"><div class="instructions" id="statusText" aria-live="polite">Drag to fit. Tap to rotate.</div><div style="display:flex;gap:7px"><button id="resetBtn" class="btn">Reset</button><button id="nextBtn" class="btn primary" hidden>Next page →</button></div></div>
+</section>
+<div class="msg" id="footer">Original literary damage. Expertly repaired by you.</div>
+</main>
+<script>
+(()=>{'use strict';
+const canvas=document.getElementById('game'),ctx=canvas.getContext('2d');
+const $=id=>document.getElementById(id);
+const W=360,H=475,PX=30,PY=20,PW=300,PH=320;
+const paper='#fff4d8',ink='#30283d',desk='#b9d6cc';
+const pages=[
+ {title:'An Unreliable Field Guide',headline:'A FIELD GUIDE TO LOST THINGS',subtitle:'A chapter on familiar disappearances',lines:[
+ 'The first rule of losing things is to', 'look somewhere you have already looked.', 'The second rule is to blame the cat.',
+ 'The third rule is to apologize to the cat.', '', 'Keys are commonly found in pockets.', 'Pockets are commonly found in coats.',
+ 'Coats are commonly found at the place', 'where you already looked twice.', '', 'Never underestimate a bookshelf.',
+ 'It will happily keep your glasses,', 'a shopping list, and a small secret.', '', 'Should an entire Tuesday go missing,',
+ 'check behind the refrigerator first.', 'If it is not there, try Wednesday.', '', 'This advice is not guaranteed.' ],number:'17'},
+ {title:'Houseplants After Dark',headline:'HOUSEPLANTS AFTER DARK',subtitle:'What the leaves know',lines:[
+ 'A fern cannot keep a secret, although', 'it will insist otherwise.', 'The succulent is more discreet.', '',
+ 'At approximately eleven o’clock,', 'the houseplants begin their meeting.', 'Minutes are kept by the spider plant.',
+ 'Refreshments are not provided.', '', 'The pothos has a list of grievances.', 'The cactus believes it is chairperson.',
+ 'The fiddle-leaf fig has threatened', 'to leave the committee three times.', '',
+ 'If you hear a rustle after midnight,', 'please do not interrupt the vote.', '',
+ 'Water on Thursdays. Attend never.' ],number:'42'},
+ {title:'The Tuesday Incident',headline:'THE TUESDAY INCIDENT',subtitle:'An account of the usual suspects',lines:[
+ 'Nobody noticed that Tuesday had gone', 'missing until the office calendar', 'skipped directly to Wednesday.', '',
+ 'The baker denied any involvement.', 'The postman refused to speculate.', 'A pigeon offered to testify.', '',
+ 'At noon, the mayor assembled the', 'Committee for Ordinary Occurrences.', 'Their first act was to postpone lunch.', '',
+ 'An investigation revealed the day', 'had merely been folded in half.',
+ 'Someone had put it in a drawer', 'beneath a collection of coupons.', '',
+ 'The pigeons were not satisfied.' ],number:'63'}
+];
+const template=[
+ [[174,0],[300,0],[300,115],[280,113],[266,123],[251,108],[234,118],[216,102],[202,108],[189,89],[198,74],[181,62],[190,43],[173,30]],
+ [[0,107],[43,114],[59,102],[76,124],[68,141],[94,152],[87,171],[105,181],[94,202],[74,200],[61,215],[37,207],[25,227],[0,223]],
+ [[156,239],[174,224],[189,239],[207,225],[225,236],[244,217],[261,236],[282,227],[300,231],[300,320],[150,320],[165,299],[148,281],[162,264],[148,254]]
+];
+const variation=(poly,n)=>poly.map(([x,y])=>n===1?[300-x,y]:n===2?[x,320-y]:[x,y]);
+const findBounds=points=>{const xs=points.map(p=>p[0]),ys=points.map(p=>p[1]);const minX=Math.min(...xs),maxX=Math.max(...xs),minY=Math.min(...ys),maxY=Math.max(...ys);return {cx:(minX+maxX)/2,cy:(minY+maxY)/2,w:maxX-minX,h:maxY-minY}};
+const addPath=pts=>{ctx.beginPath();pts.forEach(([x,y],i)=>i?ctx.lineTo(x,y):ctx.moveTo(x,y));ctx.closePath()};
+const clamp=(v,a,b)=>Math.max(a,Math.min(b,v));
+function pageText(){
+ const p=pages[level];ctx.fillStyle='#63504d';ctx.textAlign='center';ctx.font='bold 12px Georgia,serif';ctx.fillText(p.headline,150,31);
+ ctx.font='italic 9px Georgia,serif';ctx.fillStyle='#877466';ctx.fillText(p.subtitle,150,47);
+ ctx.beginPath();ctx.moveTo(20,56);ctx.lineTo(280,56);ctx.strokeStyle='#b8a08b';ctx.lineWidth=.8;ctx.stroke();
+ ctx.textAlign='left';ctx.fillStyle='#584d43';ctx.font='11px Georgia,serif';const start=75,space=12;
+ p.lines.forEach((line,i)=>{ctx.fillText(line,21,start+i*space)});
+ ctx.textAlign='center';ctx.font='10px Georgia,serif';ctx.fillText(p.number,150,304);
+}
+function drawDesk(){
+ ctx.fillStyle=desk;ctx.fillRect(0,0,W,H);
+ ctx.strokeStyle='#a0c4b8';ctx.lineWidth=1.6;
+ for(let x=0;x<W;x+=42){ctx.beginPath();ctx.moveTo(x,0);ctx.lineTo(x+70,H);ctx.stroke()}
+ ctx.fillStyle='#cfa68b';ctx.fillRect(0,336,W,139);ctx.fillStyle='#ba896f';ctx.fillRect(0,336,W,5);
+ ctx.fillStyle='#8c5d60';ctx.font='900 11px ui-rounded,system-ui';ctx.textAlign='center';ctx.letterSpacing='1.5px';ctx.fillText('LOOSE PIECES',W/2,361);ctx.letterSpacing='0px';
+ // desk hardware
+ ctx.fillStyle='#e9c998';ctx.beginPath();ctx.roundRect(9,389,22,47,6);ctx.fill();ctx.strokeStyle=ink;ctx.lineWidth=2;ctx.stroke();
+ ctx.strokeStyle='#796573';ctx.lineWidth=4;ctx.beginPath();ctx.moveTo(17,411);ctx.lineTo(24,411);ctx.stroke();
+ ctx.fillStyle='#e9c998';ctx.beginPath();ctx.roundRect(329,389,22,47,6);ctx.fill();ctx.strokeStyle=ink;ctx.lineWidth=2;ctx.stroke();
+ ctx.strokeStyle='#796573';ctx.beginPath();ctx.moveTo(335,411);ctx.lineTo(343,411);ctx.stroke();
+}
+function drawPage(){
+ ctx.save();ctx.shadowColor='#42515877';ctx.shadowBlur=8;ctx.shadowOffsetY=5;ctx.fillStyle='#dfcda9';ctx.strokeStyle=ink;ctx.lineWidth=3;
+ ctx.beginPath();ctx.roundRect(PX-4,PY-4,PW+8,PH+8,5);ctx.fill();ctx.stroke();ctx.restore();
+ ctx.save();ctx.translate(PX,PY);ctx.fillStyle=paper;ctx.fillRect(0,0,PW,PH);
+ ctx.fillStyle='#f6e7c8';ctx.fillRect(10,0,1,PH);ctx.fillRect(PW-13,0,1,PH);
+ pageText();
+ for(let i=0;i<pieces.length;i++){
+ const s=pieces[i];if(s.locked)continue;
+ addPath(s.poly);ctx.save();ctx.shadowColor='#36304077';ctx.shadowBlur=5;ctx.shadowOffsetX=1;ctx.shadowOffsetY=3;
+ ctx.fillStyle='#9faea5';ctx.fill();ctx.restore();ctx.strokeStyle='#736e64';ctx.lineWidth=1.4;ctx.setLineDash([3,4]);ctx.stroke();ctx.setLineDash([]);
+ }
+ ctx.restore();
+ // repaired pieces create fine transparent golden tape seam on return
+ for(let i=0;i<pieces.length;i++){const s=pieces[i];if(!s.locked)continue;drawPiece(s,s.homeX,s.homeY,0,1,true)}
+}
+function drawPiece(p,x,y,rotation,scale,locked=false){
+ ctx.save();ctx.translate(x,y);ctx.rotate(rotation*Math.PI/180);ctx.scale(scale,scale);ctx.translate(-p.bounds.cx,-p.bounds.cy);
+ ctx.save();ctx.shadowColor=locked?'#846d4b55':'#30283d60';ctx.shadowBlur=locked?1:7;ctx.shadowOffsetY=locked?1:5;
+ addPath(p.poly);ctx.fillStyle=paper;ctx.fill();ctx.restore();
+ ctx.save();addPath(p.poly);ctx.clip();pageText();ctx.restore();
+ addPath(p.poly);ctx.lineWidth=locked?1.5:2.1;ctx.strokeStyle=locked?'#caa769':'#775943';ctx.stroke();
+ if(locked){addPath(p.poly);ctx.lineWidth=3.5;ctx.strokeStyle='#ffe9a34c';ctx.stroke()}
+ ctx.restore();
+}
+function drawFragments(){
+ for(let i=0;i<pieces.length;i++){const p=pieces[i];if(p.locked||drag?.index===i)continue;drawPiece(p,p.x,p.y,p.rotation,p.scale)}
+ if(drag){const p=pieces[drag.index];if(!p.locked)drawPiece(p,p.x,p.y,p.rotation,p.scale)}
+}
+let particles=[],flashStart=0;
+function burst(x,y){const now=performance.now();for(let k=0;k<13;k++){const a=k*Math.PI*2/13;particles.push({x,y,vx:Math.cos(a)*(20+Math.random()*34),vy:Math.sin(a)*(20+Math.random()*34)-10,born:now,color:k%2?'#f4c76b':'#fff7d3'})}}
+function drawParticles(now){particles=particles.filter(p=>now-p.born<650);for(const p of particles){const t=(now-p.born)/1000;ctx.save();ctx.globalAlpha=1-t/0.65;ctx.fillStyle=p.color;ctx.translate(p.x+p.vx*t,p.y+p.vy*t+35*t*t);ctx.rotate(t*3);ctx.fillRect(-2.5,-2.5,5,5);ctx.restore()}}
+function drawDone(now){if(!pieces.every(p=>p.locked))return;
+ const t=(now-flashStart)/1000;if(t<0)return;
+ const glow=.6+.4*Math.sin(t*5);
+ ctx.save();ctx.translate(180,144);ctx.rotate(-.075);ctx.fillStyle='#bcebd8';ctx.strokeStyle=ink;ctx.lineWidth=3;ctx.beginPath();ctx.roundRect(-98,-23,196,46,9);ctx.fill();ctx.stroke();ctx.fillStyle=ink;ctx.font='1000 17px ui-rounded,system-ui';ctx.textAlign='center';ctx.fillText('PAGE RESCUED ✦',0,6);ctx.restore();
+ const dots=[[40,66],[309,91],[45,243],[295,281],[178,325]];
+ dots.forEach(([x,y],i)=>{const a=glow*(.55+.45*Math.sin(t*4+i));ctx.save();ctx.translate(x,y);ctx.strokeStyle='#ffe184';ctx.lineWidth=2.4;ctx.globalAlpha=a;ctx.beginPath();ctx.moveTo(-5,0);ctx.lineTo(5,0);ctx.moveTo(0,-5);ctx.lineTo(0,5);ctx.stroke();ctx.restore()});
+}
+function render(now=performance.now()){
+ ctx.setTransform(2,0,0,2,0,0);ctx.clearRect(0,0,W,H);
+ drawDesk();drawPage();drawFragments();drawParticles(now);drawDone(now);
+}
+function loop(now){render(now);requestAnimationFrame(loop)}
+let level=0,pieces=[],drag=null,start=null,everMoved=false;
+function createPieces(){
+ pieces=template.map((poly,i)=>{const points=variation(poly,level);const b=findBounds(points);const dockXs=[83,183,280];const dockYs=[422,419,424];return {poly:points,bounds:b,homeX:PX+b.cx,homeY:PY+b.cy,x:dockXs[i],y:dockYs[i],dockX:dockXs[i],dockY:dockYs[i],rotation:([0,90,270][(i+level)%3]),scale:.64,locked:false}});
+ drag=null;particles=[];flashStart=Infinity;
+}
+function loadPage(n){level=n%pages.length;createPieces();$('pageNumber').textContent=`PAGE ${String(level+1).padStart(2,'0')} / 03`;$('bookLabel').textContent=pages[level].title;$('nextBtn').hidden=true;$('nextBtn').textContent=level===2?'Another book ↻':'Next page →';$('statusText').textContent='Drag to fit. Tap to rotate.';$('footer').textContent='Original literary damage. Expertly repaired by you.';}
+function screenPoint(event){const r=canvas.getBoundingClientRect();return {x:(event.clientX-r.left)*W/r.width,y:(event.clientY-r.top)*H/r.height}}
+function hit(p,x,y){if(p.locked)return false;const theta=-p.rotation*Math.PI/180;const dx=(x-p.x)/p.scale,dy=(y-p.y)/p.scale;const lx=dx*Math.cos(theta)-dy*Math.sin(theta)+p.bounds.cx,ly=dx*Math.sin(theta)+dy*Math.cos(theta)+p.bounds.cy;
+ if(lx<p.bounds.cx-p.bounds.w/2-11||lx>p.bounds.cx+p.bounds.w/2+11||ly<p.bounds.cy-p.bounds.h/2-11||ly>p.bounds.cy+p.bounds.h/2+11)return false;
+ // generously allow selection anywhere in the bounds, especially on mobile
+ return true;
+}
+function snap(p){if(p.locked)return false;const distance=Math.hypot(p.x-p.homeX,p.y-p.homeY);if(distance>39||((p.rotation%360)+360)%360!==0)return false;p.x=p.homeX;p.y=p.homeY;p.scale=1;p.locked=true;burst(p.homeX,p.homeY);if(pieces.every(q=>q.locked)){
+ flashStart=performance.now();$('nextBtn').hidden=false;$('statusText').textContent='Beautifully mended.';$('footer').textContent='Nobody will ever suspect a tiny paper catastrophe.';
+ }else{$('statusText').textContent='Nice fit. Keep going.';}
+ return true;
+}
+canvas.addEventListener('pointerdown',e=>{e.preventDefault();const pt=screenPoint(e);for(let i=pieces.length-1;i>=0;i--){if(hit(pieces[i],pt.x,pt.y)){const p=pieces[i];drag={index:i,offsetX:pt.x-p.x,offsetY:pt.y-p.y,initialX:p.x,initialY:p.y};start=pt;everMoved=false;canvas.classList.add('dragging');try{canvas.setPointerCapture(e.pointerId)}catch{}return;}}});
+canvas.addEventListener('pointermove',e=>{if(!drag)return;e.preventDefault();const pt=screenPoint(e);if(Math.hypot(pt.x-start.x,pt.y-start.y)>7)everMoved=true;if(!everMoved)return;const p=pieces[drag.index];p.scale=1;p.x=clamp(pt.x-drag.offsetX,-20,W+20);p.y=clamp(pt.y-drag.offsetY,-15,H+15);});
+function endPointer(e){if(!drag)return;e.preventDefault();const p=pieces[drag.index];if(!everMoved){p.rotation=(p.rotation+90)%360;$('statusText').textContent='Turned. Find the matching edge.';}if(!snap(p)&&everMoved){if(p.y>375){p.x=p.dockX;p.y=p.dockY;p.scale=.64;}else{p.scale=1;}$('statusText').textContent='Not quite. Try another spot or turn.';}drag=null;canvas.classList.remove('dragging');}
+canvas.addEventListener('pointerup',endPointer);canvas.addEventListener('pointercancel',endPointer);
+canvas.addEventListener('contextmenu',e=>e.preventDefault());canvas.addEventListener('selectstart',e=>e.preventDefault());
+$('helpBtn').addEventListener('click',()=>{const hidden=$('helpText').hidden;$('helpText').hidden=!hidden;$('helpBtn').setAttribute('aria-expanded',hidden?'true':'false')});
+$('resetBtn').addEventListener('click',()=>loadPage(level));$('nextBtn').addEventListener('click',()=>loadPage(level+1));
+loadPage(0);requestAnimationFrame(loop);
+// Minimal test hooks, no impact on gameplay.
+window.__pageRescueTest={getState:()=>({level,pieces:pieces.map(p=>({locked:p.locked,x:p.x,y:p.y,homeX:p.homeX,homeY:p.homeY,rotation:p.rotation,scale:p.scale}))}),reset:()=>loadPage(level)};
+})();
+</script>
+</body>
+</html>

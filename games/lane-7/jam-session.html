@@ -1,0 +1,181 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#292338">
+<title>Lane 7 · Arcade Jam Session</title>
+<style>
+:root{--ink:#292338;--cream:#fff9ec;--mint:#b9ebd7;--teal:#218b7c;--gold:#ffd479;--sub:#776b78}
+*{box-sizing:border-box}
+html{background:#e7d9cc}
+body{margin:0;color:var(--ink);background:#e7d9cc;font-family:ui-rounded,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;-webkit-user-select:none;user-select:none;-webkit-touch-callout:none}
+button{font:inherit;cursor:pointer;-webkit-tap-highlight-color:transparent}
+button:focus-visible{outline:3px solid #d98456;outline-offset:3px}
+main{max-width:625px;padding:18px 12px 28px;margin:auto}
+header{display:flex;justify-content:space-between;align-items:flex-end;gap:12px;padding:0 4px 14px}
+.eyebrow{font-weight:1000;text-transform:uppercase;letter-spacing:.15em;font-size:11px;color:#836a76}
+h1{font-size:clamp(35px,8vw,52px);letter-spacing:-.075em;line-height:1.05;margin:2px 0 0}h1 em{color:var(--teal);font-style:normal}
+header small{font-size:12px;max-width:168px;color:#786a77;text-align:right;font-weight:750;line-height:1.35}
+.machine{overflow:hidden;border:4px solid var(--ink);border-radius:20px;background:var(--cream);box-shadow:7px 8px 0 #b79e95}
+.topbar{background:var(--ink);color:#fff9ec;padding:12px 16px;display:flex;align-items:center;justify-content:space-between;gap:12px}
+.topbar small{color:#bae9d5;font-size:10px;letter-spacing:.12em;font-weight:1000;display:block}
+.topbar strong{font-size:17px}.counter{text-align:right;font-variant-numeric:tabular-nums}
+.stage{position:relative;background:#badcd1;overflow:hidden;border-bottom:4px solid var(--ink)}
+.stage:before{content:"";position:absolute;inset:0;background:repeating-linear-gradient(90deg,transparent 0 47px,#436d6130 47px 50px);pointer-events:none}
+canvas{position:relative;display:block;width:100%;max-width:520px;height:auto;aspect-ratio:480/440;margin:auto;touch-action:none;cursor:grab}
+canvas:active{cursor:grabbing}
+.console{padding:16px 19px 20px;min-height:176px}
+.instruction{font-size:clamp(20px,5.5vw,26px);font-weight:1000;letter-spacing:-.04em;line-height:1.14;margin:0 0 5px}
+.detail{font-size:13px;color:var(--sub);font-weight:700;line-height:1.4;min-height:35px;margin:0 0 11px}
+.actionline{display:flex;align-items:center;justify-content:space-between;gap:10px}
+.feedback{color:var(--teal);font-size:12px;font-weight:1000;letter-spacing:.07em;text-transform:uppercase}
+button.primary{min-height:49px;border:3px solid var(--ink);border-radius:12px;background:var(--gold);box-shadow:0 4px 0 #b99a67;padding:8px 17px;color:var(--ink);font-weight:1000;font-size:15px}
+button.primary:active{transform:translateY(3px);box-shadow:0 1px 0 #b99a67}
+button[hidden]{display:none!important}
+footer{font-size:12px;line-height:1.4;color:#867584;text-align:center;padding:17px 10px 0}
+@media(max-width:460px){main{padding:14px 10px 25px}.topbar{padding:9px 12px}.topbar strong{font-size:15px}.console{padding:13px 14px 17px;min-height:164px}.detail{font-size:12px}.feedback{font-size:11px}}
+@media(prefers-reduced-motion:reduce){*{scroll-behavior:auto!important}}
+</style>
+</head>
+<body>
+<main>
+<header><div><div class="eyebrow">Bowling alley · arcade repairs</div><h1><em>Lane 7.</em></h1></div><small>The machines have seen some things.</small></header>
+<section class="machine" aria-label="Arcade coin jam minigame">
+<div class="topbar"><div><small>WORK ORDER</small><strong id="jamTitle">Coin slot · 01</strong></div><div class="counter"><small>MACHINES RESCUED</small><strong id="clearedCount">0 / 3</strong></div></div>
+<div class="stage"><canvas id="scene" width="480" height="440" aria-label="Cutaway arcade coin mechanism. Drag the lodged object through an unseen path to free the coins."></canvas></div>
+<div class="console"><h2 class="instruction" id="instruction">Find the way out.</h2><p class="detail" id="detail">Drag the paperclip. If it catches, try another direction.</p><div class="actionline"><span class="feedback" id="feedback">STUCK</span><button type="button" class="primary" id="next" hidden>Next jam →</button></div></div>
+</section>
+<footer>A tiny tactile experiment. Three questionable objects, zero arcade management.</footer>
+</main>
+<script>
+(()=>{'use strict';
+const $=id=>document.getElementById(id);
+const cvs=$('scene'),c=cvs.getContext('2d');
+const jams=[
+ {name:'Paperclip',headline:'A paperclip. Naturally.', detail:'A classic. The machine is not an office supply drawer.', needed:2,coins:16,color:'#94a2b5'},
+ {name:'Button',headline:'A button. Of course.', detail:'Apparently this machine also accepts cardigan repairs.',needed:3,coins:21,color:'#df8ba1'},
+ {name:'Tiny dinosaur',headline:'A tiny dinosaur?',detail:'This one has been extinct in the coin slot for weeks.',needed:3,coins:27,color:'#88bea2'}
+];
+// The tracks are intentionally hidden. One route gets longer, with one or two blind spurs.
+const mechanisms=[
+ {nodes:[[240,238],[205,238],[205,274],[265,274],[265,328],[177,274]], edges:[[0,1],[1,2],[2,3],[3,4],[2,5]], exit:4},
+ {nodes:[[240,238],[282,238],[282,274],[215,274],[215,303],[255,303],[255,329],[315,274]],edges:[[0,1],[1,2],[2,3],[3,4],[4,5],[5,6],[2,7]],exit:6},
+ {nodes:[[240,238],[240,263],[195,263],[195,294],[278,294],[278,330],[298,263],[168,294]],edges:[[0,1],[1,2],[2,3],[3,4],[4,5],[1,6],[3,7]],exit:5}
+];
+let ix=0,phase='play',holding=false,lastX=0,lastY=0,flowStart=0,flowTime=0,frame=0,won=0,pointerId=null;
+let node=0,edgeFrom=-1,edgeTo=-1,along=0,itemX=240,itemY=238,bump=0,moved=false;
+const clamp=(v,a,b)=>Math.max(a,Math.min(b,v));
+const current=()=>jams[ix];
+const R=(x,y,w,h,r,fill,stroke='#292338',sw=4)=>{c.beginPath();c.roundRect(x,y,w,h,r);if(fill){c.fillStyle=fill;c.fill()}if(stroke){c.strokeStyle=stroke;c.lineWidth=sw;c.stroke()}};
+const line=(pts,color='#292338',width=4)=>{c.beginPath();c.moveTo(pts[0][0],pts[0][1]);for(let i=1;i<pts.length;i++)c.lineTo(pts[i][0],pts[i][1]);c.lineWidth=width;c.strokeStyle=color;c.lineCap='round';c.lineJoin='round';c.stroke()};
+const circle=(x,y,r,color,stroke='#292338',w=3)=>{c.beginPath();c.arc(x,y,r,0,Math.PI*2);if(color){c.fillStyle=color;c.fill()}if(stroke){c.strokeStyle=stroke;c.lineWidth=w;c.stroke()}};
+const text=(str,x,y,size=15,col='#292338',align='center')=>{c.textAlign=align;c.textBaseline='middle';c.font=`1000 ${size}px ui-rounded,system-ui,sans-serif`;c.fillStyle=col;c.fillText(str,x,y)};
+const reset=(n)=>{ix=n;phase='play';holding=false;pointerId=null;node=0;edgeFrom=-1;edgeTo=-1;along=0;itemX=240;itemY=238;bump=0;moved=false;flowTime=0;flowStart=0;won=n;
+ $('jamTitle').textContent='Coin slot · '+String(n+1).padStart(2,'0');$('clearedCount').textContent=n+' / 3';
+ $('instruction').textContent='Find the way out.';$('detail').textContent='Drag the '+current().name.toLowerCase()+'. If it catches, try another direction.';
+ $('feedback').textContent='STUCK';$('next').hidden=true;};
+const pos=e=>{const b=cvs.getBoundingClientRect();return {x:(e.clientX-b.left)/b.width*480,y:(e.clientY-b.top)/b.height*440}};
+function drawItem(x,y,scale=1){
+ c.save();c.translate(x,y);c.scale(scale,scale);c.rotate(Math.sin(performance.now()/38)*bump*.075);
+ // white glow behind object signals the grabbable part
+ circle(0,0,33,'#fff3d3','#292338',3);
+ if(ix===0){c.beginPath();c.lineWidth=7;c.strokeStyle='#8b99aa';c.lineCap='round';c.moveTo(-8,18);c.lineTo(-17,16);c.quadraticCurveTo(-24,8,-17,-3);c.lineTo(7,-22);c.quadraticCurveTo(24,-34,30,-19);c.quadraticCurveTo(35,-10,27,-1);c.lineTo(-1,22);c.quadraticCurveTo(-12,28,-16,16);c.lineTo(-14,5);c.stroke();c.beginPath();c.strokeStyle='#e7edf0';c.lineWidth=2;c.moveTo(-17,-2);c.lineTo(7,-22);c.stroke()}
+ if(ix===1){circle(0,0,22,'#d983a4','#754d79',3);for(const [sx,sy] of [[-7,-7],[7,-7],[-7,7],[7,7]])circle(sx,sy,3.5,'#fff0d2',null);}
+ if(ix===2){ // extremely serious little dinosaur silhouette
+ c.fillStyle='#7fb99e';c.strokeStyle='#3e736b';c.lineWidth=3;c.beginPath();c.moveTo(-26,10);c.lineTo(-12,3);c.lineTo(-17,-13);c.lineTo(-6,-27);c.lineTo(8,-25);c.lineTo(15,-15);c.lineTo(21,-16);c.lineTo(24,-10);c.lineTo(17,-6);c.lineTo(10,-6);c.lineTo(10,13);c.lineTo(2,20);c.lineTo(0,11);c.lineTo(-12,19);c.lineTo(-13,10);c.closePath();c.fill();c.stroke();circle(10,-18,2,'#292338',null);line([[-26,10],[-32,1]],'#3e736b',3)}
+ c.restore();
+}
+function drawCoin(x,y,r=14,alpha=1){c.save();c.globalAlpha=alpha;circle(x,y,r,'#f3c969','#a77c3c',3);circle(x,y,r-4,null,'#fff1b2',1.5);text('★',x,y+.7,r*.9,'#97703e');c.restore()}
+function draw(now){
+ c.clearRect(0,0,480,440);
+ // Tile wall and side cabinet
+ R(38,13,404,397,26,'#59466d');R(48,21,384,375,20,'#9d81b3');
+ R(75,34,330,45,11,'#2d273d','#2d273d',3);text('ARCADE COIN MECHANISM',240,58,16,'#c5f1d9');
+ for(const x of [68,412]){circle(x,104,9,'#f9d67f');circle(x,352,9,'#f9d67f');}
+ R(90,93,300,261,15,'#d5c3d5','#2d273d',5);R(107,110,266,226,10,'#f6ecd5','#836b90',3);
+ // Inner coin chute
+ R(167,122,146,194,11,'#ccc5b6','#2d273d',5);R(177,132,126,173,8,'#9da4aa','#51516b',3);
+ R(190,137,100,153,6,'#454456','#2d273d',2);
+ // machine guides and dark coin stack
+ if(phase==='play'){for(let i=0;i<5;i++){let y=156+i*17;drawCoin(242+(i%2?3:-3),y,14,.95);}}
+ // blockage hinge behind culprit
+ R(181,211,118,39,8,'#c78474','#292338',3);
+ R(195,218,92,22,6,'#4b3f50',null);
+ // service hatch and tray
+ R(144,296,192,50,9,'#42384b','#292338',4);R(157,306,166,25,4,'#f2dfaa',null);
+ line([[174,308],[306,308]],'#b78f60',3);
+ R(145,356,190,53,11,'#39334b','#292338',4);R(154,365,172,31,8,'#d49c72',null);
+ // arcade-flavored side buttons
+ for(let i=0;i<3;i++){circle(116+i*42,371,9,['#ec8c8c','#f7d37b','#b3eddb'][i],'#47394c',3)}
+ // The item moves only within the unseen clearance path. A bump is the wall cue.
+ const jitter=holding&&bump>.1?Math.sin(now/27)*bump*2.6:0;
+ if(phase==='play'){drawItem(itemX+jitter,itemY);}
+ // Coin cascade and recovered pile are the payoff, not a second minigame.
+ if(phase==='flow'||phase==='cleared'||phase==='done'){
+  if(phase==='flow'){
+   for(let i=0;i<current().coins;i++){
+    const t=flowTime-i*.055;
+    if(t<0)continue;
+    const y=clamp(161+t*280,161,382);
+    const x=242+Math.sin(i*13.3)*16+(y>315?Math.sin(i*5)*38:0);
+    drawCoin(x,y,10+(i%3),1);
+   }
+  }else{
+   for(let i=0;i<Math.min(current().coins,22);i++)drawCoin(172+(i%10)*15+(Math.floor(i/10)%2)*5,374-Math.floor(i/10)*12,9,.97);
+  }
+  drawItem(361,375,.54);
+ }
+ if(phase==='flow')text('CLINK! CLINK! CLINK!',240,340,17,'#fff5cc');
+ bump=Math.max(0,bump-.035);
+
+}
+function updateText(blocked=false){if(phase!=='play')return;
+ $('feedback').textContent=blocked?'CLUNK!':moved?'IT MOVES…':'STUCK';
+}
+// Calculate the position on an invisible edge. Unlike a swipe sequence, the
+// player can backtrack, hit a dead end and discover a new direction.
+function location(){const graph=mechanisms[ix];if(edgeTo<0){[itemX,itemY]=graph.nodes[node];return;}
+ const a=graph.nodes[edgeFrom],b=graph.nodes[edgeTo],len=Math.hypot(b[0]-a[0],b[1]-a[1]);
+ const t=clamp(along/len,0,1);itemX=a[0]+(b[0]-a[0])*t;itemY=a[1]+(b[1]-a[1])*t;
+}
+function edgeInfo(a,b){const nodes=mechanisms[ix].nodes;const dx=nodes[b][0]-nodes[a][0],dy=nodes[b][1]-nodes[a][1];const len=Math.hypot(dx,dy);return {ux:dx/len,uy:dy/len,len};}
+function moveObject(dx,dy){const graph=mechanisms[ix];if(Math.hypot(dx,dy)<.15)return;
+ if(edgeTo<0){
+  const options=graph.edges.flatMap(([a,b])=>a===node?[b]:b===node?[a]:[]);
+  let choice=-1,projection=0;
+  for(const to of options){const d=edgeInfo(node,to),dot=dx*d.ux+dy*d.uy;
+   if(dot>projection){choice=to;projection=dot;}}
+  if(choice<0||projection<.2){bump=Math.min(1,bump+.6);updateText(true);return;}
+  edgeFrom=node;edgeTo=choice;along=0;
+ }
+ const d=edgeInfo(edgeFrom,edgeTo),advance=dx*d.ux+dy*d.uy;
+ const cross=Math.abs(-dx*d.uy+dy*d.ux);
+ if(Math.abs(advance)<.15 || (cross>Math.abs(advance)*1.8&&cross>4)){
+  bump=Math.min(1,bump+.5);updateText(true);return;
+ }
+ along=clamp(along+advance,0,d.len);moved=true;bump=0;
+ if(along>=d.len-.05){node=edgeTo;edgeFrom=-1;edgeTo=-1;along=0;location();
+  if(node===graph.exit){clearJam();return;}
+ }else if(along<=.05){node=edgeFrom;edgeFrom=-1;edgeTo=-1;along=0;location();}
+ else{location();}
+ updateText();
+}
+function clearJam(){if(phase!=='play')return;phase='flow';holding=false;pointerId=null;flowStart=performance.now();flowTime=0;$('instruction').textContent='There they go!';$('detail').textContent='The quarters finally have somewhere to be.';$('feedback').textContent='CLINK CLINK CLINK';}
+function finishFlow(){if(phase!=='flow')return;phase='cleared';won=ix+1;$('clearedCount').textContent=won+' / 3';$('instruction').textContent=jams[ix].headline;$('detail').textContent=jams[ix].detail;$('feedback').textContent=current().coins+' QUARTERS FREED';$('next').hidden=false;$('next').textContent=ix===2?'See shift results →':'Next jam →';}
+function goNext(){if(phase!=='cleared'&&phase!=='done')return;if(phase==='done'){reset(0);return;}if(ix<2){reset(ix+1)}else{phase='done';$('jamTitle').textContent='Shift complete';$('instruction').textContent='All three machines rescued.';$('detail').textContent='64 quarters recovered. Not a single one from a cardigan.';$('feedback').textContent='A GLORIOUSLY ORDINARY SHIFT';$('next').textContent='Another shift ↻';$('next').hidden=false;}}
+function start(e){if(phase!=='play')return;const p=pos(e);
+ if(Math.hypot(p.x-itemX,p.y-itemY)>66)return;
+ e.preventDefault();holding=true;pointerId=e.pointerId;lastX=p.x;lastY=p.y;cvs.setPointerCapture?.(pointerId);
+}
+function move(e){if(!holding||phase!=='play'||e.pointerId!==pointerId)return;e.preventDefault();
+ const p=pos(e),dx=p.x-lastX,dy=p.y-lastY;lastX=p.x;lastY=p.y;
+ moveObject(dx,dy);
+}
+function stop(e){if(e.pointerId!==pointerId)return;holding=false;pointerId=null;bump=0;}
+cvs.addEventListener('pointerdown',start);cvs.addEventListener('pointermove',move);cvs.addEventListener('pointerup',stop);cvs.addEventListener('pointercancel',stop);cvs.addEventListener('lostpointercapture',stop);cvs.addEventListener('contextmenu',e=>e.preventDefault());$('next').addEventListener('click',goNext);
+function tick(now){if(phase==='flow'){flowTime=(now-flowStart)/1000;if(flowTime>2.1)finishFlow();}draw(now);frame=requestAnimationFrame(tick)}
+reset(0);frame=requestAnimationFrame(tick);
+})();
+</script>
+</body>
+</html>

@@ -1,0 +1,137 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#45344e">
+<title>The Bookshop · Cover Story</title>
+<style>
+:root{--ink:#30283d;--plum:#45344e;--paper:#fff9ee;--cream:#f4e7d7;--mint:#bdebd7;--teal:#287b75;--wood:#bb815d;--gold:#ffd074;--quiet:#756d77}
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+html{background:#f0e3d3}body{margin:0;min-height:100dvh;font-family:ui-rounded,system-ui,-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;background:radial-gradient(circle at 50% 0,#fff7ec,#f0e3d3 76%);color:var(--ink)}
+[hidden]{display:none!important}button{font:inherit;color:inherit;cursor:pointer;touch-action:manipulation;-webkit-user-select:none;user-select:none}button:focus-visible{outline:3px solid #eaa447;outline-offset:3px}
+.app{max-width:570px;margin:auto;padding:12px 12px max(24px,env(safe-area-inset-bottom))}
+.mast{display:flex;justify-content:space-between;align-items:baseline;gap:12px;margin:0 2px 10px}
+.mast .eyebrow{font-size:10px;font-weight:1000;letter-spacing:.17em;color:#996d75}
+.mast h1{font-size:clamp(31px,7vw,43px);margin:0;letter-spacing:-.08em;line-height:1}.mast em{font-style:normal;color:var(--teal)}
+.mast .aside{font-size:11px;line-height:1.3;color:#786a73;max-width:165px;text-align:right}
+.frame{background:var(--paper);border:4px solid var(--ink);border-radius:21px;overflow:hidden;box-shadow:6px 7px 0 #ceaa99}
+.topbar{background:var(--plum);color:white;display:flex;justify-content:space-between;align-items:center;padding:9px 11px;gap:8px}
+.ticket{padding:6px 9px;border-radius:6px;background:var(--gold);color:var(--ink);font-weight:1000;transform:rotate(-3deg);font-size:12px;white-space:nowrap}
+.topbar .progress{font-size:11px;letter-spacing:.04em;font-weight:1000;display:flex;gap:7px;align-items:center}
+.topbar .progress span{display:inline-grid;place-items:center;width:20px;height:20px;background:#6e5a7b;color:#dfd3e1;border-radius:50%;font-size:10px}.topbar .progress span.done{background:#bfeeda;color:var(--ink)}
+.help{border:2px solid #ddd0df;background:transparent;color:#fff;width:30px;height:30px;border-radius:50%;font-weight:1000;font-size:17px}
+.helptext{background:#eee5d8;border-bottom:3px solid var(--ink);padding:9px 12px;font-size:12px;line-height:1.45}
+.customer{display:flex;gap:10px;align-items:center;padding:12px 13px 11px;background:#fff5e5;border-bottom:4px solid var(--ink);min-height:103px}
+.avatar{--shirt:#8c9cbb;flex:0 0 62px;height:66px;background:#e9c6ae;border-radius:13px;border:3px solid var(--ink);position:relative;overflow:hidden;box-shadow:3px 3px 0 #e2c9bb}
+.avatar .shirt{position:absolute;background:var(--shirt);width:60px;height:35px;border-radius:50% 50% 0 0;left:-1px;top:40px;border:3px solid var(--ink)}
+.avatar .face{position:absolute;background:#c98d71;width:33px;height:38px;border-radius:45%;top:10px;left:13px;border:3px solid var(--ink)}
+.avatar .hair{position:absolute;background:#45344e;border:3px solid var(--ink);border-radius:80% 40% 30% 20%;width:44px;height:21px;top:3px;left:8px;transform:rotate(-6deg)}
+.avatar .face:after{content:'•  •';position:absolute;top:12px;left:7px;font-size:11px;letter-spacing:2px;color:var(--ink)}
+.avatar .mouth{position:absolute;top:37px;left:26px;height:3px;width:9px;background:#6e454c;border-radius:50%}
+.customer small{display:block;text-transform:uppercase;letter-spacing:.09em;font-size:10px;font-weight:1000;color:#8e6574;margin-bottom:3px}
+.customer q{font-size:clamp(14px,3.7vw,17px);line-height:1.3;font-weight:850;quotes:'“' '”';display:block}
+.caption{display:flex;justify-content:space-between;align-items:center;padding:9px 13px 7px;font-size:10px;text-transform:uppercase;letter-spacing:.1em;font-weight:1000;color:#716b77}
+.books{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px;padding:0 12px 13px}
+.book{padding:0;background:none;border:0;text-align:left;min-width:0;display:block;position:relative;border-radius:10px}
+.book .cover{border-radius:8px 11px 9px 8px;overflow:hidden;border:3px solid var(--ink);box-shadow:4px 5px 0 #bba5a3;aspect-ratio: .88;position:relative;background:var(--bg);display:flex;flex-direction:column;justify-content:space-between;padding:9px 10px 8px;color:var(--fg);isolation:isolate}
+.book .cover:before{content:'';position:absolute;left:4px;top:0;bottom:0;width:5px;background:#00000020;border-radius:8px;z-index:3}
+.book .cover:after{content:'';position:absolute;inset:0;border:4px solid #ffffff15;border-radius:6px;pointer-events:none}
+.book:active .cover{transform:translateY(3px);box-shadow:1px 2px 0 #bba5a3}
+.cover .title{font-size:clamp(13px,3.7vw,22px);line-height:1.04;font-weight:1000;letter-spacing:-.055em;max-width:100%;position:relative;z-index:2;text-shadow:0 1px #00000008}
+.cover .by{font-weight:850;font-size:9px;line-height:1.1;letter-spacing:.07em;text-transform:uppercase;position:relative;z-index:2}
+.cover .art{position:absolute;left:14%;right:11%;top:26%;bottom:12%;display:grid;place-items:center;z-index:1}
+.cover .art svg{width:100%;height:100%;overflow:visible}
+.cover .circle{position:absolute;border:3px solid var(--fg);opacity:.25;border-radius:50%;aspect-ratio:1;top:24%;right:-10%;width:75%;z-index:0}
+.cover .stamp{position:absolute;bottom:30px;left:11px;transform:rotate(-12deg);background:#fff5d5;color:#392b42;font-size:9px;font-weight:1000;padding:5px 6px;border:2px solid var(--ink);border-radius:4px;z-index:2}
+.book .pick{font-size:10px;color:#786c74;padding:8px 4px 0;font-weight:900;letter-spacing:.03em;text-align:center}
+.book.chosen .cover{outline:4px solid #26a487;outline-offset:2px}
+.outcome{background:#fff3d7;border-top:4px solid var(--ink);padding:14px 14px 13px;display:flex;flex-direction:column;gap:9px;animation:pop .24s ease-out}
+.outcome .resultline{display:flex;align-items:center;justify-content:space-between;gap:8px}
+.outcome .reaction{font-size:20px;font-weight:1000;letter-spacing:-.035em;line-height:1.12}
+.outcome .grade{font-size:10px;text-transform:uppercase;letter-spacing:.08em;font-weight:1000;background:var(--mint);border:2px solid var(--ink);border-radius:999px;padding:6px 8px;white-space:nowrap}
+.outcome p{font-size:13px;line-height:1.4;margin:0;color:#584a54;font-weight:700}
+.next{width:100%;padding:12px;background:var(--gold);color:var(--ink);border:3px solid var(--ink);box-shadow:0 4px 0 #b59465;border-radius:10px;font-weight:1000;font-size:16px}
+.next:active{transform:translateY(3px);box-shadow:0 1px 0 #b59465}
+.end{padding:22px 18px;text-align:center;display:flex;flex-direction:column;align-items:center;gap:12px}
+.end .big{font-size:49px;line-height:1}
+.end h2{font-size:28px;line-height:1.08;letter-spacing:-.05em;margin:0}
+.end p{line-height:1.4;font-size:14px;color:#6d5e67;margin:0}
+.end .summary{width:100%;background:#f5eadb;border:2px solid #d7c8bb;border-radius:11px;padding:10px;text-align:left;font-size:13px;line-height:1.55}
+.footer{color:#827580;text-align:center;font-size:11px;line-height:1.3;margin:14px 3px 0}
+@keyframes pop{from{opacity:.3;transform:translateY(5px)}to{opacity:1;transform:none}}
+@media(min-width:600px){.book .cover{aspect-ratio:1.05}.cover .title{font-size:23px}.books{gap:14px;padding:0 18px 18px}}
+@media(max-width:390px){.app{padding:8px 8px 18px}.mast{margin-bottom:8px}.mast h1{font-size:32px}.mast .aside{font-size:10px;max-width:128px}.customer{padding:8px 10px;min-height:87px}.avatar{flex-basis:52px;height:56px}.avatar .shirt{top:37px}.avatar .face{left:9px}.avatar .hair{left:5px}.avatar .mouth{left:22px}.customer q{font-size:14px}.books{gap:8px;padding:0 9px 10px}.book .cover{aspect-ratio:.94;padding:7px 8px}.cover .title{font-size:clamp(13px,3.9vw,16px)}.caption{padding:7px 10px}.outcome{padding:10px}.book .pick{padding-top:6px}}
+@media(max-height:760px){.book .cover{aspect-ratio:1.06}.caption{padding-top:6px;padding-bottom:5px}.customer{min-height:82px}.book .pick{padding-top:5px}.footer{margin-top:8px}}
+</style>
+</head>
+<body>
+<main class="app">
+  <header class="mast"><div><span class="eyebrow">The little bookshop</span><h1>Cover <em>Story.</em></h1></div><div class="aside">Unqualified literary recommendations since 1996.</div></header>
+  <section class="frame" aria-label="Book cover recommendation game">
+    <div class="topbar"><span class="ticket" id="ticket">CUSTOMER 01</span><div class="progress" id="progress" aria-label="Customer progress"></div><button id="help" class="help" aria-label="Help" aria-expanded="false">?</button></div>
+    <div id="helptext" class="helptext" hidden>Read what the customer wants, then choose a book based entirely on its cover. Every choice is allowed. The customer's reaction is the reward (or the consequence).</div>
+    <div id="game">
+      <div class="customer"><div class="avatar" id="avatar"><div class="shirt"></div><div class="face"></div><div class="hair"></div><div class="mouth"></div></div><div><small id="customerName">A customer approaches</small><q id="request"></q></div></div>
+      <div class="caption"><span>Judge freely. No blurbs.</span><span>Pick one</span></div>
+      <div class="books" id="books"></div>
+      <div id="outcome" class="outcome" hidden><div class="resultline"><span class="reaction" id="reaction">An opinion.</span><span id="grade" class="grade">Delighted</span></div><p id="reveal"></p><button id="next" class="next">Next customer →</button></div>
+    </div>
+    <div id="end" class="end" hidden><div class="big">📚</div><h2 id="finalTitle">A distinguished bookseller.</h2><p id="finalText"></p><div id="summary" class="summary"></div><button id="again" class="next">Another shift ↻</button></div>
+  </section>
+  <div class="footer">A tiny bookshop prototype. No pressure, no inventory, no actual reading required.</div>
+</main>
+<script>
+(()=>{'use strict';
+const ART={
+heart:`<path d="M50 85 C9 62 10 23 36 24 Q49 24 50 38 Q52 23 68 24 C98 28 91 63 50 85Z" fill="#f9ded4" stroke="#35243d" stroke-width="4"/><path d="M30 60 L72 42" stroke="#35243d" stroke-width="3" stroke-dasharray="4 5"/><path d="M69 31 l11 -15" stroke="#35243d" stroke-width="3"/>`,
+spoon:`<ellipse cx="41" cy="24" rx="17" ry="23" fill="#ead7b3" stroke="#35243d" stroke-width="4" transform="rotate(-23 41 24)"/><path d="M51 46 Q68 78 70 96" stroke="#35243d" stroke-width="9" stroke-linecap="round" fill="none"/><circle cx="20" cy="79" r="5" fill="#f4d891"/><circle cx="81" cy="13" r="3" fill="#f4d891"/>`,
+moon:`<circle cx="49" cy="43" r="31" fill="#f6d88b" stroke="#30283d" stroke-width="4"/><circle cx="63" cy="32" r="31" fill="#60607a"/><path d="M19 83 l5 -10 5 10 -5 10Z M76 84 l4 -9 4 9 -4 9Z" fill="#f6e5c1"/>`,
+pigeon:`<ellipse cx="47" cy="62" rx="31" ry="24" fill="#d5d6ca" stroke="#35243d" stroke-width="4"/><path d="M33 48 Q42 15 62 31 Q70 39 65 47" fill="#d5d6ca" stroke="#35243d" stroke-width="4"/><circle cx="60" cy="39" r="3.5" fill="#35243d"/><path d="M69 43 l16 6 -17 5" fill="#eaba70" stroke="#35243d" stroke-width="3"/><path d="M30 81 l-7 15 M56 82 l2 14" stroke="#35243d" stroke-width="3"/>`,
+plant:`<path d="M48 90 V20" stroke="#213e3b" stroke-width="5"/><path d="M48 65 Q14 60 16 31 Q48 31 48 65 M49 53 Q83 52 82 22 Q53 23 49 53 M48 82 Q24 84 19 62 Q44 57 48 82" fill="#91c7a4" stroke="#213e3b" stroke-width="4"/><path d="M31 95 H71" stroke="#213e3b" stroke-width="5"/>`,
+umbrella:`<path d="M12 53 Q48 4 90 53Z" fill="#f2c36c" stroke="#35243d" stroke-width="4"/><path d="M50 52 V86 Q50 103 37 93" stroke="#35243d" stroke-width="5" fill="none" stroke-linecap="round"/><path d="M21 68 l-4 11 M77 69 l-3 12" stroke="#9bc2cc" stroke-width="3"/>`,
+mic:`<path d="M45 70 L56 26 Q64 13 73 22 Q83 31 73 41 L45 70" fill="#e5c77d" stroke="#35243d" stroke-width="5"/><path d="M40 65 L64 85" stroke="#35243d" stroke-width="8" stroke-linecap="round"/><path d="M14 20 l4 9 M31 9 l2 12 M92 62 l-9 5" stroke="#fff0b7" stroke-width="4"/>`,
+star:`<path d="M50 7 L61 34 92 37 69 58 77 90 50 74 23 90 31 58 8 37 39 34Z" fill="#f4d38e" stroke="#35243d" stroke-width="4"/><circle cx="49" cy="49" r="9" fill="#d96973"/>`,
+train:`<rect x="25" y="15" width="50" height="68" rx="10" fill="#f1d9af" stroke="#35243d" stroke-width="4"/><rect x="31" y="26" width="38" height="25" rx="4" fill="#76a5b2"/><circle cx="37" cy="70" r="5" fill="#d58a74"/><circle cx="64" cy="70" r="5" fill="#d58a74"/><path d="M31 88 L22 99 M68 88 L79 99" stroke="#35243d" stroke-width="4"/>`,
+trophy:`<path d="M32 20 H69 V42 Q69 69 50 70 Q32 69 32 42Z" fill="#f3cd76" stroke="#35243d" stroke-width="4"/><path d="M32 27 Q15 25 17 43 Q18 53 37 54 M70 27 Q87 25 85 43 Q84 53 66 54" fill="none" stroke="#35243d" stroke-width="4"/><path d="M50 70 V87 M29 89 H71" stroke="#35243d" stroke-width="6"/>`,
+bag:`<path d="M25 32 L75 32 L80 88 Q50 96 20 88Z" fill="#edd6ba" stroke="#35243d" stroke-width="4"/><path d="M36 34 Q35 13 50 13 Q65 13 64 34" fill="none" stroke="#35243d" stroke-width="4"/><path d="M39 64 L50 72 61 64" fill="none" stroke="#af5b7b" stroke-width="4"/>`,
+lamp:`<path d="M29 50 L46 14 H71 L83 50Z" fill="#edd78c" stroke="#35243d" stroke-width="4"/><path d="M55 50 V86 M34 88 H76" stroke="#35243d" stroke-width="5"/><path d="M8 40 l11 -7 M89 29 l9 -9" stroke="#e7cc8d" stroke-width="5"/>`
+};
+const books={
+secret:{title:'Love, Allegedly',author:'M. Merritt',art:'heart',bg:'#cf7583',fg:'#fff8e8'},
+agenda:{title:'Minutes of the Meeting',author:'D. Paper',art:'lamp',bg:'#6f8b87',fg:'#f5f0d7'},
+garden:{title:'A Mildly Suspicious Garden',author:'H. Willow',art:'plant',bg:'#9bc0a1',fg:'#27434c'},
+night:{title:'Kitchen at Midnight',author:'R. Vale',art:'moon',bg:'#57547d',fg:'#fff2d1'},
+spoon:{title:'The Missing Spoon',author:'P. Tickle',art:'spoon',bg:'#719eab',fg:'#fff8e8'},
+basement:{title:'The Basement Is Breathing',author:'G. Dread',art:'lamp',bg:'#59475c',fg:'#f4d7d0'},
+pigeon:{title:'The Tuesday Pigeon',author:'A. Peck',art:'pigeon',bg:'#dfb378',fg:'#42314d'},
+umbrella:{title:'An Umbrella for No One',author:'J. Grey',art:'umbrella',bg:'#b1a6cc',fg:'#332841'},
+celebrity:{title:'Famous by Thursday',author:'L. Glitter',art:'mic',bg:'#d67b8d',fg:'#fff1d2'},
+moss:{title:'The Taxonomy of Moss',author:'E. Fern',art:'plant',bg:'#55756f',fg:'#f7dfb2'},
+ribbon:{title:'Quietly Competitive',author:'T. Price',art:'trophy',bg:'#809ac7',fg:'#fcf2d5'},
+upstairs:{title:'Everything Is Fine Upstairs',author:'N. Nope',art:'lamp',bg:'#c8a36d',fg:'#393049'},
+train:{title:'The Last Train to Somewhere',author:'S. North',art:'train',bg:'#567e91',fg:'#fff2d4'},
+parking:{title:'Elegy for a Parking Meter',author:'C. Vale',art:'star',bg:'#a983a6',fg:'#fff8e3'},
+baguettes:{title:'A Tale of Two Baguettes',author:'F. Crust',art:'bag',bg:'#e0b96f',fg:'#3b3347'},
+computer:{title:'The Gremlins in IT',author:'B. Restart',art:'umbrella',bg:'#6f8b9d',fg:'#fff4db'},
+};
+const shifts=[[
+ {name:'A customer who likes drama',ask:'I want a romance where nobody communicates like an adult.',options:['secret','agenda','garden','night'],scores:[3,0,1,2],reactions:['“Finally. Two people making everything worse with eye contact.”','“This has meeting minutes. I’m already exhausted.”','“A plant with secrets? Close, but I need more yearning.”','“I respect the atmosphere, but where are the emotionally unavailable people?”']},
+ {name:'A nervous mystery reader',ask:'A mystery, please. Nothing that will keep me up at night.',options:['basement','spoon','pigeon','umbrella'],scores:[0,3,2,1],reactions:['“Oh. OH. Absolutely not. I sleep near a basement.”','“A missing utensil? This is exactly my level of danger.”','“A pigeon with a secret! I think I can handle that.”','“It’s beautiful, but I don’t know what we’re solving.”']},
+ {name:'A person with big plans',ask:'I want to feel accomplished without learning anything.',options:['moss','celebrity','ribbon','upstairs'],scores:[0,3,2,1],reactions:['“This sounds a lot like learning.”','“Celebrity by Thursday? I can definitely manage that.”','“Being competitive without effort. Interesting.”','“That title sounds reassuringly avoidant.”']}
+],[
+ {name:'A fashionable crier',ask:'Something that will make me cry, but in a glamorous way.',options:['train','parking','baguettes','computer'],scores:[3,2,1,0],reactions:['“Oh, the melancholy. And a train? I’ll wear my good coat.”','“Parking meters are surprisingly emotional, apparently.”','“I appreciate bread, but I requested tears.”','“My printer already makes me cry. I need an escape.”']},
+ {name:'A reluctant social butterfly',ask:'I need an inspiring book about making friends without having to talk to anyone.',options:['pigeon','garden','umbrella','agenda'],scores:[3,2,1,0],reactions:['“A pigeon probably understands me.”','“Plants are famously good listeners.”','“I suppose an umbrella is technically company.”','“Is this a book about networking? Absolutely not.”']},
+ {name:'A customer on a budget',ask:'I want to be fancy. But I also want to remain deeply unserious.',options:['celebrity','parking','moss','baguettes'],scores:[3,2,0,1],reactions:['“This appears to be exactly the amount of nonsense I can afford.”','“Poetry about municipal equipment. Positively continental.”','“Is moss fancy? I genuinely don’t know.”','“Two baguettes sounds like a very low-stakes scandal.”']}
+]];
+let shift=0,round=0,results=[],picked=-1;
+const $=id=>document.getElementById(id);
+function cover(id,index){const b=books[id];return `<button class="book" data-i="${index}" type="button" aria-label="Recommend ${b.title} by ${b.author}"><div class="cover" style="--bg:${b.bg};--fg:${b.fg}"><span class="title">${b.title}</span><span class="circle"></span><div class="art"><svg viewBox="0 0 100 104" aria-hidden="true">${ART[b.art]}</svg></div><span class="by">${b.author}</span></div><div class="pick">CHOOSE THIS COVER ↗</div></button>`}
+function render(){let q=shifts[shift][round];picked=-1;$('game').hidden=false;$('end').hidden=true;$('outcome').hidden=true;$('ticket').textContent='CUSTOMER 0'+(round+1);$('customerName').textContent=q.name;$('request').textContent=q.ask;$('avatar').style.setProperty('--shirt',['#94a7af','#c1a5a5','#a6ad80'][round]);$('progress').innerHTML=[0,1,2].map(i=>`<span class="${i<round?'done':''}">${i<round?'✓':i+1}</span>`).join('');$('books').innerHTML=q.options.map(cover).join('');$('books').querySelectorAll('button').forEach(button=>button.addEventListener('click',()=>choose(Number(button.dataset.i))));}
+function choose(i){if(picked!==-1)return;picked=i;let q=shifts[shift][round],quality=q.scores[i],names=['Perplexed','Intrigued','Quite pleased','Delighted'];results.push({name:q.name,title:books[q.options[i]].title,quality});$('reaction').textContent=['A bold recommendation.','Interesting choice.','They’re into it.','You nailed the vibe.'][quality];$('grade').textContent=names[quality];$('reveal').textContent=q.reactions[i];$('books').querySelectorAll('button').forEach((b,j)=>{b.disabled=true;if(j===i)b.classList.add('chosen')});$('outcome').hidden=false;$('next').textContent=round===2?'End shift →':'Next customer →';$('outcome').scrollIntoView?.({block:'nearest',behavior:'smooth'});}
+function finish(){const happy=results.filter(r=>r.quality===3).length;const score=results.reduce((n,r)=>n+r.quality,0);$('game').hidden=true;$('end').hidden=false;$('ticket').textContent='SHIFT COMPLETE';$('progress').innerHTML='✦ ✦ ✦';$('finalTitle').textContent=happy===3?'A true cover connoisseur.':score>=7?'An encouraging literary career.':score>=4?'A boldly unconventional bookseller.':'An unforgettable shift.';$('finalText').textContent=happy===3?'Three customers delighted. Nobody asked you to read a single page.':happy===0?'Nobody can say your recommendations were boring.':'You delighted '+happy+' of 3 customers. The others have something to think about.';$('summary').innerHTML=results.map(r=>`<div><strong>${r.title}</strong> <span style="color:#796b76">· ${['Perplexed','Intrigued','Pleased','Delighted'][r.quality]}</span></div>`).join('');}
+$('next').addEventListener('click',()=>{round++;if(round>=3)finish();else render()});$('again').addEventListener('click',()=>{shift=(shift+1)%shifts.length;round=0;results=[];render()});$('help').addEventListener('click',()=>{const h=$('helptext');h.hidden=!h.hidden;$('help').setAttribute('aria-expanded',String(!h.hidden))});render();
+})();
+</script>
+</body>
+</html>

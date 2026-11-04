@@ -1,0 +1,203 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#f4e7cf">
+<title>Perks · Latte Lab: Free Pour</title>
+<style>
+:root{--ink:#282538;--plum:#392b4e;--cream:#f4e7cf;--paper:#fffaf1;--teal:#0e877d;--mint:#baf1d5;--gold:#ffcc66;--coral:#ed866d;--muted:#6e6871}
+*{box-sizing:border-box}
+html{background:var(--cream)}
+body{margin:0;min-height:100svh;background:radial-gradient(circle at 10% 2%,#fff9e9,transparent 38%),var(--cream);color:var(--ink);font-family:ui-rounded,"Avenir Next","Trebuchet MS",system-ui,sans-serif;-webkit-font-smoothing:antialiased}
+button{font:inherit;cursor:pointer;touch-action:manipulation;-webkit-tap-highlight-color:transparent}button:focus-visible{outline:3px solid #dd8846;outline-offset:3px}
+.app{width:min(720px,100%);margin:0 auto;padding:clamp(10px,3vw,22px) clamp(10px,3vw,20px) 26px}
+header{display:flex;align-items:flex-end;justify-content:space-between;gap:10px;margin:6px 2px 15px}
+.kicker{color:#8a5265;font-weight:1000;text-transform:uppercase;letter-spacing:.16em;font-size:11px}
+h1{font-size:clamp(34px,7vw,48px);letter-spacing:-.065em;line-height:1;margin:3px 0 0}h1 em{font-style:normal;color:var(--teal)}
+.header-note{font-size:12px;color:#766878;text-align:right;max-width:164px;line-height:1.4}
+.game{border:3px solid var(--ink);background:var(--paper);border-radius:20px;overflow:hidden;box-shadow:5px 6px 0 #c9ae9e}
+.bar{padding:10px 13px;background:var(--plum);display:flex;justify-content:space-between;align-items:center;gap:8px;color:white}
+.bar small{display:block;opacity:.75;font-size:10px;letter-spacing:.11em;text-transform:uppercase;font-weight:900}
+.bar strong{font-size:16px}.bar .best{text-align:right}.bar .best strong{font-variant-numeric:tabular-nums}
+.picker{display:flex;align-items:center;justify-content:center;gap:7px;padding:11px 10px 9px;background:#f8ecda;border-bottom:2px solid #ddc9b8}
+.pattern{flex:1;max-width:185px;border:2px solid #cdbcae;background:#fffaf1;border-radius:12px;padding:9px 4px 8px;font-weight:1000;color:#5c5261;font-size:13px;transition:transform .12s}
+.pattern[aria-pressed="true"]{background:var(--mint);color:#245c50;border-color:var(--ink);box-shadow:0 3px 0 #a1bbaa;transform:translateY(-1px)}.pattern span{margin-right:4px;font-size:15px}
+.scene{position:relative;min-height:320px;padding:13px 10px 13px;display:flex;justify-content:center;align-items:center;background:linear-gradient(180deg,#c3e5d8 0%,#cbe8dc 76%,#b68b80 76%,#bc8b7a 100%);overflow:hidden;isolation:isolate}
+.scene:before{content:"";position:absolute;inset:0 0 24%;opacity:.45;background:repeating-linear-gradient(0deg,transparent 0 47px,#5ba7a126 47px 49px),repeating-linear-gradient(90deg,transparent 0 48px,#5ba7a126 48px 50px);z-index:-2}
+.scene:after{content:"";position:absolute;left:0;right:0;top:76%;height:10px;border-top:3px solid #73586b;border-bottom:3px solid #73586b;background:#e6b796;z-index:-1}
+.decor{position:absolute;top:15px;left:16px;background:#fff6da;border:2px solid var(--ink);font-size:12px;font-weight:1000;letter-spacing:.07em;padding:7px 10px;border-radius:7px;transform:rotate(-4deg);box-shadow:3px 3px 0 #94b4a5}.decor small{display:block;color:var(--teal);font-size:9px;letter-spacing:.12em}
+.decor2{position:absolute;right:14px;top:20px;font-size:32px;opacity:.9;transform:rotate(9deg)}
+.cupwrap{position:relative;width:min(365px,calc(100vw - 46px));aspect-ratio:1;max-height:365px;filter:drop-shadow(6px 11px 0 #382f3e25)}
+#latteCanvas{width:100%;height:100%;display:block;touch-action:none;-webkit-user-select:none;user-select:none;-webkit-touch-callout:none;cursor:crosshair;overscroll-behavior:contain;border-radius:50%;outline:none}
+#latteCanvas:focus-visible{outline:4px solid var(--gold);outline-offset:5px}
+.scene-label{position:absolute;left:13px;bottom:14px;border:2px solid var(--ink);border-radius:6px;background:#fff9e6;font-size:10px;letter-spacing:.06em;font-weight:1000;padding:7px 9px;transform:rotate(-3deg);pointer-events:none}
+.workarea{padding:17px clamp(13px,3vw,24px) 15px;background:#fffaf1;-webkit-user-select:none;user-select:none;-webkit-touch-callout:none;min-height:217px}
+.titleline{display:flex;justify-content:space-between;align-items:baseline;gap:8px}.titleline h2{margin:0;font-size:clamp(20px,4.5vw,27px);line-height:1.12;letter-spacing:-.045em}.badge{font-size:10px;letter-spacing:.07em;font-weight:1000;white-space:nowrap;background:#f2dfb8;padding:6px 8px;border-radius:5px}
+.explain{font-size:14px;line-height:1.45;color:#68616a;margin:9px 0 14px;max-width:530px}
+.flow-row{display:flex;justify-content:space-between;align-items:center;gap:10px;margin:12px 0 5px}.flow-row strong{font-size:12px;letter-spacing:.05em}.flow-row span{font-size:12px;font-weight:900;color:#6b6069;font-variant-numeric:tabular-nums}
+.gauge{height:15px;border:2px solid var(--ink);border-radius:20px;background:#e7ded6;overflow:hidden}.gauge-fill{width:100%;height:100%;background:#9cdec2;transition:width .08s linear}.gauge-fill.low{background:#ed9a80}
+.actions{display:flex;gap:8px;margin-top:14px}.action{flex:1;min-height:50px;padding:9px 12px;border:3px solid var(--ink);box-shadow:0 4px 0 #b4966d;background:var(--gold);color:var(--ink);border-radius:12px;font-weight:1000;font-size:15px}.action:active{transform:translateY(2px);box-shadow:0 2px 0 #b4966d}.action.secondary{background:#c3ecdf;box-shadow:0 4px 0 #96b9ad}.action:disabled{opacity:.5;cursor:default}
+.tip{color:#766d72;font-size:12px;line-height:1.35;min-height:18px;text-align:center;margin:12px auto 0}
+.result{display:none;margin:14px 0 0;padding:13px 10px 10px;text-align:center;border:2px solid #d6c3b5;background:#f9f0e3;border-radius:12px}.result.show{display:block}.result h3{font-size:20px;letter-spacing:-.035em;margin:1px 0 8px}.result p{font-size:13px;margin:9px auto 0;max-width:450px;color:#665e69;line-height:1.4}
+.grade{display:inline-flex;gap:8px;align-items:center;background:var(--mint);border:2px solid var(--ink);border-radius:11px;padding:5px 13px;font-weight:1000;font-size:30px;letter-spacing:-.06em;transform:rotate(-2deg)}.grade small{font-size:11px;line-height:1.1;letter-spacing:0;text-align:left}
+.stats{display:flex;gap:7px;justify-content:center;margin-top:12px}.stat{flex:1;max-width:130px;background:#fffaf1;border:1px solid #ddcabb;border-radius:8px;padding:7px 5px}.stat b{font-size:16px;font-variant-numeric:tabular-nums}.stat small{display:block;font-size:10px;text-transform:uppercase;letter-spacing:.06em;color:#7a7076;font-weight:900}
+.footer{font-size:12px;line-height:1.5;color:#756a73;text-align:center;padding:14px 8px 0}
+@media(max-width:530px){.app{padding:12px 9px 25px}header{margin-bottom:12px}h1{font-size:37px}.header-note{font-size:11px;max-width:115px}.bar{padding:9px 11px}.bar strong{font-size:14px}.scene{min-height:305px;padding:10px 8px}.cupwrap{width:min(335px,calc(100vw - 42px))}.decor{top:10px;left:10px;font-size:10px}.decor2{font-size:24px;right:10px;top:14px}.scene-label{font-size:9px;bottom:11px;left:9px}.workarea{padding:14px 13px 12px}.pattern{font-size:12px;padding:9px 0}.pattern span{font-size:13px}}
+</style>
+</head>
+<body>
+<main class="app">
+<header><div><div class="kicker">Perks / Test kitchen 02 · Refined</div><h1>Latte <em>Lab.</em></h1></div><div class="header-note">Same little latte.<br>A much livelier pour.<br>Take your time.</div></header>
+<div class="game">
+<div class="bar"><div><small>Order up</small><strong id="orderLabel">ONE LATTE · HEART</strong></div><div class="best"><small>Personal best</small><strong id="bestLabel">— / 100</strong></div></div>
+<div class="picker" role="group" aria-label="Choose latte art pattern"><button class="pattern" data-pattern="heart" aria-pressed="true"><span>♥</span> Heart</button><button class="pattern" data-pattern="swirl" aria-pressed="false"><span>◎</span> Swirl</button><button class="pattern" data-pattern="leaf" aria-pressed="false"><span>❧</span> Leaf</button></div>
+<div class="scene"><div class="decor">PERKS<small>FROTH &amp; FOUND</small></div><div class="decor2" aria-hidden="true">☕</div><div class="cupwrap"><canvas id="latteCanvas" width="720" height="720" role="img" tabindex="0" aria-label="Interactive latte cup. Pour a foam pattern with a finger or mouse. Moving slowly makes wider foam; moving quickly makes thinner lines."></canvas></div><div class="scene-label" id="sceneLabel">COFFEE IS YOUR CANVAS</div></div>
+<div class="workarea" id="workarea">
+<div class="titleline"><h2 id="challengeTitle">Pour a heart</h2><span class="badge" id="challengeTag">ONE SMOOTH POUR</span></div>
+<p class="explain" id="instructions">Touch the starting dot and pour your design. Slow movement makes lush foam; fast movement makes fine lines. Lift to serve.</p>
+<div class="flow-row"><strong>MILK IN THE PITCHER</strong><span id="milkText">100%</span></div><div class="gauge" aria-label="Milk remaining"><div class="gauge-fill" id="milkFill"></div></div>
+<div class="result" id="results" aria-live="polite"><h3 id="resultTitle">Nicely done.</h3><div class="grade"><span id="scoreValue">88</span><small>out of<br>100</small></div><div class="stats"><div class="stat"><b id="coverageScore">—</b><small>Shape</small></div><div class="stat"><b id="controlScore">—</b><small>Finesse</small></div><div class="stat"><b id="flowScore">—</b><small>Flow</small></div></div><p id="resultNote"></p></div>
+<div class="actions"><button class="action" id="tryAgain">Fresh cup ↻</button><button class="action secondary" id="guideToggle" aria-pressed="true">Guide: on</button></div>
+<div class="tip" id="tip" aria-live="polite">Slow = wide foam. Fast = fine lines. Start at the yellow dot.</div>
+</div></div>
+<div class="footer">A tiny arcade latte-art toy. Draw with your finger or mouse. Plays offline. No shift schedules, no real milk required.</div>
+</main>
+<script>
+(()=>{
+'use strict';
+const $=id=>document.getElementById(id);
+const C=$('latteCanvas'),ctx=C.getContext('2d');
+const foamCanvas=document.createElement('canvas');foamCanvas.width=720;foamCanvas.height=720;
+const foam=foamCanvas.getContext('2d');
+const TAU=Math.PI*2,clamp=(n,a,b)=>Math.min(b,Math.max(a,n));
+const SIZE=720,CX=360,CY=356,INNER=280;
+function heart(t){const a=t*TAU;return [0.68*Math.pow(Math.sin(a),3),-0.043*(13*Math.cos(a)-5*Math.cos(2*a)-2*Math.cos(3*a)-Math.cos(4*a))]}
+function spiral(t){const a=-Math.PI*.5+TAU*2.3*t,r=.08+.67*t;return [r*Math.cos(a),r*Math.sin(a)]}
+function leaf(t){const a=t*TAU,x=.69*Math.cos(a),y=.38*Math.sin(a)*(1+.20*Math.cos(a)),rot=-.62;return [x*Math.cos(rot)-y*Math.sin(rot),x*Math.sin(rot)+y*Math.cos(rot)]}
+const patterns={
+ heart:{name:'HEART',title:'Pour a heart',tag:'A LITTLE LOVE',f:heart,note:'Loop around the two lobes and meet at the notch.'},
+ swirl:{name:'SWIRL',title:'Pour a swirl',tag:'KEEP IT FLOWING',f:spiral,note:'Start in the center and spiral outward.'},
+ leaf:{name:'LEAF',title:'Pour a leaf',tag:'NICE & LEAFY',f:leaf,note:'Travel around the edge and close the shape at the tip.'}
+};
+let pattern='heart',guideOn=true,points=[],samples=[],drawing=false,done=false,milk=100,best={},startTime=0,lastPointerId=null,lastMoveTime=0,lastSpeed=350,animationFrame=0;
+try{best=JSON.parse(localStorage.getItem('perks-latte-best-v2')||'{}');if(!best||typeof best!=='object')best={}}catch{best={}}
+const validScore=n=>Number.isFinite(n)&&n>=0&&n<=100;
+const dist=(a,b)=>Math.hypot(a[0]-b[0],a[1]-b[1]);
+function xy(f,t){const p=f(t);return [CX+p[0]*INNER,CY+p[1]*INNER]}
+function cupPosition(e){const r=C.getBoundingClientRect();return [(e.clientX-r.left)*SIZE/r.width,(e.clientY-r.top)*SIZE/r.height]}
+function path(){const out=[];for(let i=0;i<=170;i++)out.push(xy(patterns[pattern].f,i/170));return out}
+function setBest(){const v=best[pattern];$('bestLabel').textContent=validScore(v)?v+' / 100':'— / 100'}
+function rebuild(){samples=path();reset()}
+function reset(){
+ if(animationFrame)cancelAnimationFrame(animationFrame);animationFrame=0;
+ foam.clearRect(0,0,SIZE,SIZE);points=[];drawing=false;done=false;milk=100;startTime=0;lastMoveTime=0;lastSpeed=350;lastPointerId=null;
+ $('results').classList.remove('show');$('milkFill').classList.remove('low');$('milkFill').style.width='100%';$('milkText').textContent='100%';
+ $('tip').textContent=guideOn?'Slow = wide foam. Fast = fine lines. Start at the yellow dot.':'Free pour! Slow = wide foam. Fast = fine lines.';
+ $('sceneLabel').textContent='COFFEE IS YOUR CANVAS';draw();
+}
+function choose(p){
+ if(!patterns[p])return;
+ pattern=p;document.querySelectorAll('.pattern').forEach(b=>b.setAttribute('aria-pressed',String(b.dataset.pattern===p)));
+ $('orderLabel').textContent='ONE LATTE · '+patterns[p].name;$('challengeTitle').textContent=patterns[p].title;$('challengeTag').textContent=patterns[p].tag;
+ $('instructions').textContent='Drag from the yellow dot to pour. Move slowly for wide, soft foam or quickly for a thin line. '+patterns[p].note;
+ setBest();rebuild();
+}
+function circle(x,y,r,fill,stroke='',width=1){ctx.beginPath();ctx.arc(x,y,r,0,TAU);if(fill){ctx.fillStyle=fill;ctx.fill()}if(stroke){ctx.strokeStyle=stroke;ctx.lineWidth=width;ctx.stroke()}}
+function line(coords,color,width,dash=[]){if(coords.length<2)return;ctx.save();ctx.beginPath();ctx.moveTo(...coords[0]);for(let i=1;i<coords.length;i++)ctx.lineTo(...coords[i]);ctx.lineJoin='round';ctx.lineCap='round';ctx.setLineDash(dash);ctx.lineWidth=width;ctx.strokeStyle=color;ctx.stroke();ctx.restore()}
+// Stamping onto a separate wet-foam layer lets overlapping pours merge into one
+// continuous patch of milk, rather than drawing a fixed-width white marker.
+function stamp(x,y,r,idx){
+ // One opaque milk surface. Nearby stamps join cleanly instead of creating
+ // visible overlapping circles; a soft highlight is added when composited.
+ const swell=1+0.018*Math.sin(idx*.37)+0.018*Math.sin(idx*.89),R=r*swell;
+ foam.fillStyle='#fff8e7';foam.beginPath();foam.arc(x,y,R,0,TAU);foam.fill();
+ if(idx%17===0){foam.fillStyle='#fffef5';foam.beginPath();foam.arc(x-R*.23,y-R*.23,Math.max(1.2,R*.085),0,TAU);foam.fill()}
+}
+
+function draw(){
+ ctx.clearRect(0,0,SIZE,SIZE);
+ ctx.save();ctx.fillStyle='#3c33443a';ctx.beginPath();ctx.ellipse(CX+6,CY+24,325,320,0,0,TAU);ctx.fill();
+ circle(CX,CY,337,'#efe8db','#312d3a',13);circle(CX,CY,317,'#fffdf3','#d3c6b9',11);
+ ctx.strokeStyle='#fef9ec';ctx.lineWidth=45;ctx.beginPath();ctx.arc(585,355,130,-1.15,1.17);ctx.stroke();
+ ctx.strokeStyle='#332b39';ctx.lineWidth=11;ctx.beginPath();ctx.arc(585,355,130,-1.16,1.18);ctx.stroke();
+ circle(CX,CY,299,'#f4eee4','#322e3b',11);circle(CX,CY,283,'#fffaf0','#d6cabc',5);
+ const coffee=ctx.createRadialGradient(CX-72,CY-101,35,CX,CY,283);
+ coffee.addColorStop(0,'#c88e66');coffee.addColorStop(.45,'#aa674b');coffee.addColorStop(.85,'#8f4c36');coffee.addColorStop(1,'#6e372d');
+ circle(CX,CY,276,coffee);
+ ctx.strokeStyle='#dca17c66';ctx.lineWidth=7;ctx.beginPath();ctx.arc(CX,CY,260,0,TAU);ctx.stroke();
+ for(let i=0;i<48;i++){const a=i*2.399963,r=20+Math.sqrt(i/48)*225;circle(CX+Math.cos(a)*r,CY+Math.sin(a)*r,2+(i%4),'#e5b18a18')}
+ ctx.save();ctx.beginPath();ctx.arc(CX,CY,258,0,TAU);ctx.clip();
+ if(guideOn&&!done){line(samples,'#3e2c3160',15);line(samples,'#fff1d4b5',5,[2,15])}
+ // Two passes give continuous, gently feathered foam with natural crema edges.
+ ctx.save();ctx.filter='blur(6px)';ctx.globalAlpha=.48;ctx.drawImage(foamCanvas,0,0);ctx.restore();
+ ctx.save();ctx.globalAlpha=.92;ctx.drawImage(foamCanvas,0,0);ctx.restore();
+ ctx.restore();
+ ctx.strokeStyle='#ffffffbb';ctx.lineWidth=9;ctx.beginPath();ctx.arc(CX,CY,309,3.65,5.5);ctx.stroke();
+ if(!done&&!drawing&&guideOn){const s=samples[0];circle(s[0],s[1],20,'#ffe07a','#3e3444',5);circle(s[0],s[1],7,'#fffef5')}
+ if(drawing){const p=points[points.length-1];if(p){circle(p.x,p.y,Math.max(7,p.r*.47),'#fffdf1','#96705f',3);circle(p.x-4,p.y-4,3,'#ffffff')}}
+ ctx.restore();
+}
+function updateMilk(){milk=clamp(milk,0,100);$('milkText').textContent=Math.round(milk)+'%';$('milkFill').style.width=milk+'%';$('milkFill').classList.toggle('low',milk<23)}
+function down(e){
+ if(done||drawing)return;
+ e.preventDefault();const p=cupPosition(e),s=samples[0];
+ if(dist(p,[CX,CY])>275)return;
+ if(guideOn&&dist(p,s)>48){$('tip').textContent='Start pouring at the yellow dot.';return}
+ drawing=true;lastPointerId=e.pointerId;
+ try{C.setPointerCapture(e.pointerId)}catch{}
+ startTime=performance.now();lastMoveTime=startTime;lastSpeed=350;
+ points=[{x:p[0],y:p[1],r:19,t:0}];stamp(p[0],p[1],19,0);
+ $('sceneLabel').textContent='FROTHING…';$('tip').textContent='Slow for soft foam, quick for delicate lines.';draw();
+}
+function move(e){
+ if(!drawing||e.pointerId!==lastPointerId)return;
+ e.preventDefault();const pos=cupPosition(e),p=[clamp(pos[0],CX-277,CX+277),clamp(pos[1],CY-277,CY+277)];
+ const prev=points[points.length-1],d=dist(p,[prev.x,prev.y]);if(d<2)return;
+ const now=performance.now(),dt=Math.max(9,now-lastMoveTime);
+ const speed=clamp(d/dt*1000,0,1800);lastSpeed=lastSpeed*.25+speed*.75;
+ // Slow = fat foam, fast = fine hairline. No extra controls.
+ const width=clamp(40-32*(lastSpeed/1150),9,40);
+ const n=Math.ceil(d/4.2);
+ for(let i=1;i<=n;i++){
+   const q=i/n,x=prev.x+(p[0]-prev.x)*q,y=prev.y+(p[1]-prev.y)*q;
+   const r=prev.r+(width-prev.r)*q;
+   points.push({x,y,r,t:(now-startTime)/1000});stamp(x,y,r,points.length-1);
+ }
+ milk-=d/26;lastMoveTime=now;updateMilk();draw();if(milk<=0)finish();
+}
+function up(e){if(!drawing||e.pointerId!==lastPointerId)return;e.preventDefault();finish()}
+function finish(){
+ if(!drawing)return;drawing=false;done=true;lastPointerId=null;
+ const minToPath=(p,poly)=>{let bd=Infinity;for(const s of poly){const d=(p[0]-s[0])**2+(p[1]-s[1])**2;if(d<bd)bd=d}return Math.sqrt(bd)};
+ const poured=points.map(p=>[p.x,p.y]);
+ // A broad foam pour is allowed to cover more than the middle of the guide;
+ // deliberate freehand decoration is encouraged, while aimless scribbles still lose points.
+ const covered=samples.filter(s=>points.some((p,i)=>i%3===0&&dist(s,[p.x,p.y])<p.r*.85+16)).length/samples.length;
+ const near=poured.length?poured.filter((p,i)=>i%3===0&&minToPath(p,samples)<42).length/Math.ceil(poured.length/3):0;
+ const fidelity=clamp(near,0,1);
+ const meanRad=points.reduce((t,p)=>t+p.r,0)/Math.max(1,points.length);
+ // Enough foam to form a visible design and a continuous stroke: no stopwatch.
+ const fluidity=clamp((points.length-8)/45,0,1)*clamp(meanRad/17,0.65,1);
+ const shapeScore=Math.round(60*covered),finesseScore=Math.round(30*fidelity),flowScore=Math.round(10*fluidity);
+ const final=clamp(shapeScore+finesseScore+flowScore,0,100);
+ $('coverageScore').textContent=shapeScore+'/60';$('controlScore').textContent=finesseScore+'/30';$('flowScore').textContent=flowScore+'/10';$('scoreValue').textContent=final;
+ $('resultTitle').textContent=final>=96?'Now THAT is a latte.':final>=83?'Well poured!':final>=65?'That has character.':final>=40?'A little freestyle coffee.':'An experimental pour.';
+ $('resultNote').textContent=final>=96?'Lovely foam, beautiful shape, and a steady hand.':final>=83?'That foam has finesse! There’s room to refine the edges.':covered<.65?'Your design wandered from the order. Try covering more of the guide, or just enjoy the free-pour art.':'Nice pour. Slow down for fuller foam, speed up for finer details.';
+ $('results').classList.add('show');$('tip').textContent='Admire your latte, then tap Fresh cup to pour again.';$('sceneLabel').textContent='ORDER SERVED ✓';
+ if(!validScore(best[pattern])||final>best[pattern]){best[pattern]=final;try{localStorage.setItem('perks-latte-best-v2',JSON.stringify(best))}catch{}}setBest();draw();
+}
+C.addEventListener('pointerdown',down);C.addEventListener('pointermove',move);C.addEventListener('pointerup',up);
+C.addEventListener('pointercancel',up);C.addEventListener('lostpointercapture',()=>{if(drawing)finish()});C.addEventListener('contextmenu',e=>e.preventDefault());
+$('workarea').addEventListener('selectstart',e=>e.preventDefault());window.addEventListener('blur',()=>{if(drawing)finish()});
+document.querySelectorAll('.pattern').forEach(b=>b.addEventListener('click',()=>choose(b.dataset.pattern)));
+$('tryAgain').addEventListener('click',reset);
+$('guideToggle').addEventListener('click',()=>{
+ guideOn=!guideOn;$('guideToggle').textContent='Guide: '+(guideOn?'on':'off');$('guideToggle').setAttribute('aria-pressed',String(guideOn));
+ reset();$('tip').textContent=guideOn?'Start at the yellow dot, then pour.':'Free pour! Your art is still compared with the customer’s order.';
+});
+choose('heart');
+})();
+</script>
+</body>
+</html>

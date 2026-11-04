@@ -1,0 +1,277 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#f4e7cf">
+<title>Perks · Espresso — Dial Edition</title>
+<style>
+:root{--ink:#282538;--plum:#49385d;--plum2:#392b4e;--cream:#f7ecdb;--paper:#fffaf1;--teal:#0e877d;--mint:#baf1d5;--coral:#ed866d;--gold:#ffcc66;--muted:#6e6871;--shadow:#c9ae9e}
+*{box-sizing:border-box}html{min-height:100%;background:#f4e7cf}body{margin:0;color:var(--ink);font-family:ui-rounded,"Avenir Next","Trebuchet MS",system-ui,sans-serif;background:radial-gradient(circle at 15% 5%,#fff7dc 0,transparent 35%),#f4e7cf;min-height:100vh;-webkit-font-smoothing:antialiased}
+button{font:inherit;cursor:pointer;-webkit-tap-highlight-color:transparent}button:focus-visible{outline:4px solid #ffb020;outline-offset:4px}button:disabled{opacity:.52;cursor:default}
+.app{width:min(760px,100%);margin:auto;padding:clamp(12px,3vw,24px) clamp(12px,3vw,22px) 36px}
+.top{display:flex;align-items:flex-start;justify-content:space-between;gap:14px;margin:4px 0 16px}.eyebrow{font-size:11px;letter-spacing:.17em;font-weight:1000;color:#7b5864;text-transform:uppercase;margin-bottom:5px}.top h1{font-size:clamp(34px,7vw,49px);line-height:.92;letter-spacing:-.065em;margin:0}.top h1 em{font-style:normal;color:var(--teal)}.top-note{max-width:195px;text-align:right;font-size:13px;line-height:1.35;color:#665f6a;padding-top:6px}
+.shop{overflow:hidden;border:3px solid var(--ink);border-radius:20px;background:var(--paper);box-shadow:5px 6px 0 var(--shadow)}
+.shopbar{display:flex;justify-content:space-between;align-items:center;gap:10px;padding:10px 15px;background:var(--plum2);color:white}.shopbar small{display:block;font-size:10px;letter-spacing:.12em;opacity:.7;text-transform:uppercase;font-weight:900}.shopbar strong{font-size:16px;letter-spacing:-.025em}.order{display:flex;gap:9px;align-items:center}.order .ticket{background:var(--gold);color:var(--ink);padding:5px 9px;border-radius:5px;transform:rotate(-3deg);font-weight:1000;font-size:13px;white-space:nowrap}.best{text-align:right;font-size:13px}.best strong{font-size:16px}
+.progress{display:flex;gap:3px;background:var(--ink);padding:3px 3px 0}.step{height:32px;min-width:0;display:flex;align-items:center;justify-content:center;gap:6px;flex:1;background:#e7dfd3;color:#7b7282;font-weight:1000;font-size:11px;letter-spacing:.08em}.step:first-child{border-top-left-radius:5px}.step:last-child{border-top-right-radius:5px}.step.active{background:var(--gold);color:var(--ink)}.step.done{background:#b7eed7;color:#20564c}.step .symbol{font-size:14px}
+.scene{position:relative;isolation:isolate;background:linear-gradient(#c6e5d9 0 68%,#f0bf9b 68% 69%,#d8a18e 69%);height:clamp(270px,49vw,348px);overflow:hidden}
+.scene::before{content:"";position:absolute;inset:0 0 31%;background:repeating-linear-gradient(0deg,transparent 0 44px,#6fada331 44px 46px),repeating-linear-gradient(90deg,transparent 0 47px,#6fada331 47px 49px);pointer-events:none}
+.scene:after{content:"";position:absolute;left:0;right:0;top:68%;height:12px;background:#efcbaa;border-top:3px solid #765769;border-bottom:3px solid #765769;z-index:2}
+.scene-tag{display:none}.sign{position:absolute;top:13px;left:14px;background:#fff6dc;padding:7px 12px 6px;border:2px solid var(--plum);border-radius:9px;transform:rotate(-4deg);box-shadow:3px 4px 0 #74958c;font-size:12px;font-weight:1000;letter-spacing:.08em;z-index:1}.sign span{display:block;font-size:9px;letter-spacing:.13em;color:var(--teal);margin-top:3px}
+.shelf{position:absolute;right:16px;top:16px;width:120px;height:51px;border-bottom:7px solid #826077;display:flex;justify-content:space-around;align-items:flex-end;z-index:1}.mug{width:29px;height:31px;border:3px solid var(--ink);border-radius:4px 4px 11px 11px;background:#f28d87;position:relative}.mug:nth-child(2){background:#ffe08b;height:27px}.mug:nth-child(3){background:#a688c1;height:33px}.mug:after{content:"";position:absolute;left:24px;top:5px;width:9px;height:13px;border:3px solid var(--ink);border-left:0;border-radius:0 8px 8px 0}
+.machine{position:absolute;left:50%;top:50%;transform:translate(-50%,-46%);height:96%;max-height:355px;width:min(95%,540px);overflow:visible;z-index:3;filter:drop-shadow(6px 7px 0 #48394b27)}
+#streams{opacity:0;transition:opacity .16s}#streams.on{opacity:1}#steam{opacity:0}#steam.on{opacity:1;animation:steamy .8s alternate infinite ease-in-out}@keyframes steamy{from{transform:translateY(0);opacity:.32}to{transform:translateY(-9px);opacity:.8}}
+#cupCoffee{transition:height .08s linear,y .08s linear,fill .25s ease}
+#puckCrumbs{transition:opacity .12s ease}#puckCracks{transition:opacity .18s ease}#crema{transition:opacity .2s ease}
+#screenLabel{font-family:ui-monospace,SFMono-Regular,Menlo,monospace;letter-spacing:1.5px;font-weight:800}
+.workarea{-webkit-user-select:none;user-select:none;-webkit-touch-callout:none;background:#fffaf1;border-top:3px solid var(--ink);padding:17px clamp(14px,3vw,23px) 15px;min-height:260px}
+.intro,.result{text-align:center}.intro .sub,.result .sub{color:var(--teal);font-weight:1000;font-size:11px;letter-spacing:.16em;text-transform:uppercase}.intro h2,.result h2{font-size:clamp(24px,5vw,32px);letter-spacing:-.045em;line-height:1.1;margin:7px 0 8px}.intro p,.result p{margin:0 auto 17px;max-width:460px;line-height:1.45;color:#625b65;font-size:14px}
+.play h2{font-size:clamp(22px,4vw,27px);letter-spacing:-.04em;margin:0 0 4px}.play .explain{margin:0 0 11px;color:#645d68;font-size:13px;line-height:1.45}.instruction-head{display:flex;justify-content:space-between;gap:8px;align-items:baseline}.instruction-head .tag{font-weight:1000;font-size:10px;letter-spacing:.1em;background:#efe2c7;color:#725e55;padding:4px 7px;border-radius:4px;white-space:nowrap}
+.meter{position:relative;height:46px;background:#eee7df;border:3px solid var(--ink);border-radius:10px;margin:14px 2px 6px;overflow:hidden;box-shadow:0 3px 0 #d0c4b7}.meter:before{content:"";position:absolute;inset:0;background:repeating-linear-gradient(90deg,transparent 0 calc(10% - 1px),#7e77773a calc(10% - 1px) 10%);z-index:1;pointer-events:none}.safezone{position:absolute;top:0;bottom:0;background:#a1e9bf;border-left:2px solid #2d9879;border-right:2px solid #2d9879}.pointer{position:absolute;left:50%;top:0;height:100%;width:5px;background:#e66c52;border:1px solid #8f383e;box-shadow:0 0 0 2px white;z-index:2;transform:translateX(-50%);transition:none}.meter-labels{display:flex;justify-content:space-between;color:#776f72;font-size:11px;font-weight:900;margin:0 2px 11px}.meter-labels .center{color:#2f806d}
+.action{display:block;width:100%;min-height:57px;background:var(--gold);border:3px solid var(--ink);box-shadow:0 5px 0 #bd9761;border-radius:13px;font-size:17px;font-weight:1000;color:var(--ink);padding:10px 16px;touch-action:none;-webkit-user-select:none;user-select:none;-webkit-touch-callout:none}.action:active,.action.pressing{transform:translateY(3px);box-shadow:0 2px 0 #bd9761;background:#ffda8d}.action.secondary{background:#bdeedc;box-shadow:0 5px 0 #8aafa4}.action.secondary:active{box-shadow:0 2px 0 #8aafa4}.action:disabled{opacity:.62;transform:none;box-shadow:0 5px 0 #bd9761}
+.feedback{min-height:18px;text-align:center;color:#776975;margin-top:10px;font-size:12px;font-weight:700}
+.brew-stats{display:flex;gap:10px;margin:13px 0}.stat{border:2px solid #d3c5b8;background:#f7efe3;border-radius:10px;flex:1;text-align:center;padding:9px}.stat small{font-size:10px;text-transform:uppercase;letter-spacing:.1em;color:#7a6772;font-weight:1000;display:block}.stat strong{font-size:clamp(22px,5vw,28px);font-variant-numeric:tabular-nums;letter-spacing:-.05em}.stat strong span{font-size:13px;letter-spacing:0}
+.brewprogress{position:relative;height:18px;border:2px solid var(--ink);border-radius:20px;background:#eee5d9;overflow:hidden;margin-bottom:12px}.brewprogress .fill{height:100%;background:var(--coral);width:0}.brewprogress .range{position:absolute;top:0;bottom:0;left:73.9%;width:8.7%;background:#74d4a1aa;z-index:2;pointer-events:none;border-left:2px dashed #1e7658;border-right:2px dashed #1e7658}
+.grades{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:6px;margin:12px 0 15px}.grade{border:1px solid #ddd1c5;border-radius:9px;padding:8px 3px 7px;background:#f8f0e5;text-align:center}.grade span{display:block;font-size:10px;text-transform:uppercase;letter-spacing:.06em;color:#7e7071;font-weight:1000}.grade strong{display:block;font-size:19px;font-variant-numeric:tabular-nums}.grade small{font-size:10px;color:#80777a}.score{display:inline-flex;align-items:center;justify-content:center;gap:8px;background:var(--mint);border:3px solid var(--ink);border-radius:14px;padding:9px 18px;transform:rotate(-2deg);font-size:31px;font-weight:1000;letter-spacing:-.055em;margin:4px 0 12px}.score small{font-size:12px;letter-spacing:0;line-height:1.1;max-width:40px;text-align:left}
+.bottomline{margin-top:12px;display:flex;align-items:center;justify-content:space-between;gap:8px;font-size:12px;color:#716a70}.bottomline .chit{background:#eee1d4;border:1px solid #d7c4b9;padding:5px 8px;border-radius:7px;white-space:nowrap;font-weight:850}.footnote{padding:13px 5px 0;font-size:12px;line-height:1.5;color:#736670;text-align:center}
+[hidden]{display:none!important}
+@media(max-width:520px){.app{padding:12px 10px 24px}.top{gap:6px;margin-bottom:12px}.top h1{font-size:37px}.top-note{font-size:11px;max-width:120px;padding-top:2px}.shopbar{padding:9px 11px}.shopbar strong{font-size:13px}.best strong{font-size:14px}.scene{height:297px}.machine{width:108%;max-width:none;top:50%;height:100%;transform:translate(-50%,-45%)}.sign{font-size:10px;left:9px;top:11px;padding:6px}.shelf{right:13px;top:11px;transform:scale(.75);transform-origin:top right}.workarea{padding:15px 14px 13px;min-height:266px}.step{font-size:10px;gap:4px}.step .symbol{font-size:12px}.bottomline{font-size:11px}.grades{gap:4px}.grade strong{font-size:17px}.grade span{font-size:9px}}
+@media(prefers-reduced-motion:reduce){#steam.on{animation:none}}
+
+/* The grinder is a real control, not a reaction-time meter. */
+.grind-layout{display:flex;align-items:center;justify-content:center;gap:13px;margin:0 0 8px;min-height:165px}
+.bean-card{width:40%;max-width:190px;align-self:stretch;border:2px solid #dcc7b7;background:#f8eddc;border-radius:12px;display:flex;flex-direction:column;justify-content:center;padding:11px 12px;gap:7px}
+.bean-eyebrow{font-size:10px;letter-spacing:.11em;font-weight:1000;color:#866d7b}.bean-card strong{font-size:19px;line-height:1.03;letter-spacing:-.05em;color:#45324d}.bean-card #beanHint{font-size:11px;color:#6c6071;line-height:1.4}.bean-icon{font-size:12px;letter-spacing:5px;color:#9c7052;margin-top:2px}
+.dial-box{flex:1;min-width:0;max-width:235px;display:flex;flex-direction:column;align-items:center}.grind-dial{display:block;width:min(100%,217px);height:155px;touch-action:none;cursor:grab;-webkit-user-select:none;user-select:none;-webkit-touch-callout:none;overflow:visible}.grind-dial:active{cursor:grabbing}.grind-dial:focus-visible{outline:3px solid #eaa23f;outline-offset:2px;border-radius:15px}
+
+.dial-nudge{display:flex;justify-content:center;align-items:center;gap:10px;width:100%;max-width:205px;margin-top:-2px}.dial-nudge span{font-weight:1000;font-size:9px;letter-spacing:.09em;color:#796a76;white-space:nowrap}.dial-nudge button{width:39px;height:35px;border:2px solid #47394c;border-radius:8px;background:#f5e4bd;font-size:25px;font-weight:900;color:#47394c;line-height:1;touch-action:manipulation}
+.dial-nudge button:active{background:#e2cc9b;transform:translateY(2px)}
+/* Tamp control visually compresses under your thumb. */
+.tamp-wrap{display:flex;flex-direction:column;align-items:center;gap:10px;margin-top:8px;position:relative}
+.tamp-pad{width:min(100%,270px);aspect-ratio:1/1;border:0;background:transparent;display:grid;place-items:center;padding:0;color:#292638;touch-action:none;-webkit-user-select:none;user-select:none;-webkit-touch-callout:none;position:relative}
+.tamp-pad:focus-visible{outline:3px solid #eaa23f;outline-offset:3px;border-radius:50%}
+.tamp-pad.pressing{transform:translateY(3px)}
+.tamp-ring{position:relative;width:100%;height:100%;border-radius:50%;display:grid;place-items:center;background:conic-gradient(from -90deg,#e57560 0turn .03turn,#ddd4cb .03turn .65turn,#97d8af .65turn .79turn,#ddd4cb .79turn 1turn);box-shadow:0 6px 0 #c9beb2}
+.tamp-ring::before{content:'';position:absolute;inset:18px;border-radius:50%;background:#f6f0e7;border:3px solid #2d273d;box-shadow:inset 0 0 0 1px #ece0d4}
+.tamp-progress{position:absolute;inset:0;border-radius:50%;background:conic-gradient(from -90deg,#2cba95 0turn var(--progress),transparent var(--progress) 1turn);-webkit-mask:radial-gradient(circle,transparent 58%,#000 59%);mask:radial-gradient(circle,transparent 58%,#000 59%)}
+.tamp-core{position:relative;z-index:2;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:8px;width:calc(100% - 52px);height:calc(100% - 52px);border-radius:50%;background:#bdeedc;border:4px solid #2d273d;box-shadow:0 6px 0 #84a99f;text-align:center;padding:18px}
+.pressing .tamp-core{background:#ace7ce;box-shadow:0 2px 0 #84a99f}
+.press-disc{width:76px;height:76px;border-radius:50%;display:grid;place-items:center;background:#f7e8c8;border:4px solid #50425b;font-size:32px;font-weight:1000;box-shadow:0 5px 0 #b2a18d;transition:transform .08s, box-shadow .08s}
+.pressing .press-disc{transform:translateY(4px);box-shadow:0 1px 0 #b2a18d}
+.press-copy strong{font-weight:1000;font-size:24px;letter-spacing:-.05em;display:block;line-height:1}
+.press-copy small{font-size:12px;font-weight:750;display:block;color:#526964;margin-top:5px;line-height:1.25}
+.tamp-flash{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%) scale(.92);z-index:8;padding:10px 18px;border-radius:999px;background:#2d273d;color:#fffaf1;border:3px solid #fff1d0;box-shadow:0 8px 18px #2d273d2b;font-size:18px;font-weight:1000;letter-spacing:.02em;opacity:0;pointer-events:none;transition:opacity .18s, transform .18s}
+.tamp-flash.show{opacity:1;transform:translate(-50%,-50%) scale(1)}
+.tamp-flash.good{background:#238a6f}.tamp-flash.low{background:#8f6d73}.tamp-flash.high{background:#b85d49}
+@media(max-width:390px){.grind-layout{gap:6px}.bean-card{padding:9px;max-width:145px}.bean-card strong{font-size:17px}.grind-dial{height:142px}.dial-nudge{gap:6px}.dial-nudge span{font-size:8px}.tamp-pad{width:min(100%,238px)}.tamp-core{padding:14px}.press-disc{width:68px;height:68px;font-size:28px}.press-copy strong{font-size:21px}.press-copy small{font-size:11px}.tamp-flash{font-size:16px;padding:8px 14px}}
+</style>
+</head>
+<body>
+<main class="app">
+<header class="top"><div><div class="eyebrow">The little café · espresso lab</div><h1><em>Perks.</em></h1></div><div class="top-note">Fresh beans. A good shot. No café management required.</div></header>
+<section class="shop" aria-label="Espresso pulling minigame">
+<div class="shopbar"><div class="order"><span class="ticket" id="ticket">ORDER #01</span><div><small>Customer order</small><strong><span id="orderBean">Medium roast</span> · 36g out</strong></div></div><div class="best"><small>Your best shot</small><strong id="bestScore">—</strong></div></div>
+<div class="progress" role="group" aria-label="Espresso game steps"><div class="step" id="step-grind"><span class="symbol">◈</span> GRIND</div><div class="step" id="step-tamp"><span class="symbol">⬇</span> TAMP</div><div class="step" id="step-pull"><span class="symbol">☕</span> PULL</div></div>
+<div class="scene" aria-hidden="true">
+<div class="sign">PERKS<span>GOOD ENOUGH SINCE 1996</span></div><div class="shelf"><div class="mug"></div><div class="mug"></div><div class="mug"></div></div>
+<svg class="machine" viewBox="0 0 540 356" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Illustrated espresso machine and cup">
+<defs><clipPath id="cupclip"><path d="M234 244 L310 244 L302 317 Q272 330 242 317 Z"/></clipPath></defs>
+<ellipse cx="265" cy="335" rx="151" ry="16" fill="#a66b72" opacity=".36"/>
+<!-- front face -->
+<rect x="151" y="77" width="237" height="167" rx="22" fill="#2d263e" stroke="#292236" stroke-width="7"/>
+<rect x="157" y="68" width="220" height="161" rx="21" fill="#886ca7" stroke="#292236" stroke-width="6"/>
+<path d="M175 76 H358 Q369 76 369 89 V117 H163 V89 Q163 76 175 76Z" fill="#ac90be"/>
+<rect x="181" y="88" width="93" height="43" rx="8" fill="#282638" stroke="#362c44" stroke-width="5"/>
+<text id="screenLabel" x="227" y="114" text-anchor="middle" fill="#c2f0d6" font-size="14">READY</text>
+<circle cx="316" cy="108" r="22" fill="#2d263e"/><circle cx="316" cy="108" r="15" fill="#f3cd81"/><path d="M316 96 V106" stroke="#292236" stroke-width="4" stroke-linecap="round"/>
+<circle cx="363" cy="108" r="10" fill="#e7817a" stroke="#312637" stroke-width="4"/>
+<rect x="166" y="148" width="196" height="63" rx="10" fill="#735c92"/>
+<path d="M179 159 H349" stroke="#bfa6d0" stroke-width="5" stroke-linecap="round"/>
+<rect x="243" y="186" width="46" height="16" rx="5" fill="#242233"/>
+<rect x="252" y="195" width="28" height="31" rx="5" fill="#e5b872" stroke="#292236" stroke-width="6"/>
+<path d="M263 221 v13 M274 221 v13" stroke="#3d2c37" stroke-width="4" stroke-linecap="round"/>
+<path d="M279 220 H342 Q354 220 354 211" fill="none" stroke="#292236" stroke-width="16" stroke-linecap="round"/>
+<path d="M281 220 H342" fill="none" stroke="#d5b2a6" stroke-width="7" stroke-linecap="round"/>
+<g id="streams"><path id="streamLeft" d="M263 229 Q257 247 261 269" fill="none" stroke="#65372b" stroke-width="5" stroke-linecap="round"/><path id="streamRight" d="M273 229 Q279 251 275 266" fill="none" stroke="#81422c" stroke-width="5" stroke-linecap="round"/></g>
+<!-- working grinder dial: mirrors the control in step 01 -->
+<g id="grinderStation">
+<path d="M78 65 L126 65 L120 77 H84Z" fill="#b8a1cb" stroke="#3d314b" stroke-width="3"/>
+<rect x="69" y="75" width="67" height="49" rx="11" fill="#f7e6c6" stroke="#42354b" stroke-width="4"/>
+<circle cx="102" cy="99" r="17" fill="#3e334f" stroke="#292238" stroke-width="3"/>
+<circle cx="102" cy="99" r="12" fill="#ead39d"/>
+<g id="sceneGrindPointer"><path d="M102 87 V91" stroke="#372837" stroke-width="3" stroke-linecap="round"/><circle cx="102" cy="90" r="2.8" fill="#e87f68"/></g>
+<text x="102" y="119" text-anchor="middle" fill="#6b5262" font-size="7" font-weight="900" id="sceneGrindLabel">GRIND 5.0</text>
+</g>
+<!-- little portafilter cutaway: grounds visibly compress when tamped -->
+<g id="puckStation">
+<rect x="62" y="128" width="83" height="91" rx="14" fill="#fff4df" stroke="#44344f" stroke-width="4"/>
+<text x="103" y="144" fill="#655068" text-anchor="middle" font-size="10" font-weight="900" letter-spacing="1">PUCK</text>
+<path d="M77 185 Q77 205 103 205 Q131 205 131 185" fill="#b9a7ba" stroke="#3d314b" stroke-width="4"/>
+<path d="M132 188 H146" stroke="#3d314b" stroke-width="7" stroke-linecap="round"/>
+<ellipse id="puckBed" cx="103" cy="184" rx="27" ry="11" fill="#765037" stroke="#533625" stroke-width="2"/>
+<g id="puckCrumbs" fill="#b78657">
+<circle cx="85" cy="176" r="2.6"/><circle cx="95" cy="171" r="3"/><circle cx="106" cy="173" r="2.3"/><circle cx="117" cy="169" r="2.6"/><circle cx="126" cy="178" r="2.1"/><circle cx="92" cy="180" r="2"/><circle cx="112" cy="180" r="2.8"/>
+</g>
+<path id="puckCracks" d="M86 187 L97 184 L102 191 L115 185 L124 189 M106 186 L107 193" fill="none" stroke="#3c261e" stroke-width="1.5" stroke-linecap="round" opacity="0"/>
+<text id="puckLabel" x="103" y="213" fill="#655068" text-anchor="middle" font-size="8.5" font-weight="800">LOOSE</text>
+</g>
+<g id="tamperHead" opacity="0" style="transition:opacity .15s ease">
+<rect x="97" y="147" width="12" height="21" rx="3" fill="#edc77e" stroke="#473442" stroke-width="3"/>
+<rect x="84" y="168" width="38" height="8" rx="3" fill="#4b3b54" stroke="#292238" stroke-width="2"/>
+</g>
+<!-- steam wand -->
+<path d="M371 184 L386 195 V266" fill="none" stroke="#292236" stroke-width="11" stroke-linejoin="round" stroke-linecap="round"/><path d="M371 184 L386 195 V266" fill="none" stroke="#ddd7cc" stroke-width="5" stroke-linejoin="round" stroke-linecap="round"/>
+<!-- counter -->
+<rect x="90" y="315" width="356" height="24" rx="11" fill="#4c3a51" stroke="#292236" stroke-width="6"/>
+<rect x="104" y="314" width="326" height="8" rx="4" fill="#eebc98"/>
+<!-- cup -->
+<path d="M236 241 L311 241 L304 317 Q273 331 242 317 Z" fill="#fff6e9" stroke="#282538" stroke-width="6" stroke-linejoin="round"/>
+<g clip-path="url(#cupclip)"><rect id="cupCoffee" x="238" y="315" width="73" height="0" fill="#74402d"/><path id="crema" d="M236 300 Q271 296 311 301" fill="none" stroke="#d9a76b" stroke-width="6" opacity="0"/></g>
+<path d="M308 253 Q347 246 339 280 Q336 293 306 291" fill="none" stroke="#282538" stroke-width="7" stroke-linecap="round"/><path d="M308 253 Q339 248 333 277 Q332 286 307 285" fill="none" stroke="#fff6e9" stroke-width="5" stroke-linecap="round"/>
+<path d="M249 251 L297 251" stroke="#ffffff" stroke-width="4" stroke-linecap="round" opacity=".7"/>
+<g id="steam" fill="none" stroke="#fffaf0" stroke-width="5" stroke-linecap="round"><path d="M244 228 q-12 -9 0 -20 t0 -20"/><path d="M278 229 q12 -8 0 -19 t0 -19"/><path d="M296 232 q11 -8 0 -18"/></g>
+<!-- knob shadow -->
+<path d="M174 217 L358 217" stroke="#312637" stroke-width="7" stroke-linecap="round"/>
+</svg>
+</div>
+<section id="workarea" class="workarea" aria-live="off">
+<div id="intro" class="intro"><div class="sub">Barista practice · one order</div><h2>Make a lovely little espresso.</h2><p>Three quick skills: set the grind for the beans, hold the tamper, then stop the shot at <b>36 grams</b>. The manager is pretending not to watch.</p><button id="begin" class="action">Start making coffee →</button></div>
+<div id="grind" class="play" hidden>
+<div class="instruction-head"><h2>01 · Set the grinder</h2><span class="tag">TURN THE DIAL</span></div>
+<p class="explain">Each bean likes a different grind. Turn the dial toward the green range.</p>
+<div class="grind-layout">
+<div class="bean-card"><span class="bean-eyebrow">TODAY’S BEANS</span><strong id="beanName">Medium roast</strong><span id="beanHint">A balanced grind, near the middle.</span><span class="bean-icon" aria-hidden="true">◉ ◉ ◉</span></div>
+<div class="dial-box">
+<svg id="grindDial" class="grind-dial" viewBox="0 0 220 175" tabindex="0" role="slider" aria-label="Grind setting, from fine to coarse" aria-valuemin="1" aria-valuemax="9" aria-valuenow="5" aria-valuetext="5.0, medium" xmlns="http://www.w3.org/2000/svg">
+<path id="dialArc" d="" fill="none" stroke="#ded1c3" stroke-width="13" stroke-linecap="round"/>
+<path id="dialZone" d="" fill="none" stroke="#61c89c" stroke-width="13" stroke-linecap="round"/>
+<circle cx="110" cy="91" r="51" fill="#3e334f" stroke="#252239" stroke-width="5"/>
+<circle cx="110" cy="91" r="42" fill="#ead39d" stroke="#ffedc1" stroke-width="4"/>
+<circle cx="110" cy="91" r="31" fill="#f7e5bc" opacity=".5"/>
+<g id="dialPointer"><path d="M110 48 L110 61" stroke="#433148" stroke-width="7" stroke-linecap="round"/><circle cx="110" cy="62" r="5" fill="#ef7f67"/></g>
+<text x="110" y="100" id="dialValueText" text-anchor="middle" fill="#292538" font-size="26" font-family="ui-rounded, system-ui, sans-serif" font-weight="1000">5.0</text>
+<text x="28" y="163" fill="#796b75" font-size="12" font-weight="900">FINE</text><text x="193" y="163" text-anchor="end" fill="#796b75" font-size="12" font-weight="900">COARSE</text>
+</svg>
+<div class="dial-nudge"><button id="grindMinus" type="button" aria-label="One step finer">−</button><span>DRAG OR TAP ±</span><button id="grindPlus" type="button" aria-label="One step coarser">+</button></div>
+</div></div>
+<button id="lockGrind" class="action">Set this grind →</button><div class="feedback">The little grinder dial above turns too.</div></div>
+<div id="tamp" class="play" hidden><div class="instruction-head"><h2>02 · Tamp it down</h2><span class="tag">PRESS &amp; HOLD</span></div><p class="explain">Press and HOLD the button. Let go when the pressure reaches the green zone around the button.</p><div class="tamp-wrap"><button id="tampButton" class="tamp-pad" type="button" aria-label="Hold to press the tamper, release when pressure reaches the green zone around the circular button"><span class="tamp-ring" aria-hidden="true"><span class="tamp-progress" id="tampProgress"></span><span class="tamp-core"><span class="press-disc">↓</span><span class="press-copy"><strong id="tampActionText">HOLD TO TAMP</strong><small>Keep your finger down · release in green</small></span></span></span></button><div class="feedback" id="tampHint">This is a hold, not a tap.</div><div id="tampFlash" class="tamp-flash" aria-live="polite"></div></div></div>
+<div id="pull" class="play" hidden><div class="instruction-head"><h2>03 · Pull the shot</h2><span class="tag">START / STOP</span></div><p class="explain">Start extraction, then stop at <b>36g</b>. Bonus points if the shot takes about <b>27 seconds</b> on the café clock (time runs faster here).</p><div class="brew-stats"><div class="stat"><small>Coffee out</small><strong id="grams">0.0<span>g</span></strong></div><div class="stat"><small>Brew time</small><strong id="seconds">0.0<span>s</span></strong></div></div><div class="brewprogress" aria-label="Coffee yield meter"><div class="range"></div><div class="fill" id="brewFill"></div></div><button id="brewButton" class="action">Start extraction →</button><div class="feedback" id="brewHint">Target: 34–38g · 25–30s</div></div>
+<div id="result" class="result" hidden><div class="sub">The tasting notes are in</div><h2 id="resultTitle">Very respectable.</h2><div class="score"><span id="totalScore">85</span><small>out of<br>100</small></div><p id="resultNote">A rather lovely little shot.</p><div class="grades" aria-label="Shot scoring breakdown"><div class="grade"><span>Grind</span><strong id="grindScore">—</strong><small>/25</small></div><div class="grade"><span>Tamp</span><strong id="tampScore">—</strong><small>/25</small></div><div class="grade"><span>Yield</span><strong id="yieldScore">—</strong><small>/35</small></div><div class="grade"><span>Time</span><strong id="timeScore">—</strong><small>/15</small></div></div><button id="again" class="action">Pull another shot ↻</button></div>
+<div class="bottomline"><span id="status">Practice makes palatable.</span><span class="chit" id="recipe">TARGET · 36g / 27s</span></div>
+</section>
+</section>
+<div class="footnote">A tiny arcade experiment, not a real barista training simulator. Just one skill-based minigame for now. Plays offline, on a phone or computer.</div>
+</main>
+<script>
+(()=>{
+'use strict';
+const $=id=>document.getElementById(id);
+const panels=['intro','grind','tamp','pull','result'];
+let phase='intro',frame=0,previous=0,grindDialValue=50,grindTarget=50,grindValue=50,tampValue=0,tampPressing=false,tampInput=null,started=false,brewSec=0,brewYield=0,brewRate=4.5,grindPoints=0,tampPoints=0,order=0,best=null,bean=null,dialDragging=false;
+try{const old=localStorage.getItem('gg-best-v1');if(old!==null&&Number.isFinite(Number(old)))best=Math.max(0,Math.min(100,Number(old)))}catch{}
+function clamp(x,a,b){return Math.max(a,Math.min(b,x))}
+function show(p){phase=p;$('tamperHead').setAttribute('opacity',p==='tamp'?'1':'0');for(const id of panels)$(id).hidden=id!==p;for(const [key,pList] of [['grind',['tamp','pull','result']],['tamp',['pull','result']],['pull',['result']]]){const e=$('step-'+key);e.classList.toggle('active',p===key);e.classList.toggle('done',pList.includes(p));}if(p==='intro'){['grind','tamp','pull'].forEach(k=>{$('step-'+k).classList.remove('done','active')})}}
+function score(dist,perfect,falloff){return Math.round(clamp(100-Math.max(0,dist-perfect)*falloff,0,100))}
+function setScreen(s){$('screenLabel').textContent=s}
+const beans=[
+ {name:'Light roast',hint:'Bright beans like a finer setting.',target:32,scene:'LIGHT'},
+ {name:'Medium roast',hint:'Balanced beans like the middle.',target:50,scene:'MEDIUM'},
+ {name:'Dark roast',hint:'Rich beans like a coarser setting.',target:69,scene:'DARK'}
+];
+function settingText(v){return (1+v*.08).toFixed(1)}
+function dialAngle(v){return -135+v*2.7}
+function arcPath(from,to,r=69){const p=a=>{const d=a*Math.PI/180;return [110+r*Math.sin(d),91-r*Math.cos(d)]};let a=p(from),b=p(to);return `M${a[0].toFixed(2)} ${a[1].toFixed(2)} A${r} ${r} 0 ${to-from>180?1:0} 1 ${b[0].toFixed(2)} ${b[1].toFixed(2)}`}
+function renderDial(){
+ const v=grindDialValue,a=dialAngle(v);
+ $('dialValueText').textContent=settingText(v);
+ $('dialPointer').setAttribute('transform',`rotate(${a} 110 91)`);
+ $('sceneGrindPointer').setAttribute('transform',`rotate(${a} 102 99)`);
+ $('sceneGrindLabel').textContent='GRIND '+settingText(v);
+ const slider=$('grindDial');slider.setAttribute('aria-valuenow',settingText(v));slider.setAttribute('aria-valuetext',settingText(v)+(v<39?', fine':v>61?', coarse':', medium'));
+ setScreen('GRIND '+settingText(v));
+}
+function turnDialFromPointer(e){
+ const rect=$('grindDial').getBoundingClientRect();
+ const x=(e.clientX-rect.left)*220/rect.width, y=(e.clientY-rect.top)*175/rect.height;
+ let angle=Math.atan2(x-110,91-y)*180/Math.PI;
+ // The unused bottom quadrant clamps to whichever side the pointer is nearest.
+ if(angle>135)angle=135;if(angle< -135)angle=-135;
+ grindDialValue=clamp(Math.round((angle+135)/2.7),0,100);renderDial();
+}
+// Decorative feedback only: the existing scoring model does not depend on these visuals.
+function renderPuck(pressure){
+ const p=clamp(pressure/100,0,1);
+ $('puckBed').setAttribute('cy',(184+4*p).toFixed(1));
+ $('puckBed').setAttribute('ry',(11-7*p).toFixed(1));
+ $('puckCrumbs').setAttribute('opacity',(1-.94*p).toFixed(2));
+ $('tamperHead').setAttribute('transform',`translate(0 ${(p*12).toFixed(1)})`);$('tampProgress').style.setProperty('--progress',(clamp(pressure,0,100)/100)+'turn');$('puckCracks').setAttribute('opacity',pressure>84?clamp((pressure-84)/10,0,1).toFixed(2):'0');
+ $('puckLabel').textContent=pressure<2?'LOOSE':pressure<63?'COMPRESSING':pressure<=84?'SMOOTH':'OVER-PRESSED';
+}
+function blendRGB(a,b,t){return 'rgb('+a.map((v,i)=>Math.round(v+(b[i]-v)*t)).join(',')+')'}
+function renderExtraction(){
+ const pale=clamp((brewSec-11)/30,0,1);
+ $('streamLeft').setAttribute('stroke',blendRGB([92,43,33],[222,163,99],pale));
+ $('streamRight').setAttribute('stroke',blendRGB([120,62,41],[241,187,119],pale));
+ $('cupCoffee').setAttribute('fill',blendRGB([106,53,36],[163,100,55],pale*.78));
+ const height=clamp((brewYield/44)*72,0,72);
+ const y=315-height;
+ $('crema').setAttribute('d',`M236 ${y+2} Q271 ${y-3} 311 ${y+2}`);
+ $('crema').setAttribute('opacity',brewYield>5?String(clamp((brewYield-5)/7,0,1)):'0');
+}
+
+function updateBest(){$('bestScore').textContent=best===null?'—':best+' / 100'}
+function begin(){
+ cancelAnimationFrame(frame);order++;$('ticket').textContent='ORDER #'+String(order).padStart(2,'0');
+ // Cycle the bean types so a replay always offers a different grind preference.
+ bean=beans[(order-1)%beans.length];$('orderBean').textContent=bean.name;$('beanName').textContent=bean.name;$('beanHint').textContent=bean.hint;
+ grindTarget=bean.target+(Math.random()*4-2);grindDialValue=clamp(grindTarget+(Math.random()>.5?1:-1)*(18+Math.random()*22),0,100);
+ grindValue=grindDialValue;tampValue=0;tampPressing=false;tampInput=null;started=false;brewSec=0;brewYield=0;brewRate=4.5;grindPoints=0;tampPoints=0;dialDragging=false;
+ $('dialArc').setAttribute('d',arcPath(-135,135));$('dialZone').setAttribute('d',arcPath(dialAngle(grindTarget-6),dialAngle(grindTarget+6)));
+ renderPuck(0);
+ $('streamLeft').setAttribute('stroke','#65372b');$('streamRight').setAttribute('stroke','#81422c');$('cupCoffee').setAttribute('fill','#74402d');
+ $('tampButton').classList.remove('pressing');$('tampActionText').textContent='HOLD TO TAMP';$('tampHint').textContent='This is a hold, not a tap.';hideTampFlash();
+ $('brewButton').textContent='Start extraction →';$('brewButton').disabled=false;
+ $('grams').innerHTML='0.0<span>g</span>';$('seconds').innerHTML='0.0<span>s</span>';$('brewFill').style.width='0%';
+ $('cupCoffee').setAttribute('height','0');$('cupCoffee').setAttribute('y','315');$('crema').setAttribute('opacity','0');
+ $('streams').classList.remove('on');$('steam').classList.remove('on');$('status').textContent='One order. Three tiny tasks.';
+ show('grind');renderDial();previous=performance.now();frame=requestAnimationFrame(tick)
+}
+function tick(now){const dt=clamp((now-previous)/1000,0,.06);previous=now;
+ if(phase==='tamp'&&tampPressing){tampValue=clamp(tampValue+dt*43,0,100);renderPuck(tampValue);if(tampValue>=100)finishTamp()}
+ if(phase==='pull'&&started){brewSec+=dt*3.2;brewYield+=dt*brewRate;$('grams').innerHTML=brewYield.toFixed(1)+'<span>g</span>';$('seconds').innerHTML=brewSec.toFixed(1)+'<span>s</span>';$('brewFill').style.width=clamp(brewYield/46*100,0,100)+'%';const fill=clamp((brewYield/44)*72,0,72);$('cupCoffee').setAttribute('height',fill);$('cupCoffee').setAttribute('y',315-fill);renderExtraction();setScreen(brewYield.toFixed(1)+'g');if(brewYield>=47||brewSec>=54){finishBrew()}}
+ if(['grind','tamp','pull'].includes(phase))frame=requestAnimationFrame(tick)
+}
+function lockGrind(){if(phase!=='grind')return;grindValue=grindDialValue;grindPoints=Math.round(score(Math.abs(grindValue-grindTarget),4,3.4)*.25);setScreen('TAMP');$('status').textContent='Grind locked · '+grindPoints+'/25';show('tamp')}
+function pressTamp(source){if(phase!=='tamp'||tampPressing)return;tampPressing=true;tampInput=source;$('tampButton').classList.add('pressing');$('tampActionText').textContent='HOLDING…';$('tampHint').textContent='Release when the ring reaches green.';hideTampFlash();}
+function showTampFlash(text,tone){const el=$('tampFlash');el.textContent=text;el.className='tamp-flash show '+tone;}
+function hideTampFlash(){const el=$('tampFlash');el.className='tamp-flash';el.textContent='';}
+function finishTamp(){if(phase!=='tamp'||!tampPressing)return;tampPressing=false;tampInput=null;window.getSelection()?.removeAllRanges();$('tampButton').classList.remove('pressing');$('tampActionText').textContent='HOLD TO TAMP';tampPoints=Math.round(score(Math.abs(tampValue-72),5,3.5)*.25);brewRate=clamp(4.5*(1+(grindValue-grindTarget)*.014+(tampValue-72)*.004),2.1,7.2);const tone=tampValue<65?'low':(tampValue<=79?'good':'high');const label=tampValue<65?'FEATHERLIGHT':(tampValue<=79?'JUST RIGHT':'TOO MUCH');showTampFlash(label,tone);$('tampHint').textContent=label.replace('JUST RIGHT','Nice.');setScreen(label==='JUST RIGHT'?'NICE':'TAMPED');setTimeout(()=>{if(phase!=='tamp')return;hideTampFlash();setScreen('READY');$('status').textContent='Tamp: '+label+' · '+tampPoints+'/25';show('pull');},460)}
+function startBrew(){if(phase!=='pull')return;if(!started){started=true;$('brewButton').textContent='STOP THE SHOT!';$('brewButton').classList.add('secondary');$('streams').classList.add('on');$('steam').classList.add('on');$('brewHint').textContent='Watch the grams. 36g is the bullseye.'}else{finishBrew()}}
+function finishBrew(){if(phase!=='pull')return;started=false;$('brewButton').classList.remove('secondary');$('streams').classList.remove('on');$('steam').classList.remove('on');setScreen('DONE');const yieldScore=Math.round(score(Math.abs(brewYield-36),2,11)*.35);const timeScore=Math.round(score(Math.abs(brewSec-27),3,5)*.15);const total=grindPoints+tampPoints+yieldScore+timeScore;const notes=[['grind',grindPoints/25],['tamp',tampPoints/25],['yield',yieldScore/35],['time',timeScore/15]].sort((a,b)=>a[1]-b[1]);const worst=notes[0][0];const tip={grind:'Try turning the grinder dial closer to the green setting for these beans.',tamp:'The tamper has a light touch. Hold it, then release in the green.',yield:brewYield<34?'That shot ended a little early. Let a few more grams through.':'You let the shot run a bit long. Stop closer to 36 grams.',time:brewSec<24?'That poured quickly. A finer grind can slow the flow.':'That took its time. A coarser grind can help it flow.'};
+ $('grindScore').textContent=grindPoints;$('tampScore').textContent=tampPoints;$('yieldScore').textContent=yieldScore;$('timeScore').textContent=timeScore;$('totalScore').textContent=total;
+ $('resultTitle').textContent=total>=95?'A practically perfect shot.':total>=85?'That’ll do beautifully.':total>=70?'A solid little espresso.':total>=50?'Good effort, rookie.':'The beans have concerns.';
+ $('resultNote').textContent=total>=95?'Everything clicked. Somewhere, a barista nods approvingly.':total>=85?'Nice work. One more and the manager might trust you with the fancy cups.':tip[worst];
+ if(best===null||total>best){best=total;try{localStorage.setItem('gg-best-v1',String(best))}catch{}}updateBest();$('status').textContent='Shot complete · '+brewYield.toFixed(1)+'g in '+brewSec.toFixed(1)+'s';show('result')}
+$('grindDial').addEventListener('pointerdown',e=>{if(phase!=='grind')return;e.preventDefault();dialDragging=true;$('grindDial').setPointerCapture(e.pointerId);turnDialFromPointer(e)});
+$('grindDial').addEventListener('pointermove',e=>{if(phase==='grind'&&dialDragging){e.preventDefault();turnDialFromPointer(e)}});
+$('grindDial').addEventListener('pointerup',()=>{dialDragging=false});
+$('grindDial').addEventListener('pointercancel',()=>{dialDragging=false});
+$('grindDial').addEventListener('lostpointercapture',()=>{dialDragging=false});
+$('grindDial').addEventListener('keydown',e=>{if(phase!=='grind')return;if(['ArrowLeft','ArrowDown','ArrowRight','ArrowUp','Home','End'].includes(e.key)){e.preventDefault();grindDialValue=e.key==='Home'?0:e.key==='End'?100:clamp(grindDialValue+(e.key==='ArrowRight'||e.key==='ArrowUp'?2:-2),0,100);renderDial()}});
+$('grindMinus').addEventListener('click',()=>{if(phase==='grind'){grindDialValue=clamp(grindDialValue-2,0,100);renderDial()}});
+$('grindPlus').addEventListener('click',()=>{if(phase==='grind'){grindDialValue=clamp(grindDialValue+2,0,100);renderDial()}});
+$('begin').addEventListener('click',begin);$('again').addEventListener('click',begin);$('lockGrind').addEventListener('click',lockGrind);$('brewButton').addEventListener('click',startBrew);
+$('tampButton').addEventListener('pointerdown',e=>{if(phase!=='tamp')return;e.preventDefault();pressTamp('pointer')});
+$('tamp').addEventListener('contextmenu',e=>e.preventDefault());
+$('workarea').addEventListener('selectstart',e=>e.preventDefault());
+window.addEventListener('pointerup',()=>{if(tampPressing&&tampInput==='pointer')finishTamp()});
+window.addEventListener('pointercancel',()=>{if(tampPressing&&tampInput==='pointer')finishTamp()});
+window.addEventListener('blur',()=>{if(tampPressing)finishTamp()});
+window.addEventListener('keydown',e=>{if(e.code!=='Space'||e.repeat||['INPUT','TEXTAREA'].includes(document.activeElement?.tagName))return;if(!['intro','result','grind','tamp','pull'].includes(phase))return;e.preventDefault();if(phase==='intro'||phase==='result')begin();else if(phase==='grind')lockGrind();else if(phase==='tamp')pressTamp('keyboard');else if(phase==='pull')startBrew()});
+window.addEventListener('keyup',e=>{if(e.code==='Space'&&tampPressing&&tampInput==='keyboard'){e.preventDefault();finishTamp()}});
+updateBest();$('ticket').textContent='ORDER #01';
+})();
+</script>
+</body>
+</html>

@@ -1,0 +1,196 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#f6ead4">
+<title>Roadside Stop · Snack Tetris 2.2</title>
+<style>
+:root{--ink:#30283e;--violet:#433454;--cream:#fff9ed;--warm:#f6ead4;--peach:#f7caa6;--mint:#b6e6d0;--sub:#766b78;--gold:#ffd474;--shadow:#c7a994}
+*{box-sizing:border-box}
+html{background:var(--warm)}
+body{font-family:ui-rounded,"Arial Rounded MT Bold",system-ui,-apple-system,sans-serif;margin:0;color:var(--ink);-webkit-tap-highlight-color:transparent}
+button{font:inherit;cursor:pointer;touch-action:manipulation}
+.app{max-width:475px;margin:0 auto;padding:11px 10px 30px}
+.game{background:var(--cream);border:4px solid var(--ink);border-radius:23px;overflow:hidden;box-shadow:5px 6px 0 var(--shadow)}
+.top{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:12px 15px;background:#433454;color:#fff8ea}
+.kicker{font-size:10px;letter-spacing:.15em;font-weight:1000;opacity:.8}
+h1{font-size:clamp(22px,6vw,29px);letter-spacing:-.045em;line-height:1.08;margin:2px 0 0}
+.round{background:var(--gold);color:var(--ink);padding:7px 11px;border:2px solid var(--ink);border-radius:10px;font-size:13px;white-space:nowrap;font-weight:1000;text-align:center;box-shadow:0 3px 0 #b68c59}
+.strip{background:var(--mint);display:flex;align-items:center;justify-content:space-between;gap:12px;border-bottom:3px solid var(--ink);padding:8px 13px}
+.strip strong{font-size:14px;letter-spacing:-.02em}
+.strip span{font-size:12px;font-weight:1000;white-space:nowrap;color:#266e60}
+.play{padding:7px 7px 10px}
+canvas{display:block;width:100%;height:auto;touch-action:none;user-select:none;-webkit-user-select:none;-webkit-touch-callout:none;cursor:grab;border-radius:13px}
+canvas:active{cursor:grabbing}
+.buttons{display:grid;grid-template-columns:1fr 1fr 1.32fr;gap:7px;margin:8px 3px 0}
+.btn{border:3px solid var(--ink);border-radius:11px;padding:10px 3px;min-height:46px;font-size:13px;font-weight:1000;color:var(--ink);background:#f2dfc2;box-shadow:0 4px 0 #bda68d}
+.btn.main{background:var(--gold);box-shadow:0 4px 0 #c7a05a}
+.btn:active:not(:disabled){transform:translateY(2px);box-shadow:0 2px 0 #a58d7b}
+.btn:disabled{opacity:.43;cursor:default}
+.status{margin:10px 5px 0;color:var(--sub);text-align:center;min-height:16px;font-size:12px;font-weight:780}
+.low{display:flex;justify-content:space-between;gap:8px;align-items:center;margin:10px 4px 0}
+.textbtn{background:none;border:0;color:#6a5c6f;text-decoration:underline;font-size:12px;font-weight:900;padding:6px}
+.help{margin:7px 3px 1px;border-radius:12px;background:#f1e4d1;padding:10px 11px;font-size:12px;line-height:1.45;color:#665a63}
+.help[hidden]{display:none}
+.modal{position:fixed;inset:0;background:#1d1734a1;display:grid;place-items:center;padding:16px;z-index:10}
+.modal[hidden]{display:none}
+.dialog{background:#fff8ec;border:4px solid var(--ink);border-radius:24px;padding:22px 17px 18px;width:min(100%,385px);text-align:center;box-shadow:7px 9px 0 #a88b77}
+.star{font-size:32px;line-height:1.1;min-height:35px}
+.dialog h2{font-size:28px;letter-spacing:-.05em;margin:8px 0 5px}
+.percent{font-size:49px;line-height:1.2;font-weight:1000;letter-spacing:-.06em}
+.dialog p{margin:4px 0 18px;font-size:14px;color:#6b606b;line-height:1.45}
+.modal-buttons{display:grid;grid-template-columns:1fr 1fr;gap:9px}
+.modal-buttons .btn{font-size:14px;padding:11px 6px}
+@media(max-width:360px){.app{padding:6px 5px 18px}.top{padding:10px 12px}.strip{padding:7px 10px}.buttons{gap:5px}.btn{font-size:12px}.play{padding:4px}.status{font-size:11px}}
+</style>
+</head>
+<body>
+<main class="app">
+<section class="game" aria-label="Snack Tetris puzzle">
+  <div class="top"><div><div class="kicker">ROADSIDE STOP · CONVENIENCE</div><h1>Snack Tetris</h1></div><div class="round" id="roundTag">RACK 1 / 3</div></div>
+  <div class="strip"><strong id="rackTitle">Counter goodies</strong><span id="packed">0 / 5 packs</span></div>
+  <div class="play">
+    <canvas id="gameCanvas" width="720" height="1090" aria-label="Packing game board and snack crate. Tap a snack to select. Tap it again or use Rotate to turn it; Then tap a rack square or drag it into place. Overlapping is allowed." role="img"></canvas>
+    <div class="buttons"><button class="btn" id="rotateBtn" disabled>Rotate ↻</button><button class="btn" id="returnBtn" disabled>Put back</button><button class="btn main" id="checkBtn">Check rack →</button></div>
+    <div class="status" id="status" aria-live="polite">Grab a snack from the crate and fit it on the shelf.</div>
+    <div class="low"><button class="textbtn" id="resetBtn">↺ Reset this rack</button><button class="textbtn" id="helpBtn" aria-expanded="false" aria-controls="helpText">? How to play</button></div>
+    <p class="help" id="helpText" hidden>Drag packs into the rack, or tap a pack and tap a square. Tap the same pack again or press <b>Rotate</b> to turn it. The fixed fixtures stay put. Every rack can be filled exactly with the snacks provided, but imperfect placement is okay. You can overlap packs, though stacked squares only count once. You can finish early or reset anytime.</p>
+  </div>
+</section>
+</main>
+<div class="modal" id="modal" hidden><div class="dialog" role="dialog" aria-modal="true" aria-labelledby="resultTitle"><div class="star" id="stars">✨</div><h2 id="resultTitle">Stocked!</h2><div class="percent" id="resultPercent">100%</div><p id="resultCopy">All the snacks fit. A rare triumph of convenience-store geometry.</p><div class="modal-buttons"><button class="btn" id="retryBtn">Same rack ↺</button><button class="btn main" id="nextBtn">Next rack →</button></div></div></div>
+<script>
+(()=>{
+'use strict';
+const W=360,H=545;
+const BX=24,BY=51,CELL=48,GAP=4,STEP=CELL+GAP,COLS=6,ROWS=5;
+const BOARD_W=COLS*CELL+(COLS-1)*GAP, BOARD_H=ROWS*CELL+(ROWS-1)*GAP;
+const BOARD_BOX={x:8,y:7,w:344,h:328};
+const CRATE_BOX={x:8,y:345,w:344,h:191};
+const traySlots=[{x:19,y:390},{x:127,y:390},{x:235,y:390},{x:19,y:463},{x:127,y:463},{x:235,y:463}];
+const SHAPES={
+ O:[[0,0],[1,0],[0,1],[1,1]],
+ I:[[0,0],[0,1],[0,2],[0,3]],
+ L:[[0,0],[0,1],[0,2],[1,2]],
+ J:[[1,0],[1,1],[0,2],[1,2]],
+ T:[[0,0],[1,0],[2,0],[1,1]],
+ S:[[1,0],[2,0],[0,1],[1,1]],
+ Z:[[0,0],[1,0],[1,1],[2,1]]
+};
+// Every pack is a four-cell tetromino. The board has exactly as many available cells
+// as are covered by the supplied packs. Each layout was solved and validated.
+const RACKS=[
+ {title:'Counter goodies',blocked:[[5,0],[5,1],[5,2],[5,3],[0,4],[1,4],[2,4],[3,4],[4,4],[5,4]],
+  packs:[['NUTS','O','#86cba8'],['SODA','I','#72c2bc'],['CHIPS','L','#f39b8a'],['GUM','J','#b39bdc'],['CANDY','S','#f6cd70']],
+  solution:[[0,0,0],[0,3,1],[0,1,1],[2,0,1],[3,1,1]]},
+ {title:'Road-trip favorites',blocked:[[0,4],[1,4],[2,4],[3,4],[4,4],[5,4]],
+  packs:[['NUTS','O','#86cba8'],['SODA','I','#72c2bc'],['CHIPS','L','#f39b8a'],['GUM','J','#b39bdc'],['CANDY','S','#f6cd70'],['JERKY','Z','#eeb17d']],
+  solution:[[2,1,0],[1,0,1],[3,2,1],[0,2,3],[0,0,1],[4,0,1]]},
+ {title:'Late-night restock',blocked:[[0,0],[5,0],[2,2],[3,2],[0,4],[5,4]],
+  packs:[['NUTS','O','#86cba8'],['SODA','I','#72c2bc'],['PRETZ','I','#ecbb7e'],['CHIPS','L','#f39b8a'],['GUM','J','#b39bdc'],['CANDY','S','#f6cd70']],
+  solution:[[4,1,0],[2,3,1],[1,4,1],[0,1,0],[1,0,2],[2,0,0]]}
+];
+const $=id=>document.getElementById(id),canvas=$('gameCanvas'),ctx=canvas.getContext('2d');
+const state={round:0,pieces:[],selected:null,drag:null,feedback:'Grab a snack from the crate and fit it on the shelf.',isPerfect:false,zCounter:0};
+const backingScale=2;
+function deviceSetup(){const dpr=Math.min(window.devicePixelRatio||1,3);canvas.width=Math.round(W*dpr);canvas.height=Math.round(H*dpr);ctx.setTransform(dpr,0,0,dpr,0,0);draw();}
+function shapeRotate(shape){const r=shape.map(([x,y])=>[y,-x]), minX=Math.min(...r.map(p=>p[0])),minY=Math.min(...r.map(p=>p[1]));return r.map(([x,y])=>[x-minX,y-minY]);}
+function rotateN(shape,n){let v=shape.map(p=>[...p]);for(let i=0;i<n;i++)v=shapeRotate(v);return v;}
+function dimensions(shape){return {w:Math.max(...shape.map(p=>p[0]))+1,h:Math.max(...shape.map(p=>p[1]))+1};}
+function cellsFor(piece){return rotateN(SHAPES[piece.shape],piece.rot);}
+function pixelShape(piece,cell,gap){const s=cellsFor(piece);const {w,h}=dimensions(s);return {cells:s,w,h,width:w*cell+(w-1)*gap,height:h*cell+(h-1)*gap};}
+function blockedSet(){return new Set(RACKS[state.round].blocked.map(([x,y])=>`${x},${y}`));}
+function validPlacement(piece,gx,gy){const blocked=blockedSet();for(const [x,y] of cellsFor(piece)){const ax=x+gx,ay=y+gy;if(ax<0||ax>=COLS||ay<0||ay>=ROWS||blocked.has(`${ax},${ay}`))return false;}return true;}
+function existingCoverage(excludeId=null){const counts=new Map();for(const p of state.pieces){if(p.id===excludeId||!p.pos)continue;for(const [dx,dy] of cellsFor(p)){const k=`${p.pos.x+dx},${p.pos.y+dy}`;counts.set(k,(counts.get(k)||0)+1);}}return counts;}
+function coverageStats(){const counts=existingCoverage(),total=COLS*ROWS-RACKS[state.round].blocked.length,covered=counts.size,stacked=[...counts.values()].reduce((sum,n)=>sum+Math.max(0,n-1),0);return {total,covered,stacked,percent:Math.round(covered/total*100)};}
+function hitRect(x,y,r){return x>=r.x&&x<=r.x+r.w&&y>=r.y&&y<=r.y+r.h}
+function trayPosition(piece){const s=traySlots[piece.slot];return {x:s.x,y:s.y};}
+function trayMetrics(piece){const s=cellsFor(piece),{w,h}=dimensions(s);const gap=2;
+ const unit=Math.min(18,(87-(w-1)*gap)/w,(35-(h-1)*gap)/h);
+ return {unit,gap,width:w*unit+(w-1)*gap,height:h*unit+(h-1)*gap};}
+function pieceTiles(piece){const shape=cellsFor(piece);if(piece.pos){return shape.map(([dx,dy])=>({x:BX+(piece.pos.x+dx)*STEP,y:BY+(piece.pos.y+dy)*STEP,w:CELL,h:CELL}));}const center=trayPosition(piece),m=trayMetrics(piece);const sx=center.x+(93-m.width)/2,sy=center.y+20+(36-m.height)/2;return shape.map(([dx,dy])=>({x:sx+dx*(m.unit+m.gap),y:sy+dy*(m.unit+m.gap),w:m.unit,h:m.unit}));}
+function findPiece(x,y){for(const p of [...state.pieces].sort((a,b)=>(b.z||0)-(a.z||0))){
+ if(!p.pos){const slot=trayPosition(p);if(hitRect(x,y,{x:slot.x,y:slot.y,w:93,h:58}))return p;}
+ else if(pieceTiles(p).some(tile=>hitRect(x,y,tile)))return p;
+ }return null;}
+function getXY(e){const r=canvas.getBoundingClientRect();return {x:(e.clientX-r.left)*(W/r.width),y:(e.clientY-r.top)*(H/r.height)};}
+function placeAt(piece,gx,gy){if(validPlacement(piece,gx,gy)){const already=existingCoverage(piece.id),overlap=cellsFor(piece).filter(([dx,dy])=>already.has(`${gx+dx},${gy+dy}`)).length;piece.pos={x:gx,y:gy};piece.z=++state.zCounter;state.feedback=overlap?`Stacked on ${overlap} square${overlap===1?'':'s'}. That spot only counts once.`:'Nice fit. Keep going.';state.isPerfect=false;return true;}state.feedback='Keep packs inside the rack and off the fixed displays.';return false;}
+function dropGrid(piece,x,y,mode){const {width,height}=pixelShape(piece,CELL,GAP);if(mode==='tap')return {gx:Math.round((x-BX)/STEP),gy:Math.round((y-BY)/STEP)};return {gx:Math.round((x-BX-width/2)/STEP),gy:Math.round((y-BY-height/2)/STEP)};}
+function insideBoard(x,y){return hitRect(x,y,{x:BX-4,y:BY-4,w:BOARD_W+8,h:BOARD_H+8})}
+function onDown(ev){if($('modal').hidden===false)return;const p=getXY(ev),piece=findPiece(p.x,p.y);if(piece){const wasSelected=state.selected===piece.id;state.selected=piece.id;piece.z=++state.zCounter;state.drag={id:piece.id,start:p,last:p,hasMoved:false,pointerId:ev.pointerId,wasSelected};canvas.setPointerCapture(ev.pointerId);state.feedback=wasSelected?'Tap again to rotate, or drag to reposition.':piece.name+' selected. Tap it again to rotate, or drag to place.';update();return;}if(insideBoard(p.x,p.y)&&state.selected){const target=state.pieces.find(s=>s.id===state.selected),{gx,gy}=dropGrid(target,p.x,p.y,'tap');placeAt(target,gx,gy);update();}else{state.selected=null;update();}}
+function onMove(ev){if(!state.drag||state.drag.pointerId!==ev.pointerId)return;const p=getXY(ev);state.drag.last=p;if(Math.hypot(p.x-state.drag.start.x,p.y-state.drag.start.y)>8)state.drag.hasMoved=true;draw();}
+function onUp(ev){if(!state.drag||state.drag.pointerId!==ev.pointerId)return;const drag=state.drag,statePiece=state.pieces.find(p=>p.id===drag.id),p=getXY(ev);if(drag.hasMoved){if(insideBoard(p.x,p.y)){const {gx,gy}=dropGrid(statePiece,p.x,p.y,'drag');placeAt(statePiece,gx,gy);}else if(hitRect(p.x,p.y,CRATE_BOX)){statePiece.pos=null;state.feedback='Back into the crate.';}else{state.feedback='Try dropping it inside the display.';}}else if(drag.wasSelected){state.drag=null;rotateSelected();return;}state.drag=null;update();}
+function onCancel(){state.drag=null;update()}
+function rotateSelected(){const p=state.pieces.find(p=>p.id===state.selected);if(!p)return;const oldRotation=p.rot;p.rot=(p.rot+1)%4;if(p.pos&&!validPlacement(p,p.pos.x,p.pos.y)){p.rot=oldRotation;state.feedback='That turn would hit a fixed display or the edge. Move the pack first.';}else if(p.shape==='O'){state.feedback='Turned the square pack. It looks the same from every angle.';}else{state.feedback='Quarter turn. Looks promising.';}update();}
+function putBack(){const p=state.pieces.find(p=>p.id===state.selected);if(!p)return;p.pos=null;state.feedback='Back to the crate.';update();}
+function reset(){state.zCounter=0;state.pieces=RACKS[state.round].packs.map(([name,shape,color],id)=>({id,slot:id,name,shape,color,rot:['I','L','J'].includes(shape)?1:0,pos:null,z:++state.zCounter}));state.selected=null;state.drag=null;state.isPerfect=false;state.feedback='Grab a snack from the crate and fit it on the shelf.';update();}
+function loadRound(idx){state.round=idx;reset();$('roundTag').textContent=`RACK ${idx+1} / ${RACKS.length}`;$('rackTitle').textContent=RACKS[idx].title;draw();}
+function update(){const placed=state.pieces.filter(p=>p.pos).length;$('packed').textContent=`${placed} / ${state.pieces.length} packs`;$('rotateBtn').disabled=state.selected===null;$('returnBtn').disabled=state.selected===null||!state.pieces.some(p=>p.id===state.selected&&p.pos);$('status').textContent=state.feedback;draw();}
+function verifyPuzzles(){for(const [i,p] of RACKS.entries()){
+ const cells=new Set(),blocked=new Set(p.blocked.map(([x,y])=>`${x},${y}`));
+ for(let j=0;j<p.packs.length;j++){const shape=rotateN(SHAPES[p.packs[j][1]],p.solution[j][2]),[gx,gy]=p.solution[j];for(const [x,y] of shape){const ax=gx+x,ay=gy+y,k=`${ax},${ay}`;if(ax<0||ax>=COLS||ay<0||ay>=ROWS||blocked.has(k)||cells.has(k))throw Error('Invalid puzzle solution '+i);cells.add(k);}}
+ if(cells.size+blocked.size!==COLS*ROWS)throw Error('Puzzle cannot fill the shelf '+i);
+ }}
+function check(){const {total,covered,stacked,percent:pct}=coverageStats(),full=pct===100;
+ $('resultPercent').textContent=pct+'%';$('resultTitle').textContent=full?'Shelf stocked!':'Still some room.';$('stars').textContent=full?'✨ ✦ ✨':'📦';$('resultCopy').textContent=full?'Every available cell is filled. You’ve officially conquered the snack geometry.':`${covered} of ${total} usable shelf squares covered.${stacked?` ${stacked} snack square${stacked===1?' is':'s are'} stacked on other snacks, counting only once.`:''} Good enough if you say so.`;
+ $('nextBtn').textContent=state.round===RACKS.length-1?'First rack ↺':'Next rack →';$('modal').hidden=false;state.isPerfect=full;draw();}
+function drawRounded(x,y,w,h,r,fill,stroke=null,sw=1){ctx.beginPath();ctx.roundRect(x,y,w,h,r);ctx.fillStyle=fill;ctx.fill();if(stroke){ctx.strokeStyle=stroke;ctx.lineWidth=sw;ctx.stroke();}}
+function label(text,x,y,size=13,color='#30283e',weight='900',align='left'){ctx.font=`${weight} ${size}px ui-rounded,system-ui, sans-serif`;ctx.textAlign=align;ctx.textBaseline='middle';ctx.fillStyle=color;ctx.fillText(text,x,y);}
+function tint(hex,alpha){return hex+alpha}
+function drawPiece(piece){const isSelected=piece.id===state.selected,tiles=pieceTiles(piece);for(const tile of tiles){drawRounded(tile.x,tile.y+2,tile.w,tile.h,6,'#33283b30');drawRounded(tile.x,tile.y,tile.w,tile.h-2,7,piece.color,isSelected?'#fffef5':'#33283b',isSelected?3.4:2.2);drawRounded(tile.x+5,tile.y+5,Math.max(5,tile.w-10),Math.max(5,tile.h*.17),3,'#ffffff53');}
+ if(piece.pos){const first=tiles[0];if(first)label(piece.name,first.x+first.w/2,first.y+first.h*.64,9.5,'#30283e','1000','center');}}
+function drawGhost(){if(!state.drag||!state.drag.hasMoved)return;const piece=state.pieces.find(p=>p.id===state.drag.id),p=state.drag.last,{gx,gy}=dropGrid(piece,p.x,p.y,'drag');const valid=validPlacement(piece,gx,gy),shape=cellsFor(piece);
+ if(insideBoard(p.x,p.y)){for(const [dx,dy] of shape){const x=BX+(gx+dx)*STEP,y=BY+(gy+dy)*STEP;drawRounded(x,y,CELL,CELL,7,valid?'#74d6b0aa':'#ee857fa6',valid?'#208b6a':'#b65a4f',2.5);}}
+ else{const {width,height}=pixelShape(piece,CELL,GAP),ox=p.x-width/2,oy=p.y-height/2;for(const [dx,dy] of shape)drawRounded(ox+dx*STEP,oy+dy*STEP,CELL,CELL,7,piece.color,'#30283e',2);}}
+function drawFixture(px,py,x,y){
+ // Permanent counter fixtures, screwed to the rack. They aren't empty shelf spaces.
+ drawRounded(px+3,py+3,CELL-6,CELL-6,7,'#9a7469','#5f4b55',1.5);
+ drawRounded(px+7,py+8,CELL-14,CELL-17,5,'#d9c0a3','#634e57',1.3);
+ const palette=['#efb570','#a6d7bc','#f1b3a2','#b7abd6'];
+ const accent=palette[(x+y*3)%palette.length];
+ if((x+y)%3===0){ // a bolted-in vintage tin
+  drawRounded(px+15,py+14,18,21,4,accent,'#604a55',1.5);
+  drawRounded(px+15,py+14,18,4,2,'#faf2de','#604a55',1);
+  label('✦',px+24,py+27,10,'#604a55','900','center');
+ }else if((x+y)%3===1){ // fixed cardboard countertop box
+  drawRounded(px+12,py+18,24,18,2,accent,'#604a55',1.5);
+  ctx.strokeStyle='#6b5559';ctx.lineWidth=1.5;
+  ctx.beginPath();ctx.moveTo(px+24,py+19);ctx.lineTo(px+24,py+35);ctx.stroke();
+  drawRounded(px+12,py+14,24,6,2,'#f9e5bd','#604a55',1.2);
+ }else{ // permanent little display canister
+  drawRounded(px+15,py+16,18,19,6,accent,'#604a55',1.5);
+  drawRounded(px+13,py+13,22,6,3,'#f6e6cc','#604a55',1.3);
+ }
+ for(const ox of [8,CELL-8]){
+  ctx.beginPath();ctx.arc(px+ox,py+CELL-7,2.1,0,Math.PI*2);ctx.fillStyle='#584553';ctx.fill();
+  ctx.beginPath();ctx.moveTo(px+ox-1,py+CELL-7);ctx.lineTo(px+ox+1,py+CELL-7);ctx.strokeStyle='#e8cfa9';ctx.lineWidth=1;ctx.stroke();
+ }
+}
+function draw(){ctx.clearRect(0,0,W,H);ctx.fillStyle='#fff9ef';ctx.fillRect(0,0,W,H);
+ // The display has one exact coordinate system: its cells and each snack square.
+ drawRounded(BOARD_BOX.x+2,BOARD_BOX.y+4,BOARD_BOX.w,BOARD_BOX.h,17,'#d3bda9');drawRounded(BOARD_BOX.x,BOARD_BOX.y,BOARD_BOX.w,BOARD_BOX.h,17,'#dcf0e7','#30283e',3.2);
+ label('DISPLAY SHELF',BOARD_BOX.x+13,BOARD_BOX.y+22,14,'#30283e','1000');
+ const blocked=blockedSet();
+ for(let y=0;y<ROWS;y++)for(let x=0;x<COLS;x++){
+ const px=BX+x*STEP,py=BY+y*STEP,locked=blocked.has(`${x},${y}`);
+ drawRounded(px,py,CELL,CELL,7,locked?'#bfa08a':'#f8f0e2',locked?'#b5907a':'#d6c7b7',1.2);
+ if(locked){drawFixture(px,py,x,y);}}
+ drawRounded(CRATE_BOX.x+2,CRATE_BOX.y+4,CRATE_BOX.w,CRATE_BOX.h,17,'#d4bda1');drawRounded(CRATE_BOX.x,CRATE_BOX.y,CRATE_BOX.w,CRATE_BOX.h,17,'#f2e2c8','#30283e',3.2);
+ label('RESTOCK CRATE',CRATE_BOX.x+12,CRATE_BOX.y+23,14,'#30283e','1000');label('TAP AGAIN TO ROTATE',CRATE_BOX.x+CRATE_BOX.w-12,CRATE_BOX.y+23,9,'#836b6d','850','right');
+ for(let i=0;i<state.pieces.length;i++){if(!state.pieces[i].pos){const item=state.pieces[i],s=traySlots[item.slot];drawRounded(s.x,s.y,93,58,11,'#fff9ec','#d6bea6',1.5);
+ label(item.name,s.x+46.5,s.y+11.5,10,'#594d5b','1000','center');}}
+ for(const p of [...state.pieces].sort((a,b)=>(a.z||0)-(b.z||0))){if(state.drag?.id===p.id&&state.drag?.hasMoved)continue;drawPiece(p)}
+ drawGhost();
+ if(state.isPerfect){label('✦ ✨',290,32,20,'#238b70','900','center');}}
+canvas.addEventListener('pointerdown',onDown);canvas.addEventListener('pointermove',onMove);canvas.addEventListener('pointerup',onUp);canvas.addEventListener('pointercancel',onCancel);
+$('rotateBtn').addEventListener('click',rotateSelected);$('returnBtn').addEventListener('click',putBack);$('resetBtn').addEventListener('click',reset);$('checkBtn').addEventListener('click',check);
+$('retryBtn').addEventListener('click',()=>{$('modal').hidden=true;reset()});$('nextBtn').addEventListener('click',()=>{$('modal').hidden=true;loadRound((state.round+1)%RACKS.length)});
+$('helpBtn').addEventListener('click',()=>{const hidden=$('helpText').hidden;$('helpText').hidden=!hidden;$('helpBtn').setAttribute('aria-expanded',String(hidden));});
+verifyPuzzles();loadRound(0);deviceSetup();
+// Noninteractive test seam used to verify geometry and completion; not part of gameplay.
+window.__snackTest={state,RACKS,validPlacement,rotateN,loadRound,check,update};
+})();
+</script>
+</body>
+</html>

@@ -1,0 +1,112 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#292339"><title>Lane 7 · Last Call</title>
+<style>
+:root{--ink:#2c263d;--cream:#fff9ee;--teal:#248b80;--mint:#b8ecd5;--gold:#ffcf72;--rose:#e98989}
+*{box-sizing:border-box}html{background:#e7d8ca}body{margin:0;color:var(--ink);background:#e7d8ca;font-family:ui-rounded,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;-webkit-user-select:none;user-select:none;-webkit-touch-callout:none}button{font:inherit;cursor:pointer;-webkit-tap-highlight-color:transparent}button:focus-visible{outline:3px solid #ffb365;outline-offset:3px}
+main{max-width:600px;margin:auto;padding:16px 11px 28px}header{display:flex;justify-content:space-between;gap:12px;align-items:flex-start;margin:5px 5px 15px}.eyebrow{font-size:11px;font-weight:1000;letter-spacing:.17em;color:#785a6c;text-transform:uppercase}h1{margin:2px 0 0;font-size:clamp(38px,8vw,53px);line-height:.94;letter-spacing:-.08em}h1 em{color:var(--teal);font-style:normal}.subtitle{font-size:12px;font-weight:800;color:#766776;text-align:right;max-width:160px;line-height:1.35;padding-top:5px}
+.cabinet{background:var(--cream);border:4px solid var(--ink);border-radius:20px;box-shadow:6px 8px 0 #a38d8b;overflow:hidden}.status{display:flex;justify-content:space-between;align-items:center;gap:10px;background:var(--ink);color:white;padding:10px 15px;min-height:66px}.status small{font-size:10px;display:block;font-weight:950;letter-spacing:.13em;color:#bde6d4}.status strong{font-size:17px}.status .time{font-variant-numeric:tabular-nums;text-align:right}.status .time strong{font-size:25px}.status .time.low strong{color:#ffaf8f}
+.scene{position:relative;background:#c4e0d3}.scene canvas{display:block;width:100%;height:auto;aspect-ratio:480/570;touch-action:none;cursor:grab}.scene canvas.dragging{cursor:grabbing}.panel{padding:14px 18px 19px;min-height:110px}.panel[hidden]{display:none!important}.panel h2{font-size:25px;margin:0 0 5px;letter-spacing:-.04em}.panel p{font-size:14px;line-height:1.4;color:#736674;margin:6px 0 13px}.actions{display:flex;gap:9px}.action{min-height:53px;flex:1;border:3px solid var(--ink);border-radius:12px;background:var(--gold);color:var(--ink);font-weight:1000;font-size:16px;box-shadow:0 4px 0 #bb916a;padding:9px 14px;touch-action:manipulation}.action:active{transform:translateY(2px);box-shadow:0 2px 0 #bb916a}.action.secondary{background:var(--mint)}.hint{display:flex;align-items:center;justify-content:space-between;gap:10px}.hint span{font-size:13px;color:#776875;font-weight:750}.help{background:#eee5d9;border:2px solid #b9a7a0;border-radius:10px;font-size:13px;padding:8px 10px;color:var(--ink);font-weight:950}.helptext{font-size:12px;color:#716875;line-height:1.4;margin-top:10px}.result{font-size:14px;font-weight:800;color:#5e5362}.result strong{font-size:30px;color:var(--ink);letter-spacing:-.05em}.foot{font-size:11px;color:#857482;text-align:center;margin:17px 10px;line-height:1.4}
+@media(max-width:430px){main{padding:11px 7px 22px}header{margin:3px 5px 10px}.status{min-height:58px;padding:9px 12px}.status strong{font-size:15px}.status .time strong{font-size:22px}.panel{padding:12px 13px 15px;min-height:100px}.panel h2{font-size:22px}.subtitle{max-width:120px;font-size:11px}}
+</style>
+</head>
+<body>
+<main>
+<header><div><div class="eyebrow">The league night aftermath</div><h1>Lane <em>7.</em></h1></div><div class="subtitle">Last call.<br>Last one out cleans up.</div></header>
+<section class="cabinet" aria-label="Lane 7 Last Call sorting minigame">
+<div class="status"><div><small>LANE CLEANUP</small><strong id="tally">12 objects to clear</strong></div><div class="time" id="timeWrap"><small>TIME LEFT</small><strong id="clock">0:30</strong></div></div>
+<div class="scene"><canvas id="board" role="img" aria-label="Arcade sorting table. Flick abandoned objects into Recycling, Trash, or Lost and Found bins on the right."></canvas></div>
+<div class="panel" id="intro"><h2>League night was a lot.</h2><p>Flick the leftovers into the right bins. Bottles slide; napkins don't. The birthday cake is… a situation.</p><button class="action" id="start">Clock in →</button></div>
+<div class="panel" id="play" hidden><div class="hint"><span id="tip">Flick or drag an object into a bin.</span><button class="help" id="helpButton" aria-expanded="false" aria-controls="helpText">?</button></div><div class="helptext" id="helpText" hidden>Recycling: bottles and cans. Trash: food mess and party rubbish. Lost &amp; Found: personal belongings and anything someone might miss. Wrong bins count, too.</div></div>
+<div class="panel" id="done" hidden><h2 id="resultTitle">Closing time.</h2><p id="resultText">A tidy-ish end to league night.</p><div class="result"><strong id="finalScore">0 / 12</strong> sorted correctly</div><div class="actions" style="margin-top:14px"><button class="action" id="again">Another shift ↻</button></div></div>
+</section><div class="foot">Lane 7 · Tiny minigame prototype · No sound, no town-wide systems, no mandatory orientation.</div>
+</main>
+<script>
+(()=>{'use strict';
+const canvas=document.getElementById('board'),ctx=canvas.getContext('2d');
+const W=480,H=570,binX=337, binW=136;
+const $=id=>document.getElementById(id);
+const clamp=(v,a,b)=>Math.max(a,Math.min(b,v));
+const designs=[
+ {name:'Bottle',type:'bottle',dest:0,col:'#83c2a4',mass:1.00,drag:.967},
+ {name:'Napkin',type:'napkin',dest:1,col:'#f0c9b7',mass:.78,drag:.895},
+ {name:'Shoe',type:'shoe',dest:2,col:'#b392ca',mass:.92,drag:.945},
+ {name:'Soda can',type:'can',dest:0,col:'#f59b8b',mass:1.16,drag:.972},
+ {name:'Nacho tray',type:'nachos',dest:1,col:'#efb755',mass:.82,drag:.925},
+ {name:'Car keys',type:'keys',dest:2,col:'#b4a3a1',mass:1.02,drag:.961},
+ {name:'Glass bottle',type:'bottle',dest:0,col:'#7cbcc4',mass:1.08,drag:.969},
+ {name:'Party hat',type:'hat',dest:1,col:'#cd91cf',mass:.75,drag:.918},
+ {name:'Bowling trophy',type:'trophy',dest:2,col:'#e1b653',mass:1.04,drag:.97},
+ {name:'Paper cup',type:'cup',dest:1,col:'#ead6b5',mass:.8,drag:.91},
+ {name:'Dinosaur',type:'dino',dest:2,col:'#82c5a3',mass:1.04,drag:.963},
+ {name:'Birthday cake',type:'cake',dest:1,col:'#ee9cb0',mass:1.65,drag:.985}
+];
+const slots=[{x:86,y:172},{x:223,y:187},{x:122,y:284},{x:252,y:312},{x:73,y:413},{x:220,y:447}];
+const binYs=[90,243,396], binH=133, names=['RECYCLING','TRASH','LOST & FOUND'];
+let items=[], currentIndex=0, completed=0,correct=0,active=false,stage='intro',held=null,dragState=null,tipUntil=0,particle=[],popups=[],timeLeft=30,last=0,raf=0,gameCount=0;
+function resize(){const dpr=Math.min(window.devicePixelRatio||1,2);if(canvas.width!==Math.round(W*dpr)||canvas.height!==Math.round(H*dpr)){canvas.width=Math.round(W*dpr);canvas.height=Math.round(H*dpr)}ctx.setTransform(dpr,0,0,dpr,0,0);draw()}window.addEventListener('resize',resize);
+function rr(x,y,w,h,r,fill,stroke,lw=2){ctx.beginPath();ctx.roundRect(x,y,w,h,r);if(fill){ctx.fillStyle=fill;ctx.fill()}if(stroke){ctx.strokeStyle=stroke;ctx.lineWidth=lw;ctx.stroke()}}
+function text(s,x,y,size=13,col='#2c263d',align='center',weight=900){ctx.fillStyle=col;ctx.font=`${weight} ${size}px ui-rounded,system-ui,sans-serif`;ctx.textAlign=align;ctx.textBaseline='middle';ctx.fillText(s,x,y)}
+function begin(){gameCount++;stage='play';active=true;timeLeft=30;currentIndex=0;completed=0;correct=0;held=null;dragState=null;items=[];particle=[];popups=[];$('intro').hidden=true;$('done').hidden=true;$('play').hidden=false;$('tally').textContent='12 objects to clear';$('clock').textContent='0:30';$('timeWrap').classList.remove('low');$('tip').textContent='Flick or drag an object into a bin.';spawn();last=performance.now();cancelAnimationFrame(raf);raf=requestAnimationFrame(frame)}
+function spawn(){const count=Math.min(6,designs.length-currentIndex);if(!count)return;const arr=designs.slice(currentIndex,currentIndex+count);currentIndex+=count;items.push(...arr.map((d,i)=>({...d,id:currentIndex-count+i,x:slots[i].x,y:slots[i].y,vx:0,vy:0,angle:(i%3-1)*.08,r:d.type==='cake'?36:30,dragging:false,settled:false,slot:i})));}
+function point(ev){const r=canvas.getBoundingClientRect();return{x:(ev.clientX-r.left)/r.width*W,y:(ev.clientY-r.top)/r.height*H}}
+function hitItem(p){return items.slice().reverse().find(a=>!a.settled&&Math.hypot(a.x-p.x,a.y-p.y)<a.r+10)}
+canvas.addEventListener('pointerdown',e=>{if(!active)return;const p=point(e),a=hitItem(p);if(!a)return;e.preventDefault();canvas.setPointerCapture(e.pointerId);held=a;a.dragging=true;a.vx=a.vy=0;const t=performance.now();dragState={id:e.pointerId,dx:a.x-p.x,dy:a.y-p.y,samples:[{x:p.x,y:p.y,t}]};canvas.classList.add('dragging')});
+canvas.addEventListener('pointermove',e=>{if(!held||!dragState||dragState.id!==e.pointerId)return;e.preventDefault();const p=point(e),now=performance.now();held.x=clamp(p.x+dragState.dx,24,458);held.y=clamp(p.y+dragState.dy,45,547);dragState.samples.push({x:held.x,y:held.y,t:now});dragState.samples=dragState.samples.filter(s=>now-s.t<130).slice(-10);held.angle=clamp((held.x-140)/720,-.22,.22)});
+function release(e){if(!held||!dragState||dragState.id!==e.pointerId)return;e.preventDefault();const a=held,s=dragState.samples,lastS=s[s.length-1];let first=s[0];for(let i=s.length-1;i>=0;i--){if(lastS.t-s[i].t>55){first=s[i];break}}let dt=Math.max(.025,(lastS.t-first.t)/1000);const vx=(lastS.x-first.x)/dt,vy=(lastS.y-first.y)/dt;const power=0.83*a.mass;a.vx=clamp(vx*power,-1500,1500);a.vy=clamp(vy*power,-1400,1400);a.dragging=false;if(a.x>binX-5){const i=binAt(a.y);if(i>=0)sort(a,i)}held=null;dragState=null;canvas.classList.remove('dragging')}
+canvas.addEventListener('pointerup',release);canvas.addEventListener('pointercancel',release);canvas.addEventListener('lostpointercapture',()=>{if(held){held.dragging=false;held=null;dragState=null;canvas.classList.remove('dragging')}});
+function binAt(y){return binYs.findIndex(b=>y>=b&&y<=b+binH)}
+function sort(a,b){if(a.settled)return;a.settled=true;items=items.filter(i=>i!==a);completed++;const good=a.dest===b;if(good)correct++;const bx=binX+binW/2,by=binYs[b]+binH/2;
+for(let j=0;j<9;j++){const theta=j*Math.PI*2/9;particle.push({x:bx,y:by,vx:Math.cos(theta)*(45+Math.random()*75),vy:Math.sin(theta)*(45+Math.random()*75)-30,t:0.6,col:good?'#ffcf72':'#f39b88'})}
+popups.push({x:bx,y:by-15,t:0.78,text:good?'NICE!':'HMM.',col:good?'#257f6e':'#a45155'});
+$('tally').textContent= (12-completed)+' '+((12-completed)===1?'object':'objects')+' left';$('tip').textContent=good?'Filed under: '+names[b].toLowerCase()+'.':'Well, it went somewhere.';
+if(completed===6){spawn()}
+if(completed===12){setTimeout(()=>{if(stage==='play')end('cleared')},850)}
+}
+function end(reason){if(!active)return;active=false;stage='done';held=null;dragState=null;canvas.classList.remove('dragging');$('play').hidden=true;$('done').hidden=false;$('clock').textContent= timeLeft<=0?'0:00':'0:'+String(Math.ceil(timeLeft)).padStart(2,'0');$('resultTitle').textContent=reason==='cleared'?'Lane cleared!':'Closing time!';$('resultText').textContent=correct===12?'The building has never been this organized.':correct===0?'Well, at least some stuff moved.':completed===12?'The bins have opinions. Management will survive.':'The next shift can take it from here.';$('finalScore').textContent=correct+' / 12';cancelAnimationFrame(raf);draw()}
+function update(dt){timeLeft=Math.max(0,timeLeft-dt);$('clock').textContent='0:'+String(Math.ceil(timeLeft)).padStart(2,'0');$('timeWrap').classList.toggle('low',timeLeft<=8);
+for(const a of [...items]){if(a.dragging)continue;const decay=Math.pow(a.drag,dt*60);a.x+=a.vx*dt;a.y+=a.vy*dt;a.vx*=decay;a.vy*=decay;a.angle+=a.vx*dt*.0012;
+if(a.x>binX-7){const b=binAt(a.y);if(b>=0){sort(a,b);continue} a.x=binX-7;a.vx=Math.min(0,-Math.abs(a.vx)*.35)}
+if(a.x<29){a.x=29;a.vx=Math.abs(a.vx)*.25}if(a.y<60){a.y=60;a.vy=Math.abs(a.vy)*.25}if(a.y>540){a.y=540;a.vy=-Math.abs(a.vy)*.25}
+if(Math.abs(a.vx)<4)a.vx=0;if(Math.abs(a.vy)<4)a.vy=0;
+}
+particle=particle.filter(p=>{p.t-=dt;p.x+=p.vx*dt;p.y+=p.vy*dt;p.vy+=250*dt;return p.t>0});popups=popups.filter(p=>{p.t-=dt;p.y-=23*dt;return p.t>0});if(timeLeft<=0)end('timeout')}
+function frame(now){const dt=clamp((now-last)/1000,0,.045);last=now;if(active)update(dt);draw();if(active)raf=requestAnimationFrame(frame)}
+function drawBackground(){
+ctx.fillStyle='#b9dacd';ctx.fillRect(0,0,W,H);
+ctx.fillStyle='#b1d2c5';for(let y=0;y<145;y+=39)ctx.fillRect(0,y,W,2);
+ctx.fillStyle='#dfac91';ctx.fillRect(0,137,W,433);ctx.fillStyle='#f0c4a6';ctx.fillRect(0,139,W,14);
+for(let y=174;y<H;y+=102){ctx.strokeStyle='#cc977f';ctx.lineWidth=3;ctx.beginPath();ctx.moveTo(0,y);ctx.lineTo(320,y);ctx.stroke()}
+rr(13,15,287,43,12,'#fff1d3','#42334e',3);text('LANE 7 · AFTER HOURS',156,37,14,'#42334e');
+// sorting destinations
+const defs=[{col:'#9fe0c3',dark:'#277e6e',icon:'♻',desc:'BOTTLES + CANS'},{col:'#ffcb87',dark:'#a56a48',icon:'✕',desc:'RUBBISH'},{col:'#d3bce6',dark:'#71588e',icon:'★',desc:'PERSONAL STUFF'}];
+for(let i=0;i<3;i++){const y=binYs[i],d=defs[i];rr(binX+3,y+7,binW,binH,13,'#927a86',null);rr(binX,y,binW,binH,13,d.col,'#372c44',4);rr(binX+11,y+9,binW-22,binH-20,9,'#fff8e9b5',d.dark,2);text(d.icon,binX+binW/2,y+39,30,d.dark);text(names[i],binX+binW/2,y+79,i===2?11:13,'#2c263d');text(d.desc,binX+binW/2,y+102,9,'#735e70');}
+ctx.strokeStyle='#967a6a';ctx.lineWidth=5;ctx.setLineDash([9,8]);ctx.beginPath();ctx.moveTo(317,78);ctx.lineTo(317,538);ctx.stroke();ctx.setLineDash([]);
+}
+function drawObj(a){ctx.save();ctx.translate(a.x,a.y);ctx.rotate(a.angle);ctx.globalAlpha=.18;ctx.fillStyle='#503a46';ctx.beginPath();ctx.ellipse(3,24,a.r,10,0,0,Math.PI*2);ctx.fill();ctx.globalAlpha=1;const dark='#372e46';
+switch(a.type){
+case 'bottle':ctx.rotate(-.27);rr(-17,-24,34,51,8,a.col,dark,3);rr(-8,-39,16,19,3,a.col,dark,3);rr(-9,-43,18,5,2,'#fbe5a9',dark,2);rr(-13,-2,26,16,4,'#ffe9bd',null);text('7',0,6,12,'#805b62');break;
+case 'napkin':ctx.rotate(.14);rr(-28,-24,55,48,6,'#ffebd8',dark,3);ctx.strokeStyle='#d3a59e';ctx.lineWidth=2;ctx.beginPath();ctx.moveTo(-18,-14);ctx.lineTo(12,14);ctx.lineTo(20,-7);ctx.stroke();break;
+case 'shoe':ctx.rotate(-.12);ctx.beginPath();ctx.moveTo(-30,1);ctx.lineTo(-18,-20);ctx.lineTo(6,-18);ctx.lineTo(12,0);ctx.quadraticCurveTo(33,2,31,16);ctx.quadraticCurveTo(-10,27,-30,14);ctx.closePath();ctx.fillStyle=a.col;ctx.fill();ctx.lineWidth=4;ctx.strokeStyle=dark;ctx.stroke();ctx.strokeStyle='#fff5e1';ctx.lineWidth=3;for(let j=0;j<3;j++){ctx.beginPath();ctx.moveTo(-8+j*5,-10);ctx.lineTo(3+j*5,-7);ctx.stroke()}break;
+case 'can':rr(-19,-29,38,58,11,a.col,dark,3);rr(-18,-29,36,11,7,'#e8d5cd',dark,2);rr(-17,18,34,10,5,'#dbbac1',dark,2);text('POP',0,3,13,'#ffead2');break;
+case 'nachos':ctx.beginPath();ctx.moveTo(-30,-16);ctx.lineTo(30,-16);ctx.lineTo(20,22);ctx.lineTo(-20,22);ctx.closePath();ctx.fillStyle='#e6ab7b';ctx.fill();ctx.lineWidth=3;ctx.strokeStyle=dark;ctx.stroke();for(let j=0;j<3;j++){ctx.fillStyle=['#ffc85e','#e88c43','#f1b245'][j];ctx.beginPath();ctx.moveTo(-25+j*16,-11);ctx.lineTo(-16+j*16,-32);ctx.lineTo(-6+j*16,-10);ctx.closePath();ctx.fill()}break;
+case 'keys':ctx.strokeStyle='#8f8993';ctx.lineWidth=6;ctx.beginPath();ctx.arc(-14,-5,12,0,Math.PI*2);ctx.stroke();ctx.beginPath();ctx.moveTo(-4,2);ctx.lineTo(20,20);ctx.lineTo(24,14);ctx.moveTo(13,14);ctx.lineTo(18,8);ctx.stroke();break;
+case 'hat':ctx.beginPath();ctx.moveTo(-30,23);ctx.lineTo(0,-37);ctx.lineTo(30,23);ctx.closePath();ctx.fillStyle=a.col;ctx.fill();ctx.lineWidth=4;ctx.strokeStyle=dark;ctx.stroke();ctx.fillStyle='#ffca78';ctx.beginPath();ctx.arc(0,-37,8,0,Math.PI*2);ctx.fill();ctx.fillStyle='#fff0c8';for(let i=0;i<3;i++){ctx.beginPath();ctx.arc(-10+i*10,7-i*10,4,0,7);ctx.fill()}break;
+case 'trophy':rr(-19,8,38,12,3,'#74506a',dark,2);rr(-13,-5,26,16,3,'#f1c26d',dark,2);ctx.beginPath();ctx.moveTo(-16,-30);ctx.lineTo(16,-30);ctx.lineTo(11,-7);ctx.quadraticCurveTo(0,2,-11,-7);ctx.closePath();ctx.fillStyle='#e9b553';ctx.fill();ctx.lineWidth=3;ctx.strokeStyle=dark;ctx.stroke();text('★',0,-17,14,'#735171');break;
+case 'cup':rr(-22,-24,44,49,7,'#f9eddb',dark,3);rr(-24,-24,48,11,5,'#f3bea7',dark,2);text('7',0,1,19,'#a77692');break;
+case 'dino':ctx.fillStyle=a.col;ctx.strokeStyle=dark;ctx.lineWidth=3;ctx.beginPath();ctx.moveTo(-26,13);ctx.lineTo(-8,-5);ctx.lineTo(-8,-18);ctx.lineTo(7,-20);ctx.lineTo(17,-7);ctx.lineTo(22,18);ctx.lineTo(6,19);ctx.lineTo(-4,9);ctx.closePath();ctx.fill();ctx.stroke();ctx.fillStyle=dark;ctx.beginPath();ctx.arc(5,-13,2.8,0,7);ctx.fill();break;
+case 'cake':rr(-31,-12,62,37,8,'#f8c28b',dark,3);rr(-32,-22,64,19,8,'#f6a5c4',dark,3);rr(-34,21,68,7,3,'#fff1cc',dark,2);for(let i=-17;i<=17;i+=17){rr(i-3,-37,6,17,2,'#fce7a1',dark,1);ctx.fillStyle='#ef8f54';ctx.beginPath();ctx.arc(i,-42,4,0,7);ctx.fill()}break;
+}
+ctx.restore()}
+function draw(){ctx.clearRect(0,0,W,H);drawBackground();for(const a of items){if(a!==held)drawObj(a)}if(held)drawObj(held);
+for(const p of particle){ctx.globalAlpha=clamp(p.t*1.8,0,1);ctx.fillStyle=p.col;ctx.beginPath();ctx.arc(p.x,p.y,4,0,Math.PI*2);ctx.fill();ctx.globalAlpha=1}
+for(const p of popups){ctx.globalAlpha=clamp(p.t*2,0,1);rr(p.x-36,p.y-16,72,31,8,'#fff8e8','#46384d',2);text(p.text,p.x,p.y,13,p.col);ctx.globalAlpha=1}
+if(stage==='intro'){ctx.fillStyle='#2c263d66';ctx.fillRect(0,0,W,H);rr(52,237,258,104,16,'#fff6df','#3b304b',4);text('THE MORNING AFTER',181,268,14,'#72566c');text('12 things. 3 bins.',181,305,23,'#2c263d')}
+}
+$('start').addEventListener('click',begin);$('again').addEventListener('click',begin);$('helpButton').addEventListener('click',()=>{const hidden=!$('helpText').hidden;$('helpText').hidden=hidden;$('helpButton').setAttribute('aria-expanded',String(!hidden))});resize();
+})();
+</script>
+</body>
+</html>

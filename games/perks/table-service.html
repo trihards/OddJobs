@@ -1,0 +1,127 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#f4e7cf">
+<title>Perks · Table Service 3.0</title>
+<style>
+:root{--ink:#282538;--plum:#49385d;--cream:#f7ecdb;--paper:#fffaf1;--teal:#0e877d;--mint:#baf1d5;--coral:#ed866d;--gold:#ffcc66;--muted:#6e6871;--shadow:#c9ae9e}
+*{box-sizing:border-box}html{min-height:100%;background:#f4e7cf}body{margin:0;color:var(--ink);font-family:ui-rounded,"Avenir Next","Trebuchet MS",system-ui,sans-serif;background:radial-gradient(circle at 15% 3%,#fff7dc,transparent 36%),#f4e7cf;min-height:100vh;-webkit-font-smoothing:antialiased}button{font:inherit;cursor:pointer;-webkit-tap-highlight-color:transparent}button:focus-visible{outline:4px solid #ffae32;outline-offset:3px}
+.app{width:min(760px,100%);margin:auto;padding:clamp(12px,3vw,24px) clamp(12px,3vw,22px) 32px}.top{display:flex;align-items:flex-start;justify-content:space-between;gap:12px;margin:4px 0 16px}.eyebrow{font-size:11px;letter-spacing:.17em;font-weight:1000;color:#7b5864;text-transform:uppercase;margin-bottom:5px}.top h1{font-size:clamp(34px,7vw,49px);line-height:.95;letter-spacing:-.06em;margin:0}.top h1 em{font-style:normal;color:var(--teal)}.top-note{max-width:186px;text-align:right;font-size:13px;line-height:1.35;color:#665f6a;padding-top:6px}
+.shop{overflow:hidden;border:3px solid var(--ink);border-radius:20px;background:var(--paper);box-shadow:5px 6px 0 var(--shadow)}.shopbar{display:flex;justify-content:space-between;align-items:center;gap:10px;padding:10px 15px;background:var(--plum);color:white}.shopbar small{display:block;font-size:10px;letter-spacing:.12em;opacity:.72;text-transform:uppercase;font-weight:900}.shopbar strong{font-size:16px;letter-spacing:-.025em}.order{display:flex;gap:9px;align-items:center}.ticket{background:var(--gold);color:var(--ink);padding:5px 9px;border-radius:5px;transform:rotate(-3deg);font-weight:1000;font-size:13px;white-space:nowrap}.best{text-align:right;font-size:13px}.best strong{font-size:16px}
+.progress{display:flex;gap:3px;background:var(--ink);padding:3px 3px 0}.step{height:32px;display:flex;align-items:center;justify-content:center;gap:7px;flex:1;background:#e7dfd3;color:#7b7282;font-weight:1000;font-size:11px;letter-spacing:.05em}.step:first-child{border-top-left-radius:5px}.step:last-child{border-top-right-radius:5px}.step.active{background:var(--gold);color:var(--ink)}.step.done{background:#b7eed7;color:#20564c}
+.scene{position:relative;isolation:isolate;background:#bfd9cf;overflow:hidden;padding:20px clamp(10px,4vw,35px) 27px;border-bottom:3px solid var(--ink)}.scene:before{content:"";position:absolute;inset:0;background:repeating-linear-gradient(0deg,transparent 0 39px,#6eaca225 40px 42px),repeating-linear-gradient(90deg,transparent 0 45px,#6eaca222 46px 48px);pointer-events:none}.sign{position:absolute;top:8px;left:10px;z-index:4;background:#fff6dc;border:2px solid var(--plum);border-radius:8px;padding:5px 9px;transform:rotate(-4deg);font-size:10px;font-weight:1000;letter-spacing:.1em;box-shadow:2px 3px 0 #74958c}.sign span{display:block;font-size:8px;letter-spacing:.12em;color:var(--teal);margin-top:2px}
+.table-wrap{max-width:630px;width:100%;margin:8px auto 0;position:relative;filter:drop-shadow(0 11px 0 #56646d50) drop-shadow(3px 9px 0 #22223d1c)}.table{position:relative;width:100%;aspect-ratio:640/360;border:7px solid #604454;border-radius:48px;overflow:hidden;background:linear-gradient(100deg,#e7b88c 0%,#edcaa3 15%,#edc49a 42%,#e4b488 75%,#edc8a1 100%)}.table:before{content:"";position:absolute;inset:0;background:repeating-linear-gradient(6deg,transparent 0 36px,#b9846630 37px 39px,transparent 40px 74px);opacity:.55;pointer-events:none}.table:after{content:"";position:absolute;inset:6px;border:2px solid #fff0c345;border-radius:37px;pointer-events:none}.table canvas{position:absolute;inset:0;width:100%;height:100%;touch-action:none;-webkit-user-select:none;user-select:none;-webkit-touch-callout:none;cursor:crosshair;z-index:2}.table canvas:focus-visible{outline:4px solid #ffae32}.table .cloth{position:absolute;z-index:5;left:0;top:0;width:49px;height:47px;transform:translate(-50%,-50%) rotate(-12deg);pointer-events:none;display:none;filter:drop-shadow(2px 3px 0 #49385d45)}.table .cloth .rag{position:absolute;inset:5px 6px 6px 4px;background:#ffe185;border:3px solid #725669;border-radius:10px 13px 11px 7px;transform:skew(3deg,-7deg)}.table .cloth .rag:after{content:"";position:absolute;inset:8px;border:2px dashed #e4a64e;border-radius:4px}.table .cloth .spark{position:absolute;right:-9px;top:-9px;color:#fffceb;text-shadow:1px 2px #4d7c70;font-weight:1000;font-size:24px}
+.flash{position:absolute;z-index:7;inset:0;background:#fffbefd8;display:flex;align-items:center;justify-content:center;text-align:center;flex-direction:column;gap:5px;pointer-events:none}.flash strong{font-size:clamp(22px,5vw,36px);letter-spacing:-.04em;transform:rotate(-3deg);color:#277c65;text-shadow:2px 2px 0 white}.flash span{font-size:13px;font-weight:900;color:var(--plum)}.flash[hidden]{display:none}
+.workarea{padding:18px clamp(14px,3vw,23px) 17px;min-height:232px;background:var(--paper);-webkit-user-select:none;user-select:none;-webkit-touch-callout:none}.intro,.result{text-align:center}.sub{color:var(--teal);font-weight:1000;font-size:11px;letter-spacing:.16em;text-transform:uppercase}.intro h2,.result h2{font-size:clamp(24px,5vw,32px);letter-spacing:-.045em;line-height:1.12;margin:7px 0 8px}.intro p,.result p{margin:0 auto 15px;max-width:495px;line-height:1.45;color:#625b65;font-size:14px}.action{display:block;width:100%;min-height:57px;background:var(--gold);border:3px solid var(--ink);box-shadow:0 5px 0 #bd9761;border-radius:13px;font-size:17px;font-weight:1000;color:var(--ink);padding:10px 16px;touch-action:manipulation;-webkit-user-select:none;user-select:none;-webkit-touch-callout:none}.action:active{transform:translateY(3px);box-shadow:0 2px 0 #bd9761}
+.play h2{font-size:clamp(22px,4vw,27px);letter-spacing:-.04em;margin:0 0 4px}.instruction-head{display:flex;justify-content:space-between;gap:10px;align-items:baseline}.tag{font-weight:1000;font-size:10px;letter-spacing:.1em;background:#efe2c7;color:#725e55;padding:4px 7px;border-radius:4px;white-space:nowrap}.explain{margin:3px 0 14px;color:#645d68;font-size:13px;line-height:1.45}.meters{display:grid;grid-template-columns:1fr;gap:13px;align-items:center}.meter-label{display:flex;justify-content:space-between;gap:7px;font-size:12px;font-weight:900;margin-bottom:7px}.meter-label span:last-child{color:var(--teal);font-size:14px;font-variant-numeric:tabular-nums}.meter{height:19px;background:#e9dfd3;border:2px solid #6f6071;border-radius:10px;overflow:hidden}.meter-fill{height:100%;width:0;background:repeating-linear-gradient(100deg,#65c5a0 0 21px,#81dbb1 22px 30px);transition:width .09s linear}.meter.success .meter-fill{background:#0e877d}.timer{background:#f4ebdd;border:2px solid #c6b7a8;border-radius:12px;padding:7px 8px 8px;text-align:center}.timer small{display:block;font-size:10px;letter-spacing:.08em;color:#736b74;font-weight:1000}.timer strong{display:block;font-size:25px;line-height:1.17;letter-spacing:-.05em;font-variant-numeric:tabular-nums}.timer.danger{background:#ffe0d4;border-color:#ed866d;color:#9e443e}.finish{margin-top:12px;width:100%;border:2px solid #786b75;border-radius:10px;background:#f7e7d0;color:var(--ink);padding:9px 13px;font-weight:900;font-size:13px;min-height:43px;touch-action:manipulation}.finish:active{background:#eee0d0}.status{margin-top:10px;font-size:12px;font-weight:800;color:#756873;min-height:18px}.score{display:inline-flex;align-items:center;justify-content:center;gap:8px;background:var(--mint);border:3px solid var(--ink);border-radius:14px;padding:9px 18px;transform:rotate(-2deg);font-size:31px;font-weight:1000;letter-spacing:-.055em;margin:5px 0 12px}.score small{font-size:12px;letter-spacing:0;line-height:1.1;max-width:40px;text-align:left}.grades{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin:12px auto 15px;max-width:450px}.grade{background:#f8f0e5;border:1px solid #ddd1c5;border-radius:9px;padding:9px 4px;text-align:center}.grade span{display:block;font-size:10px;letter-spacing:.06em;color:#7e7071;text-transform:uppercase;font-weight:950}.grade strong{display:block;font-size:23px;font-variant-numeric:tabular-nums}.bottomline{display:flex;justify-content:space-between;gap:8px;align-items:center;margin-top:12px;font-size:12px;color:#716a70}.chit{background:#eee1d4;border:1px solid #d7c4b9;padding:5px 8px;border-radius:7px;white-space:nowrap;font-weight:850}.footnote{padding:13px 5px 0;font-size:12px;line-height:1.5;color:#736670;text-align:center}[hidden]{display:none!important}
+@media(max-width:520px){.app{padding:12px 10px 25px}.top{gap:6px;margin-bottom:12px}.top h1{font-size:37px}.top-note{font-size:11px;max-width:118px;padding-top:2px}.shopbar{padding:9px 11px}.shopbar strong{font-size:13px}.best strong{font-size:14px}.scene{padding:26px 9px 19px}.table{border-width:5px;border-radius:31px}.table:after{border-radius:24px}.sign{font-size:9px;top:6px;left:6px}.workarea{padding:15px 14px;min-height:226px}.step{font-size:10px}.grades{gap:5px}.grade span{font-size:9px}.bottomline{font-size:11px}}
+@media(prefers-reduced-motion:reduce){.meter-fill{transition:none}}
+</style>
+</head>
+<body>
+<main class="app">
+<header class="top"><div><div class="eyebrow">Perks · Café Lab 04</div><h1>Table <em>Service.</em></h1></div><div class="top-note">Now with extremely particular crumbs.</div></header>
+<section class="shop" aria-label="Table wiping minigame">
+ <div class="shopbar"><div class="order"><span class="ticket" id="ticket">SHIFT #01</span><div><small>Station</small><strong>Dining room</strong></div></div><div class="best"><small>Personal best</small><strong id="best">— / 100</strong></div></div>
+ <div class="progress"><div class="step" id="step0">01 · CRUMBS</div><div class="step" id="step1">02 · RINGS</div><div class="step" id="step2">03 · STICKY</div></div>
+ <div class="scene" id="scene"><div class="sign">PERKS<span>WIPE RESPONSIBLY</span></div>
+  <div class="table-wrap"><div class="table" id="table"><canvas id="mess" width="640" height="360" aria-label="Swipe your finger or mouse across the table to wipe away the mess"></canvas><div id="cloth" class="cloth" aria-hidden="true"><div class="rag"></div><span class="spark">✦</span></div></div><div class="flash" id="flash" hidden><strong id="flashTitle">TABLE READY!</strong><span id="flashText">A job well done.</span></div></div>
+ </div>
+ <div class="workarea" id="workarea">
+  <div id="intro" class="intro"><div class="sub">Next up: dining room duty</div><h2>Three tables. One tiny shift.</h2><p>Sweep the crumbs, fade the coffee rings, and scrub the sticky patches. Each mess reacts differently to your cloth. No timer, just clean tables.</p><button id="begin" class="action">Clock in →</button></div>
+  <div id="play" class="play" hidden><div class="instruction-head"><h2 id="tableName">01 · Crumb situation</h2><span id="tableTag" class="tag">TABLE 1 OF 3</span></div><p class="explain" id="tableHint">Swipe across the tabletop to clean it. Take your time and get everything clean.</p><div class="meters"><div><div class="meter-label"><span>TABLE CLEAN</span><span id="cleanPercent">0%</span></div><div id="meter" class="meter"><div id="meterFill" class="meter-fill"></div></div></div></div><div class="status" id="status" aria-live="polite">Swipe to wipe. Finish whenever you like.</div><button id="finishTable" class="finish" type="button">Finish this table →</button></div>
+  <div id="result" class="result" hidden><div class="sub">Shift complete</div><h2 id="resultTitle">Lovely work, that.</h2><div class="score"><span id="totalScore">85</span><small>out of<br>100</small></div><p id="resultNote">The tables are ready for their next guests.</p><div class="grades"><div class="grade"><span>Crumbs</span><strong id="score0">—</strong></div><div class="grade"><span>Rings</span><strong id="score1">—</strong></div><div class="grade"><span>Sticky</span><strong id="score2">—</strong></div></div><button id="again" class="action">Another shift ↻</button></div>
+  <div class="bottomline"><span id="footerStatus">The dining room is on standby.</span><span class="chit" id="chit">THREE TABLES</span></div>
+ </div>
+</section><p class="footnote">A tiny swipe-to-clean arcade game. No timer. 100 means spotless. Works offline on a phone or computer.</p>
+</main>
+<script>
+(()=>{'use strict';
+const $=id=>document.getElementById(id),W=640,H=360,TARGET=99.5;
+const configs=[
+ {name:'01 · Crumb situation',hint:'Push the biscuit crumbs around with your cloth. Keep sweeping until they’re gone.',type:'crumbs'},
+ {name:'02 · The cup-ring collection',hint:'Watch the cup rings fade as you wipe. A few overlapping passes should do it.',type:'rings'},
+ {name:'03 · The sticky table',hint:'Sticky jam smears a little before it lifts. Scrub back and forth to finish the job.',type:'sticky'}
+];
+const screen=$('mess'),visible=screen.getContext('2d',{alpha:true});
+function layer(){const cv=document.createElement('canvas');cv.width=W;cv.height=H;return {cv,ctx:cv.getContext('2d',{willReadFrequently:true})}}
+const soft=layer(),tough=layer();
+let phase='intro',tableIndex=0,shift=0,scores=[],progress=0,initialMass=1,paintAt=0,transition=0,dragging=false,previous=null,best=null,crumbs=[],seed=0,activePointer=null;
+try{const n=localStorage.getItem('gg-table-service-best-v2');if(n!==null&&Number.isFinite(+n))best=Math.max(0,Math.min(100,+n))}catch{}
+$('best').textContent=best===null?'— / 100':best+' / 100';
+const clamp=(v,a=0,b=1)=>Math.max(a,Math.min(b,v));
+function randSeed(n){return ()=>{n=(Math.imul(n,1664525)+1013904223)|0;return (n>>>0)/4294967296}}
+function drawCrumb(ctx,o){if(o.mass<=.005)return;ctx.save();ctx.translate(o.x,o.y);ctx.rotate(o.rot);ctx.globalAlpha=Math.min(1,o.mass*1.8);const r=o.r*Math.sqrt(o.mass);ctx.fillStyle=o.color;ctx.strokeStyle='#724c4088';ctx.lineWidth=1;ctx.beginPath();ctx.moveTo(-r*.94,-r*.32);ctx.lineTo(r*.53,-r*.88);ctx.lineTo(r,r*.35);ctx.lineTo(-r*.53,r);ctx.closePath();ctx.fill();ctx.stroke();ctx.restore()}
+function addCrumbs(x,y,count,spread,rnd){const palette=['#a86f46','#ce8b51','#b65e42','#f5dc9b','#96704f'];for(let i=0;i<count;i++){const a=rnd()*Math.PI*2,dist=Math.sqrt(rnd())*spread;crumbs.push({x:x+Math.cos(a)*dist,y:y+Math.sin(a)*dist,r:3.3+rnd()*4.7,color:palette[Math.floor(rnd()*palette.length)],rot:rnd()*6.28,mass:1})}}
+function ring(ctx,x,y,r,rot){ctx.save();ctx.translate(x,y);ctx.rotate(rot);ctx.strokeStyle='#98634ab9';ctx.lineWidth=9;ctx.lineCap='round';ctx.beginPath();ctx.ellipse(0,0,r,r*.75,0,.23,Math.PI*1.85);ctx.stroke();ctx.strokeStyle='#bc7957bb';ctx.lineWidth=4;ctx.beginPath();ctx.ellipse(2,1,r-7,(r-7)*.75,0,Math.PI*.5,Math.PI*1.8);ctx.stroke();ctx.restore()}
+function puddle(ctx,x,y,r,shade){ctx.fillStyle=shade;ctx.beginPath();ctx.moveTo(x-r,y);ctx.bezierCurveTo(x-r*.8,y-r*1.2,x+r*.2,y-r*.8,x+r*.7,y-r*.5);ctx.bezierCurveTo(x+r*1.35,y-r*.3,x+r*.95,y+r*.6,x+r*.25,y+r*.8);ctx.bezierCurveTo(x-r*.65,y+r*1.05,x-r*1.2,y+r*.3,x-r,y);ctx.fill()}
+function alphaMass(ctx){const d=ctx.getImageData(0,0,W,H).data;let sum=0;for(let y=2;y<H;y+=3)for(let x=2;x<W;x+=3)sum+=d[(y*W+x)*4+3];return sum}
+function crumbMass(){return crumbs.reduce((sum,c)=>sum+c.mass*1050,0)}
+function mass(){return alphaMass(soft.ctx)+alphaMass(tough.ctx)+crumbMass()}
+function prepareTable(i){
+ const c=soft.ctx,h=tough.ctx;c.clearRect(0,0,W,H);h.clearRect(0,0,W,H);crumbs=[];const rnd=randSeed(3881+i*177);
+ if(i===0){addCrumbs(200,133,33,69,rnd);addCrumbs(434,231,39,81,rnd);addCrumbs(347,102,24,46,rnd);puddle(c,266,223,29,'#b67f5a8c');puddle(c,469,110,26,'#9a6d5296')}
+ if(i===1){ring(c,172,134,46,-.3);ring(c,375,194,60,.24);ring(c,482,103,32,-.14);puddle(c,261,245,44,'#9c654989');puddle(c,516,258,34,'#985f5295');puddle(c,290,100,17,'#a66d5599');addCrumbs(363,82,10,43,rnd)}
+ if(i===2){addCrumbs(188,112,15,57,rnd);addCrumbs(468,255,14,52,rnd);ring(c,451,100,35,.12);puddle(c,315,226,42,'#9c624d95');puddle(c,210,241,31,'#ad70548d');puddle(h,232,160,34,'#a84263e9');puddle(h,384,137,38,'#ab4f68e9');puddle(h,464,230,26,'#b44f62ed');h.strokeStyle='#872f53bb';h.lineWidth=7;h.lineCap='round';h.beginPath();h.moveTo(206,187);h.quadraticCurveTo(257,197,295,179);h.moveTo(359,173);h.quadraticCurveTo(382,184,411,164);h.stroke()}
+ initialMass=Math.max(1,mass());progress=0;paintAt=0;displayProgress();render();
+}
+function render(){visible.clearRect(0,0,W,H);visible.drawImage(soft.cv,0,0);visible.drawImage(tough.cv,0,0);for(const c of crumbs)drawCrumb(visible,c)}
+function displayProgress(){$('cleanPercent').textContent=(progress>=TARGET?'100':Math.floor(progress))+'%';$('meterFill').style.width=progress.toFixed(1)+'%';$('meter').classList.toggle('success',progress>=TARGET)}
+function measure(force=false){const now=performance.now();if(!force&&now-paintAt<110)return;paintAt=now;progress=clamp(100*(1-mass()/initialMass),0,100);displayProgress();if(progress>=TARGET&&phase==='play')complete()}
+function erase(ctx,a,b,opacity,width){ctx.save();ctx.globalCompositeOperation='destination-out';ctx.globalAlpha=opacity;ctx.strokeStyle='#000';ctx.fillStyle='#000';ctx.lineCap='round';ctx.lineJoin='round';ctx.lineWidth=width;ctx.beginPath();ctx.moveTo(a.x,a.y);ctx.lineTo(b.x,b.y);ctx.stroke();if(Math.hypot(a.x-b.x,a.y-b.y)<1){ctx.beginPath();ctx.arc(a.x,a.y,width/2,0,Math.PI*2);ctx.fill()}ctx.restore()}
+function point(e){const r=screen.getBoundingClientRect();return{x:clamp((e.clientX-r.left)*W/r.width,0,W),y:clamp((e.clientY-r.top)*H/r.height,0,H)}}
+function moveCloth(p,dx=0,dy=0){const r=screen.getBoundingClientRect();const cl=$('cloth');cl.style.left=p.x/W*r.width+'px';cl.style.top=p.y/H*r.height+'px';if(Math.hypot(dx,dy)>1){const angle=Math.atan2(dy,dx)*180/Math.PI;cl.style.transform='translate(-50%,-50%) rotate('+clamp(angle*.24-12,-32,15)+'deg)'}}
+function sweepCrumbs(a,b){
+ const dx=b.x-a.x,dy=b.y-a.y,dist=Math.hypot(dx,dy),steps=Math.max(1,Math.ceil(dist/10)),ux=dist>1?dx/dist:0,uy=dist>1?dy/dist:0;
+ // One touch at each position is enough to move crumbs. Repeated strokes collect them.
+ for(let s=0;s<=steps;s++){
+  const p={x:a.x+dx*s/steps,y:a.y+dy*s/steps};
+  for(const c of crumbs){if(c.mass<=0)continue;const d=Math.hypot(c.x-p.x,c.y-p.y);if(d>22+c.r)continue;
+    // Keep the pile lively without making sweeping indefinitely frustrating.
+    if(dist>1){const push=5+4*(1-d/(22+c.r));c.x+=ux*push;c.y+=uy*push;c.rot+=(ux-uy)*.12}
+    c.mass=Math.max(0,c.mass-(dist>1?.13:.22)*(1.25-d/(22+c.r)*.2));
+    if(c.x<12||c.x>W-12||c.y<12||c.y>H-12)c.mass=0;
+   }
+ }
+ crumbs=crumbs.filter(c=>c.mass>.012)
+}
+function touchesSticky(p){const d=tough.ctx.getImageData(Math.floor(clamp(p.x,2,W-3))-2,Math.floor(clamp(p.y,2,H-3))-2,5,5).data;for(let k=3;k<d.length;k+=4)if(d[k]>20)return true;return false}
+function smearSticky(a,b){
+ const h=tough.ctx,dx=b.x-a.x,dy=b.y-a.y,dist=Math.hypot(dx,dy);
+ if(dist<4||!touchesSticky(b))return;
+ // A short translucent trailing edge, rather than a new permanent spill.
+ const len=Math.min(11,dist*.30);h.save();h.globalCompositeOperation='source-over';h.globalAlpha=.08;h.strokeStyle='#9e4260';h.lineWidth=10;h.lineCap='round';h.beginPath();h.moveTo(b.x- dx/dist*len,b.y-dy/dist*len);h.lineTo(b.x+dx/dist*len*.5,b.y+dy/dist*len*.5);h.stroke();h.restore();
+}
+function wipe(p){if(phase!=='play')return;const a=previous||p;
+ // Coffee rings and small spills fade over two or three passes.
+ erase(soft.ctx,a,p,.78,37);
+ // Sticky spots lift more slowly and leave a subtle smudge in the direction of travel.
+ erase(tough.ctx,a,p,.56,35);
+ sweepCrumbs(a,p);
+ if(tableIndex===2)smearSticky(a,p);
+ previous=p;render();measure();
+}
+screen.addEventListener('pointerdown',e=>{if(phase!=='play'||dragging)return;if(e.button!==undefined&&e.button!==0)return;e.preventDefault();dragging=true;activePointer=e.pointerId;const p=point(e);previous=p;try{screen.setPointerCapture(e.pointerId)}catch{}moveCloth(p);$('cloth').style.display='block';wipe(p)});
+screen.addEventListener('pointermove',e=>{if(!dragging||phase!=='play'||e.pointerId!==activePointer)return;e.preventDefault();const p=point(e),a=previous||p;moveCloth(p,p.x-a.x,p.y-a.y);wipe(p)});
+function release(e){if(!dragging||(e&&e.pointerId!==undefined&&e.pointerId!==activePointer))return;dragging=false;activePointer=null;previous=null;$('cloth').style.display='none';$('cloth').style.transform='translate(-50%,-50%) rotate(-12deg)';if(phase==='play')measure(true)}
+screen.addEventListener('pointerup',release);screen.addEventListener('pointercancel',release);screen.addEventListener('lostpointercapture',release);
+$('table').addEventListener('contextmenu',e=>e.preventDefault());$('table').addEventListener('selectstart',e=>e.preventDefault());$('table').addEventListener('touchstart',e=>{if(e.cancelable)e.preventDefault()},{passive:false});
+function show(what){phase=what;for(const id of ['intro','play','result'])$(id).hidden=id!==phase;for(let i=0;i<3;i++)$('step'+i).className='step'+(phase==='intro'?'':i<tableIndex||phase==='result'?' done':i===tableIndex?' active':'')}
+function loadTable(){clearTimeout(transition);phase='play';dragging=false;activePointer=null;previous=null;$('cloth').style.display='none';$('flash').hidden=true;$('tableName').textContent=configs[tableIndex].name;$('tableTag').textContent='TABLE '+(tableIndex+1)+' OF 3';$('tableHint').textContent=configs[tableIndex].hint;$('ticket').textContent='TABLE #0'+(tableIndex+1);$('status').textContent='No timer. Wipe until it looks right, or finish early.';$('footerStatus').textContent='One table at a time.';$('chit').textContent='SHIFT '+String(shift).padStart(2,'0');prepareTable(tableIndex);show('play')}
+function startShift(){shift++;tableIndex=0;scores=[];loadTable()}
+function complete(){if(phase!=='play')return;
+ // Keep the final score tied to the visible remaining mess, not to speed or effort.
+ progress=clamp(100*(1-mass()/initialMass),0,100);phase='between';release();const pts=progress>=TARGET?100:Math.min(99,Math.floor(progress));scores.push(pts);
+ $('flashTitle').textContent=pts===100?'SPOTLESS!':'TABLE DONE!';$('flashText').textContent=pts+'% clean · '+pts+' points';$('flash').hidden=false;$('footerStatus').textContent='Table '+(tableIndex+1)+' scored '+pts+'/100';
+ transition=setTimeout(()=>{if(tableIndex<2){tableIndex++;loadTable()}else endShift()},1100)
+}
+function endShift(){const total=Math.round(scores.reduce((a,b)=>a+b,0)/3);$('flash').hidden=true;for(let i=0;i<3;i++)$('score'+i).textContent=scores[i]??'—';$('totalScore').textContent=total;$('resultTitle').textContent=total===100?'Employee of the month!':total>=85?'You know your way around a cloth.':total>=70?'Looking pretty good.':total>=50?'The tables have seen worse.':'The manager has questions.';$('resultNote').textContent=total===100?'An immaculate little shift. The manager is suspicious.':total>=85?'Nicely done. There might even be a complimentary biscuit in this for you.':total>=70?'The next customers can sit down without sticking to anything.':total>=50?'Not spotless, but a respectable effort.':'There may be some follow-up wiping in your future.';
+ if(best===null||total>best){best=total;try{localStorage.setItem('gg-table-service-best-v2',String(best))}catch{}}$('best').textContent=best+' / 100';$('ticket').textContent='SHIFT DONE';$('footerStatus').textContent='Three tables cleared.';$('chit').textContent='SHIFT '+String(shift).padStart(2,'0');show('result')}
+$('begin').addEventListener('click',startShift);$('again').addEventListener('click',startShift);$('finishTable').addEventListener('click',()=>{if(phase==='play')complete()});
+prepareTable(0);show('intro');
+})();
+</script>
+</body>
+</html>

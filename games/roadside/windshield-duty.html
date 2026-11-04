@@ -1,0 +1,284 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#f8eddb">
+<title>Roadside Stop · Windshield Duty · Sideways 2.1</title>
+<style>
+:root{--ink:#302840;--cream:#fff9ef;--sand:#f5e8d4;--mint:#bcebd8;--gold:#ffd078;--teal:#438f8e}
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+body{margin:0;background:#f6ecdb;color:var(--ink);font-family:ui-rounded,system-ui,-apple-system,"SF Pro Rounded",sans-serif}
+.app{max-width:470px;margin:auto;padding:12px 12px 28px}
+.header{display:flex;align-items:flex-end;justify-content:space-between;margin:2px 4px 12px;gap:14px}
+.header small{display:block;font-size:10px;font-weight:1000;letter-spacing:.19em;color:#866a75}
+.header h1{margin:3px 0 0;font-size:clamp(30px,8vw,40px);line-height:.93;letter-spacing:-.07em}
+.header h1 em{font-style:normal;color:#288b81}
+.header .note{font-size:12px;font-weight:750;text-align:right;line-height:1.2;color:#786e75;max-width:108px}
+.game{background:var(--cream);border:4px solid var(--ink);border-radius:27px;overflow:hidden;box-shadow:7px 9px 0 #d5bfa9}
+.bar{background:#3e3156;padding:12px 14px;color:#fff5e4;display:flex;align-items:center;justify-content:space-between;gap:8px}
+.bar span{font-size:12px;font-weight:1000;letter-spacing:.09em}
+.bar strong{font-size:14px}
+.bar .tag{background:var(--gold);color:var(--ink);padding:5px 10px;border-radius:7px;font-weight:1000;transform:rotate(-2deg)}
+.scene{padding:12px;background:#d5eee5;border-bottom:4px solid var(--ink)}
+.frame{border:4px solid var(--ink);border-radius:17px;overflow:hidden;box-shadow:0 5px 0 #94a89d;background:#aed8d3}
+canvas{width:100%;height:auto;display:block;touch-action:none;cursor:grab;-webkit-user-select:none;user-select:none;-webkit-touch-callout:none}
+canvas.pulling{cursor:grabbing}
+.dashboard{display:flex;align-items:center;justify-content:space-between;gap:10px;padding:12px 14px}
+.dashboard span{font-size:13px;color:#625a68;font-weight:850;line-height:1.2}
+.dashboard strong{font-size:12px;letter-spacing:.04em;color:#36877f;white-space:nowrap}
+.controls{display:flex;gap:9px;padding:0 14px 14px}
+button{font-family:inherit;color:var(--ink);cursor:pointer;touch-action:manipulation}
+.button{flex:1;padding:12px 8px;min-height:49px;background:var(--gold);border:3px solid var(--ink);border-radius:12px;box-shadow:0 4px 0 #c8a66c;font-size:15px;font-weight:1000}
+.button.secondary{flex:.52;background:#e8dfd4;box-shadow:0 4px 0 #c0b3a6}
+.button:active{transform:translateY(2px);box-shadow:0 2px 0 #c8a66c}
+.help-trigger{width:34px;height:34px;border:2px solid #b7a89e;background:#fff7ec;border-radius:50%;font-size:15px;font-weight:1000}
+.helpbox{margin:0 14px 14px;background:#fff2d5;border:2px solid #cbb797;border-radius:12px;padding:10px 12px;font-size:13px;line-height:1.4;color:#63586a}
+.helpbox[hidden]{display:none}
+.footer{text-align:center;margin:16px 12px 0;font-size:12px;line-height:1.4;color:#796975}
+.overlay{position:fixed;inset:0;background:#20192c8c;display:none;align-items:center;justify-content:center;padding:16px;z-index:10}
+.overlay.show{display:flex}
+.result{width:min(370px,100%);border:4px solid var(--ink);border-radius:24px;background:#fff9ec;box-shadow:8px 9px 0 #ccb7a2;text-align:center;padding:23px 18px 19px}
+.result .icon{font-size:37px}
+.result h2{font-size:31px;line-height:1.05;letter-spacing:-.05em;margin:8px 0}
+.result .value{font-size:54px;font-weight:1000;letter-spacing:-.07em;line-height:1.2}
+.result p{font-size:14px;color:#685f6d;line-height:1.4;margin:2px 0 18px}
+.result .buttons{display:flex;gap:9px}
+.result .buttons button{font-size:14px}
+@media(max-width:350px){.bar{padding:10px}.app{padding:7px}.scene{padding:8px}.dashboard{padding:9px}.controls{padding:0 10px 12px}}
+</style>
+</head>
+<body>
+<main class="app">
+<header class="header"><div><small>THE NEIGHBORHOOD JOBS</small><h1><em>Roadside</em> Stop.</h1></div><div class="note">A very respectable place to stop.</div></header>
+<section class="game" aria-label="Windshield washing game">
+  <div class="bar"><span class="tag">BAY 01</span><span>WINDSHIELD DUTY</span><button class="help-trigger" id="helpBtn" aria-label="Show help" aria-expanded="false">?</button></div>
+  <div class="scene"><div class="frame"><canvas id="glass" width="360" height="286" aria-label="Dirty windshield. Sweep the squeegee sideways to clear grime and streaks."></canvas></div></div>
+  <div class="dashboard"><span id="message">Sweep the squeegee across the glass.</span><strong id="car">CAR #01</strong></div>
+  <div class="controls"><button class="button secondary" id="resetBtn">Reset</button><button class="button" id="doneBtn">Finish windshield →</button></div>
+  <div class="helpbox" id="helpBox" hidden>Drag the squeegee <b>sideways</b> across the windshield. Each pass clears a band of glass, but the edges leave faint streaks unless your next stroke overlaps. A stubborn bug might need one extra pass. Clean as much or as little as you like.</div>
+</section>
+<p class="footer">One windshield, a few stubborn bugs, and an unreasonable amount of professional pride.</p>
+</main>
+<div class="overlay" id="overlay" role="dialog" aria-modal="true" aria-labelledby="resultTitle">
+ <div class="result"><div class="icon" id="resultIcon">✨</div><h2 id="resultTitle">Crystal clear.</h2><div class="value" id="resultPercent">100%</div><p id="resultCopy">Somebody can finally see where they're going.</p><div class="buttons"><button class="button secondary" id="againBtn">Same car</button><button class="button" id="nextBtn">Next car →</button></div></div>
+</div>
+<script>
+(()=>{
+'use strict';
+const cv=document.getElementById('glass'),ctx=cv.getContext('2d'),W=360,H=286;
+const $=id=>document.getElementById(id);
+const cols=60,rows=40,cw=W/cols,ch=H/rows;
+const dirtCanvas=document.createElement('canvas');dirtCanvas.width=cols;dirtCanvas.height=rows;const dirtCtx=dirtCanvas.getContext('2d');
+let seed=981,car=1,grime=[],initial=0,lastSwept=[],strokeId=0;
+let splats=[],streaks=[],dragging=false,blade={x:49,y:138},moveX=0,strokeFrom=0,strokeTo=0,strokeY=0;
+function rand(){seed=(Math.imul(seed,1664525)+1013904223)>>>0;return seed/4294967296}
+function clamp(n,a,b){return Math.max(a,Math.min(b,n))}
+function leftAt(y){return 39-(y-21)*.096}
+function rightAt(y){return 321+(y-21)*.096}
+function inGlass(x,y){return y>24&&y<252&&x>leftAt(y)+3&&x<rightAt(y)-3}
+function glassPath(){ctx.beginPath();ctx.moveTo(42,21);ctx.quadraticCurveTo(34,20,32,34);ctx.lineTo(9,247);ctx.quadraticCurveTo(9,262,25,262);ctx.lineTo(337,262);ctx.quadraticCurveTo(350,262,349,246);ctx.lineTo(327,34);ctx.quadraticCurveTo(326,21,314,21);ctx.closePath()}
+function reset(){
+ seed=982+car*113;
+ grime=new Float32Array(cols*rows);lastSwept=new Int32Array(cols*rows);strokeId=0;
+ splats=[];streaks=[];
+ for(let i=0;i<12;i++) splats.push({x:48+rand()*259,y:40+rand()*185,r:8+rand()*13,kind:i%3});
+ initial=0;
+ for(let r=0;r<rows;r++)for(let c=0;c<cols;c++){
+  let x=(c+.5)*cw,y=(r+.5)*ch;
+  if(!inGlass(x,y))continue;
+  let dirt=.13+rand()*.17+.09*Math.sin(x*.027+y*.033)**2;
+  for(const s of splats){const d=Math.hypot(x-s.x,y-s.y);if(d<s.r*1.6)dirt+=Math.pow(1-d/(s.r*1.6),1.7)*.60;}
+  grime[r*cols+c]=clamp(dirt,0,.99);initial+=grime[r*cols+c];
+ }
+ blade={x:49,y:138};dragging=false;moveX=0;strokeFrom=0;strokeTo=0;strokeY=0;
+ $('car').textContent='CAR #'+String(car).padStart(2,'0');
+ $('message').textContent='Sweep the squeegee across the glass.';
+ $('overlay').classList.remove('show');
+ paint();
+}
+function remaining(){let n=0;for(const v of grime)n+=v;return n}
+function score(){return clamp(Math.round(100*(1-remaining()/initial)),0,100)}
+// The blade is vertical. Horizontal movement clears a tall strip of grime.
+// Its two edges are less effective; overlapping passes remove their streaks.
+function sweepSegment(ax,ay,bx,by){
+ const dist=Math.hypot(bx-ax,by-ay),steps=Math.max(1,Math.ceil(dist/3));
+ for(let k=0;k<=steps;k++){
+  const t=k/steps,x=ax+(bx-ax)*t,y=ay+(by-ay)*t;
+  const c0=Math.max(0,Math.floor((x-18)/cw)),c1=Math.min(cols-1,Math.ceil((x+18)/cw));
+  const r0=Math.max(0,Math.floor((y-55)/ch)),r1=Math.min(rows-1,Math.ceil((y+55)/ch));
+  for(let r=r0;r<=r1;r++)for(let c=c0;c<=c1;c++){
+   const cx=(c+.5)*cw,cy=(r+.5)*ch,edge=Math.abs(cy-y);
+   if(Math.abs(cx-x)>17||edge>54||!inGlass(cx,cy))continue;
+   const idx=r*cols+c;
+   if(lastSwept[idx]===strokeId)continue;
+   lastSwept[idx]=strokeId;
+   // Dirt is removed most effectively behind the center of the blade.
+   // Narrow edge bands stay visibly streaky until a neighboring pass overlaps.
+   const power=edge<=39?.91:edge<=46?.56:.24;
+   grime[idx]=Math.max(0,grime[idx]-power);
+  }
+ }
+}
+function leaveDrips(){
+ // Lifting the squeegee in the middle of the pane leaves a little dirty water
+ // at the stop edge. Another sideways pass can clean it up.
+ if(moveX<28||blade.x<leftAt(blade.y)+22||blade.x>rightAt(blade.y)-22)return;
+ for(const offset of [-28,0,28]){
+  const y=blade.y+offset;
+  for(let dy=0;dy<19;dy+=ch)for(let dx=-3;dx<=3;dx+=cw){
+   const x=blade.x+dx+Math.sin(dy*.2+offset)*2,py=y+dy;
+   if(!inGlass(x,py))continue;
+   const c=Math.floor(x/cw),r=Math.floor(py/ch);
+   grime[r*cols+c]=Math.max(grime[r*cols+c],.23*(1-dy/24));
+  }
+ }
+}
+function edgeStreak(from,to,y){
+ // Mark the edge of the wipe; the line's opacity depends on actual dirt still
+ // present beneath it, so it disappears when later strokes clean that edge.
+ if(Math.abs(to-from)>32&&y>25&&y<251)streaks.push({from:Math.min(from,to),to:Math.max(from,to),y});
+ if(streaks.length>60)streaks.splice(0,streaks.length-60);
+}
+function drawStreaks(){
+ ctx.save();ctx.lineCap='round';
+ for(const s of streaks){
+  let total=0,count=0;
+  for(let x=s.from;x<=s.to;x+=7){
+   if(!inGlass(x,s.y))continue;
+   const c=clamp(Math.floor(x/cw),0,cols-1),r=clamp(Math.floor(s.y/ch),0,rows-1);
+   total+=grime[r*cols+c];count++;
+  }
+  const a=count?clamp(total/count*1.25,0,.50):0;
+  if(a<.055)continue;
+  ctx.strokeStyle=`rgba(120,83,58,${a})`;
+  ctx.lineWidth=2.7;ctx.beginPath();
+  const num=12;
+  for(let i=0;i<=num;i++){
+   const x=s.from+(s.to-s.from)*i/num, y=s.y+Math.sin(i*1.67+s.y)*.95;
+   if(i===0)ctx.moveTo(x,y);else ctx.lineTo(x,y);
+  }
+  ctx.stroke();
+ }
+ ctx.restore();
+}
+function pt(ev){const rect=cv.getBoundingClientRect();return {x:clamp((ev.clientX-rect.left)*W/rect.width,0,W),y:clamp((ev.clientY-rect.top)*H/rect.height,0,H)}}
+function onDown(e){
+ const p=pt(e);if(p.x<11||p.x>349||p.y<18||p.y>258)return;
+ dragging=true;cv.classList.add('pulling');cv.setPointerCapture(e.pointerId);
+ strokeId++;moveX=0;strokeFrom=p.x;strokeTo=p.x;strokeY=p.y;
+ blade={x:p.x,y:p.y};
+ $('message').textContent='Side to side. Let the next pass overlap.';
+ paint();e.preventDefault();
+}
+function onMove(e){
+ if(!dragging)return;
+ const p=pt(e),x=clamp(p.x,16,344),y=clamp(p.y,27,251);
+ const prev={...blade};blade={x,y};
+ if(Math.abs(x-prev.x)>.6){
+  sweepSegment(prev.x,prev.y,x,y);
+  moveX+=Math.abs(x-prev.x);
+  strokeFrom=Math.min(strokeFrom,x);strokeTo=Math.max(strokeTo,x);
+  strokeY=(strokeY*3+y)/4;
+ }
+ paint();e.preventDefault();
+}
+function releaseStroke(){
+ if(!dragging)return;
+ dragging=false;cv.classList.remove('pulling');
+ if(moveX>26){
+  edgeStreak(strokeFrom,strokeTo,strokeY-48);
+  edgeStreak(strokeFrom,strokeTo,strokeY+48);
+ }
+ leaveDrips();
+ $('message').textContent=score()===100?'✨ That glass is immaculate.':'Looking clearer. Any streaks left?';
+ paint();
+}
+function onUp(e){if(!dragging)return;releaseStroke();e.preventDefault()}
+cv.addEventListener('pointerdown',onDown);
+cv.addEventListener('pointermove',onMove);
+cv.addEventListener('pointerup',onUp);
+cv.addEventListener('pointercancel',onUp);
+function roundRect(x,y,w,h,r,color,stroke,sw=3){ctx.beginPath();ctx.roundRect(x,y,w,h,r);if(color){ctx.fillStyle=color;ctx.fill()}if(stroke){ctx.strokeStyle=stroke;ctx.lineWidth=sw;ctx.stroke()}}
+function paint(){
+ ctx.clearRect(0,0,W,H);
+ let sky=ctx.createLinearGradient(0,0,0,H);sky.addColorStop(0,'#9adad4');sky.addColorStop(.6,'#dcf0d2');sky.addColorStop(1,'#f4e5be');ctx.fillStyle=sky;ctx.fillRect(0,0,W,H);
+ ctx.fillStyle='#f5f0ce';ctx.beginPath();ctx.arc(268,63,32,0,Math.PI*2);ctx.fill();
+ for(const [x,y,w] of [[55,96,40],[230,123,54],[123,56,31]]){ctx.fillStyle='#ffffff79';ctx.beginPath();ctx.ellipse(x,y,w,10,0,0,Math.PI*2);ctx.fill()}
+ ctx.fillStyle='#80b3a3';ctx.beginPath();ctx.moveTo(0,184);ctx.lineTo(38,146);ctx.lineTo(76,166);ctx.lineTo(137,130);ctx.lineTo(192,157);ctx.lineTo(260,137);ctx.lineTo(313,165);ctx.lineTo(360,139);ctx.lineTo(360,230);ctx.lineTo(0,230);ctx.closePath();ctx.fill();
+ ctx.fillStyle='#829fa0';ctx.fillRect(0,220,360,30);ctx.fillStyle='#f7e7bf';ctx.fillRect(0,228,360,4);
+ // Windshield frame and glass clip.
+ glassPath();ctx.fillStyle='#d8f2ed55';ctx.fill();ctx.strokeStyle='#302840';ctx.lineWidth=13;ctx.lineJoin='round';ctx.stroke();
+ ctx.save();glassPath();ctx.clip();
+ // Road grime is modeled in the same cells the blade actually cleans.
+ const dust=dirtCtx.createImageData(cols,rows);
+ for(let i=0;i<grime.length;i++){
+   const v=grime[i],j=i*4;
+   dust.data[j]=127;dust.data[j+1]=101;dust.data[j+2]=73;
+   dust.data[j+3]=v<.022?0:Math.round(Math.min(.62,v*.52)*255);
+ }
+ dirtCtx.putImageData(dust,0,0);
+ ctx.imageSmoothingEnabled=true;
+ ctx.drawImage(dirtCanvas,0,0,W,H);
+ // A narrow dirty-water line at an unoverlapped blade edge.
+ drawStreaks();
+ // Distinct stubborn insect splats fade from the actual remaining grime.
+ for(let i=0;i<splats.length;i++){
+  const s=splats[i];let total=0,n=0;
+  for(let yy=-1;yy<=1;yy++)for(let xx=-1;xx<=1;xx++){
+   const c=Math.floor((s.x+xx*6)/cw),r=Math.floor((s.y+yy*6)/ch);
+   if(c>=0&&c<cols&&r>=0&&r<rows){total+=grime[r*cols+c];n++}
+  }
+  const a=clamp((total/n-.025)*1.05,0,.73);if(a<.045)continue;
+  ctx.fillStyle=`rgba(112,75,48,${a})`;
+  ctx.beginPath();ctx.ellipse(s.x,s.y,s.r*.49,s.r*.34,(i%5)*.54,0,Math.PI*2);ctx.fill();
+  ctx.strokeStyle=`rgba(120,84,46,${a*.65})`;ctx.lineWidth=2;
+  for(let j=0;j<4;j++){const ang=i+j*Math.PI*.5;ctx.beginPath();ctx.moveTo(s.x+Math.cos(ang)*s.r*.31,s.y+Math.sin(ang)*s.r*.19);ctx.lineTo(s.x+Math.cos(ang)*s.r*.92,s.y+Math.sin(ang)*s.r*.6);ctx.stroke()}
+ }
+ // A faint reflection helps cleaned areas look like glass rather than empty paper.
+ ctx.strokeStyle='#ffffff2b';ctx.lineWidth=24;ctx.beginPath();ctx.moveTo(62,8);ctx.lineTo(7,252);ctx.stroke();
+ if(remaining()/initial<.006){
+   for(const [x,y,s] of [[68,74,8],[250,102,10],[194,183,9],[93,219,7]]){
+    ctx.strokeStyle='#fff7c6';ctx.lineWidth=3;ctx.beginPath();ctx.moveTo(x-s,y);ctx.lineTo(x+s,y);ctx.moveTo(x,y-s);ctx.lineTo(x,y+s);ctx.stroke();
+   }
+ }
+ ctx.restore();
+ // Lower windshield frame / wiper rests.
+ ctx.strokeStyle='#302840';ctx.lineWidth=9;ctx.beginPath();ctx.moveTo(23,265);ctx.lineTo(338,265);ctx.stroke();
+ ctx.strokeStyle='#51495b';ctx.lineWidth=4;ctx.beginPath();ctx.moveTo(32,270);ctx.lineTo(159,270);ctx.moveTo(203,270);ctx.lineTo(328,270);ctx.stroke();
+ drawBlade();
+}
+function drawBlade(){
+ const x=blade.x,y=blade.y;
+ ctx.save();ctx.translate(x,y);
+ // Upright rubber blade, worked across the windshield in horizontal strokes.
+ if(dragging){
+  ctx.strokeStyle='#8a715d91';ctx.lineWidth=6;ctx.lineCap='round';
+  ctx.beginPath();ctx.moveTo(10,-48);ctx.quadraticCurveTo(16,0,10,48);ctx.stroke();
+ }
+ ctx.strokeStyle='#302840';ctx.lineWidth=12;ctx.lineCap='round';
+ ctx.beginPath();ctx.moveTo(6,0);ctx.lineTo(35,0);ctx.stroke();
+ ctx.strokeStyle='#d3c4a8';ctx.lineWidth=7;
+ ctx.beginPath();ctx.moveTo(8,0);ctx.lineTo(34,0);ctx.stroke();
+ roundRect(-9,-54,18,108,6,'#302840','#302840',2);
+ roundRect(-9,-49,8,98,3,'#56a9a2',null);
+ ctx.fillStyle='#e8e5df';ctx.fillRect(5,-48,3,96);
+ roundRect(27,-14,17,28,6,'#f7bf69','#302840',3);
+ ctx.restore();
+}
+function showResult(){const s=score(),perfect=remaining()/initial<.006;
+ $('resultPercent').textContent=s+'%';$('resultIcon').textContent=perfect?'✨✨✨':s>=85?'🌤️':'🧽';
+ $('resultTitle').textContent=perfect?'Crystal clear.':s>=85?'Pretty good visibility.':'Could use another pass.';
+ $('resultCopy').textContent=perfect?'A windshield you can practically see your future in.':s>=85?'A few streaks survived, but the driver can see the road.':'A little more squeegee work would make this a nicer drive.';
+ $('overlay').classList.add('show')}
+$('doneBtn').addEventListener('click',showResult);
+$('resetBtn').addEventListener('click',reset);
+$('againBtn').addEventListener('click',reset);
+$('nextBtn').addEventListener('click',()=>{car++;reset()});
+$('helpBtn').addEventListener('click',()=>{const hidden=!$('helpBox').hidden;$('helpBox').hidden=hidden;$('helpBtn').setAttribute('aria-expanded',String(!hidden))});
+window.addEventListener('blur',releaseStroke);
+reset();
+})();
+</script>
+</body>
+</html>

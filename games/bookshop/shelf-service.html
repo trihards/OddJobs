@@ -1,0 +1,178 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>Bookshop · Shelf Service</title>
+<meta name="theme-color" content="#3b314d">
+<style>
+:root{--ink:#30273c;--plum:#43344f;--paper:#fff9ed;--cream:#fbecd4;--mint:#bdebd7;--teal:#247c75;--wood:#b87952;--wood-dark:#825037;--gold:#ffcf6a;--muted:#756a74}
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+html{background:#f1e6d6}body{margin:0;font-family:ui-rounded,system-ui,-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;background:radial-gradient(circle at 50% 0%,#fff5e4,#f0e3d1 74%);min-height:100dvh;color:var(--ink)}
+.app{max-width:560px;margin:auto;padding:20px 15px 32px}
+.mast{display:flex;justify-content:space-between;align-items:flex-start;gap:12px;margin-bottom:14px}
+.eyebrow{font-size:11px;font-weight:900;letter-spacing:.16em;text-transform:uppercase;color:#86677b}.mast h1{font-size:clamp(32px,7vw,47px);margin:2px 0 0;line-height:1;letter-spacing:-.07em}.mast h1 em{font-style:normal;color:var(--teal)}
+.squiggle{font-size:11px;max-width:138px;color:var(--muted);text-align:right;padding-top:5px;line-height:1.35}
+.frame{border:5px solid var(--ink);border-radius:22px;background:var(--paper);overflow:hidden;box-shadow:8px 9px 0 #bd9b8e}
+.topbar{background:var(--plum);color:white;padding:12px 14px;display:flex;align-items:center;justify-content:space-between;gap:8px}
+.tag{background:var(--gold);color:var(--ink);font-weight:1000;font-size:12px;letter-spacing:.035em;border-radius:6px;transform:rotate(-3deg);padding:7px 9px;flex:none}
+.headline{min-width:0;flex:1;text-align:center;font-size:14px;font-weight:850}.help{border:2px solid #d6d0da;border-radius:50%;height:34px;width:34px;background:transparent;color:white;font-size:20px;font-weight:900;flex:none;cursor:pointer}
+.help:focus-visible,.primary:focus-visible,.secondary:focus-visible,.book:focus-visible{outline:3px solid #cc8d33;outline-offset:3px}
+.helptext{background:#f2e8dc;padding:12px 14px;line-height:1.5;font-size:12px;color:#514555;border-bottom:3px solid var(--ink)}
+.scene{background:linear-gradient(180deg,#d0e9df 0 70%,#ebd7bb 70%);padding:14px 13px 0;position:relative;min-height:308px;overflow:hidden}
+.scene:before{content:'';position:absolute;inset:0;opacity:.15;pointer-events:none;background-image:linear-gradient(90deg,#3d847d 1px,transparent 1px),linear-gradient(#3d847d 1px,transparent 1px);background-size:50px 50px}
+.shopsign{position:relative;z-index:1;display:inline-block;background:#fffbec;border:3px solid var(--ink);border-radius:10px;padding:8px 13px;transform:rotate(-3deg);box-shadow:3px 4px 0 #819b91;font-size:14px;font-weight:1000;letter-spacing:.075em}
+.shopsign small{display:block;color:var(--teal);font-size:10px;letter-spacing:.1em;margin-top:1px}
+.plant{position:absolute;right:16px;top:18px;width:64px;height:67px;opacity:.8}.pot{position:absolute;width:41px;height:35px;bottom:0;left:11px;background:#df9476;border:3px solid var(--ink);border-radius:4px 4px 15px 15px}.leaf{position:absolute;width:20px;height:32px;background:#5b9a78;border:2px solid #426f5c;border-radius:100% 0 100% 0;bottom:23px;left:23px;transform:rotate(-35deg)}.leaf:nth-child(2){left:8px;transform:rotate(-66deg)}.leaf:nth-child(3){left:34px;transform:rotate(12deg)}
+.rack{position:relative;z-index:1;margin-top:32px;padding:0 8px 0;background:linear-gradient(90deg,#a7715e,#b88363 30%,#b88363 70%,#99604b);border:4px solid var(--ink);border-bottom:0;border-radius:8px 8px 0 0;min-height:201px;display:flex;align-items:flex-end;justify-content:flex-start;gap:3px;touch-action:none}
+.rack::before,.rack::after{content:'';position:absolute;top:0;bottom:0;width:8px;background:#e2a47a;pointer-events:none}.rack::before{left:0}.rack::after{right:0}
+.bookshelf{position:relative;height:17px;background:var(--wood);border-top:5px solid var(--ink);border-bottom:5px solid var(--ink);border-radius:1px 1px 9px 9px;box-shadow:0 8px 0 #85563e}
+.shelf-note{position:absolute;top:10px;left:10px;z-index:0;color:#825f61;font-size:10px;font-weight:1000;letter-spacing:.13em;opacity:.75}
+.a-z{position:absolute;right:11px;bottom:18px;z-index:0;font-weight:1000;font-size:11px;color:#825f61;letter-spacing:.14em;opacity:.65}
+.book{position:relative;flex-shrink:0;display:flex;align-items:center;justify-content:center;border:3px solid var(--ink);border-radius:4px 5px 1px 1px;background:var(--cover);color:#fffaf0;box-shadow:inset 4px 0 0 #ffffff27,inset -4px 0 0 #00000017,2px 0 0 #533e4d;user-select:none;-webkit-user-select:none;-webkit-touch-callout:none;touch-action:none;cursor:grab;transition:filter .12s,transform .12s;overflow:hidden}
+.book:active{cursor:grabbing}.book:before,.book:after{content:'';position:absolute;left:3px;right:3px;height:3px;background:#f9db9a;opacity:.9}.book:before{top:8px}.book:after{bottom:9px}
+.book .author{writing-mode:vertical-rl;transform:rotate(180deg);font-weight:1000;font-size:12px;letter-spacing:.11em;line-height:1;white-space:nowrap;text-shadow:0 1px #0005}
+.book .foot{position:absolute;bottom:21px;left:4px;right:4px;height:1px;background:#fff8;opacity:.6}
+.book.selected{filter:brightness(1.12);outline:3px solid var(--gold);outline-offset:1px}
+.book.drag-origin{opacity:.18}
+.slot{flex-shrink:0;width:37px;height:178px;margin-bottom:0;border:3px dashed #267a70;background:#eaf8dfb5;border-radius:5px;align-self:flex-end;pointer-events:none}
+.dragfloat{position:fixed;z-index:9999;pointer-events:none;transform:rotate(-6deg) scale(1.04);filter:drop-shadow(6px 11px 5px #28203660);margin:0;transition:none}
+.rack.receiving{box-shadow:inset 0 0 0 3px #65b89c}
+.spark{position:absolute;z-index:4;color:#ffe276;font-size:29px;text-shadow:0 0 2px #654b4e;pointer-events:none;animation:twinkle 1.25s ease-in-out infinite alternate;display:none}
+.spark.a{left:14%;top:92px}.spark.b{left:70%;top:132px;animation-delay:.36s}.spark.c{left:49%;top:52px;animation-delay:.65s}.scene.perfect .spark{display:block}
+@keyframes twinkle{from{transform:scale(.6) rotate(-12deg);opacity:.5}to{transform:scale(1.2) rotate(18deg);opacity:1}}
+.counter{background:#fffaf1;padding:15px 16px 16px;border-top:5px solid var(--ink)}
+.counterhead{display:flex;align-items:baseline;justify-content:space-between;gap:8px;margin-bottom:10px}
+.counterhead h2{font-size:18px;letter-spacing:-.045em;margin:0}.counterhead span{font-size:11px;color:#806d75;font-weight:750}
+.cart{min-height:119px;display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:9px;padding:10px;border:2px dashed #c2a99a;background:#f5ebdc;border-radius:13px;position:relative}
+.return{display:flex;align-items:center;gap:9px;min-width:0;min-height:47px;border:2px solid var(--ink);background:#fffdf8;border-radius:10px;padding:7px 9px;user-select:none;-webkit-user-select:none;-webkit-touch-callout:none;touch-action:none;cursor:grab;text-align:left;box-shadow:0 3px 0 #d0b9a8}
+.return:active{cursor:grabbing}.return.selected{background:#fff1be;border-color:#997133}.return.drag-origin{opacity:.2}
+.return-spine{width:15px;min-width:15px;height:37px;background:var(--cover);border:2px solid var(--ink);border-radius:3px;box-shadow:inset 3px 0 #fff5;transform:rotate(-5deg)}
+.return-text{min-width:0}.return-author{display:block;font-weight:1000;font-size:12px;letter-spacing:.04em}.return-title{display:block;color:#786f76;font-size:10px;line-height:1.25;margin-top:3px}
+.empty{grid-column:1/-1;display:grid;place-items:center;color:#247d75;font-weight:900;font-size:14px;min-height:83px}
+.instructions{display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:850;color:#78636a;text-align:center;min-height:26px;margin:9px 0 8px}
+.actions{display:flex;gap:10px}.primary,.secondary{border:3px solid var(--ink);border-radius:12px;min-height:51px;padding:10px 14px;font:inherit;font-size:15px;font-weight:1000;cursor:pointer;touch-action:manipulation}.primary{background:var(--gold);flex:1;box-shadow:0 4px 0 #c5a169;color:var(--ink)}.secondary{background:#d8eee3;box-shadow:0 4px 0 #a7c1b2;color:var(--ink)}.primary:active,.secondary:active{transform:translateY(3px);box-shadow:none}
+.result{display:none;gap:10px;flex-direction:column;align-items:center;text-align:center;padding:10px 5px 8px}
+.result.visible{display:flex}.result h2{margin:0;font-size:28px;letter-spacing:-.06em}.result .bigscore{font-size:46px;line-height:1;font-weight:1000;color:#246f66;letter-spacing:-.055em}.result p{margin:0 0 6px;color:#6b6267;line-height:1.45;font-size:14px;max-width:340px}.result .actions{width:100%}
+.footer{padding-top:12px;text-align:center;font-size:11px;line-height:1.45;color:#806e78}
+@media(max-width:420px){.app{padding:13px 9px 24px}.mast{margin-bottom:11px}.frame{border-width:4px;border-radius:18px}.scene{padding:12px 9px 0;min-height:286px}.rack{gap:2px;padding:0 5px;min-height:188px;margin-top:34px}.slot{width:33px;height:171px}.counter{padding:12px 10px 13px}.cart{gap:6px;padding:7px}.return{padding:6px;gap:6px}.return-title{font-size:9px}.return-author{font-size:11px}.book .author{font-size:11px}.counterhead h2{font-size:17px}.shopsign{font-size:12px}}
+@media(max-width:355px){.rack{gap:1px;padding:0 2px}.book{border-width:2px}.book .author{font-size:10px}.return-title{font-size:8px}}
+@media(prefers-reduced-motion:reduce){.spark{animation:none}}
+</style>
+</head>
+<body>
+<main class="app">
+<header class="mast"><div><div class="eyebrow">The little town · bookshop lab</div><h1>The <em>Bookshop.</em></h1></div><div class="squiggle">A place for stories and a suspicious number of returns.</div></header>
+<section class="frame" aria-label="Book shelving minigame">
+<div class="topbar"><span class="tag">RETURNS</span><div class="headline">Shelf Service · Authors A–Z</div><button id="helpBtn" class="help" type="button" aria-label="Show instructions" aria-expanded="false">?</button></div>
+<div class="helptext" id="helpText" hidden>Put the returned books on the shelf in alphabetical order by <b>author surname</b>. Drag a book between spines to make room. You can move a shelved book again if needed. Or tap a book, then tap where you want it. You're allowed to finish with mistakes.</div>
+<div class="scene" id="scene"><div class="shopsign">RETURNED GOODS<small>AND OTHER STORIES</small></div><div class="plant" aria-hidden="true"><div class="leaf"></div><div class="leaf"></div><div class="leaf"></div><div class="pot"></div></div><div class="shelf-note">SHELF A</div>
+<div class="rack" id="rack" aria-label="Bookshelf, ordered from A on the left to Z on the right"></div><div class="bookshelf"></div><div class="a-z">A → Z</div><span class="spark a" aria-hidden="true">✦</span><span class="spark b" aria-hidden="true">✧</span><span class="spark c" aria-hidden="true">✦</span></div>
+<div class="counter" id="counter"><div id="play"><div class="counterhead"><h2>Returns cart</h2><span id="count">4 books to shelve</span></div><div class="cart" id="cart"></div><div class="instructions" id="instruction">Drag a book onto the shelf to find its spot.</div><div class="actions"><button class="secondary" id="reset" type="button">↻ Reset</button><button class="primary" id="finish" type="button">Finish shelf ✓</button></div></div><div class="result" id="result"><h2 id="resultTitle">Nicely shelved.</h2><div class="bigscore" id="finalScore">100%</div><p id="resultNote">All accounted for.</p><div class="actions"><button class="primary" id="again" type="button">Try another cart ↻</button></div></div></div>
+</section><div class="footer">A small tactile experiment. Plays offline · No timers, no bookstore empire.</div>
+</main>
+<script>
+(()=>{'use strict';
+const CATALOG=[
+ {id:'alder',name:'ALDER',title:'A Field Guide to Mild Panic',color:'#a85e71',height:164,width:40},
+ {id:'blake',name:'BLAKE',title:'Birds with Motives',color:'#4e719a',height:178,width:40},
+ {id:'chen',name:'CHEN',title:'Care and Feeding of Ghosts',color:'#a97e4d',height:169,width:39},
+ {id:'diaz',name:'DIAZ',title:'The Department of Small Mysteries',color:'#766092',height:181,width:39},
+ {id:'ellis',name:'ELLIS',title:'Extremely Local Legends',color:'#487e71',height:157,width:39},
+ {id:'frost',name:'FROST',title:'Flirting with Furniture',color:'#ba7171',height:172,width:40},
+ {id:'gomez',name:'GOMEZ',title:'How to Train Your Houseplant',color:'#7b83a5',height:162,width:40},
+ {id:'hart',name:'HART',title:'A Surprisingly Good Tuesday',color:'#ba9462',height:183,width:40}
+];
+const byId=Object.fromEntries(CATALOG.map(b=>[b.id,b]));
+const $=id=>document.getElementById(id);
+const shelf=$('rack'),cart=$('cart'),scene=$('scene');
+let shelfIds=[],cartIds=[],selected=null,drag=null,preview=-1,round=0,finished=false;
+let initialShelfIds=[],initialCartIds=[];
+const clamp=(v,a,b)=>Math.min(b,Math.max(a,v));
+const shuffle=a=>{for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]]}return a};
+function bookNode(b){const node=document.createElement('div');node.className='book'+(selected===b.id?' selected':'');node.style.setProperty('--cover',b.color);node.style.height=b.height+'px';node.style.width=b.width+'px';node.dataset.id=b.id;node.dataset.location='shelf';node.tabIndex=0;node.setAttribute('role','button');node.setAttribute('aria-label',b.name+', '+b.title+', move this book');node.innerHTML='<span class="author">'+b.name+'</span><span class="foot"></span>';return node}
+function returnNode(b){const node=document.createElement('div');node.className='return'+(selected===b.id?' selected':'');node.style.setProperty('--cover',b.color);node.dataset.id=b.id;node.dataset.location='cart';node.tabIndex=0;node.setAttribute('role','button');node.setAttribute('aria-label',b.name+', '+b.title+', return to shelf');node.innerHTML='<span class="return-spine"></span><span class="return-text"><span class="return-author">'+b.name+'</span><span class="return-title">'+b.title+'</span></span>';return node}
+function isPerfect(){return cartIds.length===0&&shelfIds.length===CATALOG.length&&shelfIds.every((id,i)=>id===CATALOG[i].id)}
+function render(){
+ shelf.replaceChildren();const showSlot=drag && preview>=0;let ids=shelfIds.filter(id=>!drag||id!==drag.id);
+ let inserted=false;
+ for(let i=0;i<=ids.length;i++){
+   if(showSlot&&preview===i){const sl=document.createElement('div');sl.className='slot';shelf.append(sl);inserted=true}
+   if(i<ids.length){const el=bookNode(byId[ids[i]]);shelf.append(el)}
+ }
+ cart.replaceChildren();for(const id of cartIds){cart.append(returnNode(byId[id]))}
+ if(!cartIds.length)cart.innerHTML='<div class="empty">The returns cart is empty. ♡</div>';
+ $('count').textContent=cartIds.length===1?'1 book to shelve':cartIds.length+' books to shelve';
+ scene.classList.toggle('perfect',isPerfect());
+ shelf.classList.toggle('receiving',showSlot);
+}
+function reset(){
+ // Replay the exact same puzzle, including return-cart order.
+ if(drag?.ghost)drag.ghost.remove();
+ finished=false;selected=null;drag=null;preview=-1;
+ shelfIds=[...initialShelfIds];cartIds=[...initialCartIds];
+ scene.classList.remove('perfect');$('result').classList.remove('visible');$('play').hidden=false;
+ $('instruction').textContent='Drag a book onto the shelf to find its spot.';render();
+}
+function newRound(){
+ round++;
+ // Only a new cart deals a different starting shelf and shuffled returns.
+ const groups=[['alder','chen','frost','hart'],['blake','diaz','gomez','hart'],['alder','diaz','ellis','gomez'],['blake','chen','ellis','frost']];
+ initialShelfIds=[...groups[(round-1)%groups.length]];
+ initialCartIds=shuffle(CATALOG.map(x=>x.id).filter(id=>!initialShelfIds.includes(id)));
+ reset();
+}
+function addBefore(id,at){const source=shelfIds.includes(id)?shelfIds:cartIds;const idx=source.indexOf(id);if(idx<0)return;
+ source.splice(idx,1);shelfIds.splice(clamp(at,0,shelfIds.length),0,id);selected=null;preview=-1;drag=null;render();}
+function startDrag(e){if(finished)return;const el=e.target.closest('[data-id]');if(!el||!el.dataset.id)return;
+ if(e.button!==undefined&&e.button!==0)return;
+ e.preventDefault();const rect=el.getBoundingClientRect();drag={id:el.dataset.id,origin:el.dataset.location,x:e.clientX,y:e.clientY,started:false,pointer:e.pointerId,offsetX:rect.width/2,offsetY:rect.height/2,ghost:null};
+}
+function ghostForDrag(d){const original=byId[d.id];const g=bookNode(original);g.classList.add('dragfloat');g.style.width=original.width+'px';g.style.height=original.height+'px';g.setAttribute('aria-hidden','true');document.body.append(g);d.ghost=g}
+function onMove(e){if(!drag||e.pointerId!==drag.pointer)return;const d=drag,delta=Math.hypot(e.clientX-d.x,e.clientY-d.y);if(!d.started&&delta>7){d.started=true;selected=null;ghostForDrag(d)}if(!d.started)return;e.preventDefault();d.ghost.style.left=(e.clientX-d.offsetX)+'px';d.ghost.style.top=(e.clientY-d.offsetY)+'px';
+ const rect=shelf.getBoundingClientRect();const within=e.clientX>=rect.left-16&&e.clientX<=rect.right+16&&e.clientY>=rect.top-32&&e.clientY<=rect.bottom+45;
+ let nextPreview=-1;
+ if(within){
+   // Stable insertion positions based on the actual book widths, not the preview slot.
+   // Otherwise the placeholder shifts the books under the pointer and causes jitter.
+   const others=shelfIds.filter(id=>id!==d.id),style=getComputedStyle(shelf);
+   const gap=parseFloat(style.columnGap)||0;
+   let x=rect.left+(parseFloat(style.borderLeftWidth)||0)+(parseFloat(style.paddingLeft)||0);
+   nextPreview=0;
+   for(const id of others){if(e.clientX>x+byId[id].width/2)nextPreview++;x+=byId[id].width+gap}
+   nextPreview=clamp(nextPreview,0,others.length)
+ }
+ if(preview!==nextPreview){preview=nextPreview;render()}
+}
+function onUp(e){if(!drag||e.pointerId!==drag.pointer)return;const d=drag;drag=null;
+ if(d.ghost)d.ghost.remove();const target=document.elementFromPoint(e.clientX,e.clientY);
+ if(d.started){if(preview>=0){const at=preview;preview=-1;addBefore(d.id,at)}else{preview=-1;render()}return}
+ // Tap-to-place fallback, useful when finger dragging is awkward on a phone.
+ const hit=target?.closest('[data-id]');const inRack=target?.closest('#rack');
+ if(selected && selected!==d.id){if(d.origin==='shelf'){const at=shelfIds.filter(id=>id!==selected).indexOf(d.id);addBefore(selected,at<0?shelfIds.length:at);return}}
+ selected=selected===d.id?null:d.id;render();
+ $('instruction').textContent=selected?'Now tap a shelf book to insert before it, or tap the empty shelf space.':'Drag a book onto the shelf to find its spot.';
+}
+function onTapRack(e){if(finished||!selected||drag)return;const target=e.target.closest('[data-id]');if(target){if(target.dataset.id===selected)return;const i=shelfIds.filter(id=>id!==selected).indexOf(target.dataset.id);addBefore(selected,i);return}addBefore(selected,shelfIds.filter(id=>id!==selected).length)}
+function finish(){if(finished)return;finished=true;selected=null;drag=null;preview=-1;
+ const all=CATALOG.map(x=>x.id),remaining=cartIds.length;
+ const wrong=shelfIds.filter((id,i)=>all[i]!==id).length;
+ let inversions=0;for(let i=0;i<shelfIds.length;i++)for(let j=i+1;j<shelfIds.length;j++)if(all.indexOf(shelfIds[i])>all.indexOf(shelfIds[j]))inversions++;
+ const score=clamp(100-remaining*12-wrong*6-inversions*4,0,100);
+ $('finalScore').textContent=score+'%';$('resultTitle').textContent=score===100?'Shelf whisperer.':score>=82?'Respectable shelving.':score>=60?'Some creative filing.':'Well, they’re books.';
+ $('resultNote').textContent=score===100?'Eight books, perfect alphabetical order. Even the shelves look pleased.':remaining>0?remaining+' still on the cart. The rest are… somewhere on the shelf.':'All eight books made it onto the shelf. The alphabet may have some questions.';
+ $('play').hidden=true;$('result').classList.add('visible');render();
+}
+cart.addEventListener('pointerdown',startDrag);shelf.addEventListener('pointerdown',startDrag);
+window.addEventListener('pointermove',onMove,{passive:false});window.addEventListener('pointerup',onUp);window.addEventListener('pointercancel',e=>{if(drag?.ghost)drag.ghost.remove();drag=null;preview=-1;render()});
+shelf.addEventListener('click',onTapRack);
+// Keyboard-friendly selection. Enter a cart book or shelved book; then Enter another shelf book to insert before it.
+function keyBook(e){if(e.key!=='Enter'&&e.key!==' ')return;const node=e.target.closest('[data-id]');if(!node)return;e.preventDefault();if(selected&&selected!==node.dataset.id&&node.dataset.location==='shelf'){const i=shelfIds.filter(id=>id!==selected).indexOf(node.dataset.id);addBefore(selected,i)}else{selected=selected===node.dataset.id?null:node.dataset.id;render();$('instruction').textContent=selected?'Select a book on the shelf to insert before it.':'Drag a book onto the shelf to find its spot.'}}
+cart.addEventListener('keydown',keyBook);shelf.addEventListener('keydown',keyBook);
+$('helpBtn').addEventListener('click',()=>{const open=$('helpText').hidden;$('helpText').hidden=!open;$('helpBtn').setAttribute('aria-expanded',String(open))});
+$('reset').addEventListener('click',reset);$('again').addEventListener('click',newRound);$('finish').addEventListener('click',finish);
+newRound();
+})();
+</script>
+</body>
+</html>

@@ -1,0 +1,163 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#45344e">
+<title>The Bookshop · Book Seek</title>
+<style>
+:root{--ink:#30283d;--plum:#45344e;--paper:#fff9ee;--cream:#f4e7d7;--mint:#bdebd7;--teal:#287b75;--wood:#bb815d;--gold:#ffd074;--quiet:#756d77}
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+html{background:#f2e5d5}body{margin:0;min-height:100dvh;font-family:ui-rounded,system-ui,-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;background:radial-gradient(circle at 50% 0,#fff6e9,#f0e3d4 74%);color:var(--ink)}
+[hidden]{display:none!important}
+button{font:inherit;cursor:pointer;-webkit-user-select:none;user-select:none;touch-action:manipulation}button:focus-visible{outline:3px solid #e7a24c;outline-offset:3px}
+.app{max-width:570px;padding:17px 13px 29px;margin:auto}.mast{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:14px;gap:12px}.eyebrow{font-weight:900;font-size:11px;letter-spacing:.15em;color:#936d78;text-transform:uppercase}.mast h1{font-size:clamp(33px,7vw,45px);margin:2px 0 0;line-height:1;letter-spacing:-.065em}.mast h1 em{font-style:normal;color:var(--teal)}.aside{max-width:157px;text-align:right;color:#786b77;font-size:12px;line-height:1.35;padding-top:5px}
+.frame{border:5px solid var(--ink);border-radius:22px;overflow:hidden;background:var(--paper);box-shadow:8px 9px 0 #c8aa9b}.topbar{background:var(--plum);color:#fffafa;display:flex;align-items:center;justify-content:space-between;padding:10px 12px;gap:8px}.ticket{flex:none;background:var(--gold);color:var(--ink);padding:7px 9px;border-radius:6px;transform:rotate(-3deg);font-size:12px;font-weight:1000;letter-spacing:.025em}.topbar strong{font-size:13px;letter-spacing:.02em}.help{border:2px solid #ddd1de;background:transparent;color:white;width:34px;height:34px;border-radius:50%;font-size:20px;font-weight:900}.helptext{padding:11px 13px;border-bottom:3px solid var(--ink);background:#eee6db;font-size:12px;line-height:1.5}
+.request{background:#fff6e4;padding:14px 16px 12px;border-bottom:4px solid var(--ink);display:flex;gap:12px;align-items:flex-start;min-height:116px}.avatar{height:62px;width:62px;flex:none;border:3px solid var(--ink);border-radius:13px;background:#f4c989;position:relative;overflow:hidden;box-shadow:3px 4px 0 #ccb19f}.avatar .head{position:absolute;top:10px;left:12px;width:34px;height:34px;background:#c78b6b;border:3px solid var(--ink);border-radius:50% 50% 45% 45%}.avatar .hair{position:absolute;top:4px;left:8px;width:42px;height:20px;background:#54415b;border:3px solid var(--ink);border-radius:70% 65% 40% 20%;transform:rotate(-8deg)}.avatar .body{position:absolute;top:42px;left:5px;width:51px;height:34px;background:#77999b;border:3px solid var(--ink);border-radius:50%}.avatar:after{content:'••';letter-spacing:7px;position:absolute;top:22px;left:23px;font-size:16px;color:var(--ink)}.request-text{flex:1;min-width:0}.request .small{font-size:10px;font-weight:1000;color:#98737e;text-transform:uppercase;letter-spacing:.1em}.request blockquote{margin:4px 0 0;font-weight:850;font-size:clamp(14px,3.6vw,17px);line-height:1.35;letter-spacing:-.02em}
+.library{position:relative;padding:14px 12px 13px;background:repeating-linear-gradient(90deg,#c5e4d9 0 52px,#b5d8ce 53px 55px);overflow:hidden}.library:after{content:'';pointer-events:none;position:absolute;inset:0;background:linear-gradient(180deg,#fff5 0,transparent 32%);opacity:.7}.stack{position:relative;z-index:1;border:5px solid var(--ink);border-radius:9px;background:#a76d58;padding:9px 8px 5px;box-shadow:inset 8px 0 #dc9c78,inset -8px 0 #88513e}.shelf-row{height:140px;display:grid;grid-template-columns:repeat(8,minmax(0,1fr));gap:4px;align-items:end;padding:2px 7px 0;background:#c18b6a;border:2px solid #81523f;border-bottom:0}.plank{height:12px;border:3px solid var(--ink);background:var(--wood);border-radius:1px 1px 5px 5px;box-shadow:0 4px 0 #784b37;margin:0 -2px 6px}.plank:last-child{margin-bottom:1px}
+.spine{width:100%;height:var(--height);min-width:0;padding:5px 0;border:3px solid var(--ink);border-radius:4px 5px 0 0;background:var(--color);color:#fff9e8;box-shadow:inset 4px 0 #ffffff27,inset -4px 0 #00000017;position:relative;display:flex;flex-direction:column;align-items:center;justify-content:space-between;transition:transform .16s,filter .16s;touch-action:manipulation;overflow:hidden}.spine:before{content:'';position:absolute;top:7px;left:3px;right:3px;border-top:2px solid #f9dda2}.spine:after{content:'';position:absolute;bottom:7px;left:3px;right:3px;border-bottom:2px solid #f9dda2}.spine .initial{writing-mode:vertical-rl;transform:rotate(180deg);font-size:11px;font-weight:1000;letter-spacing:0;white-space:nowrap;line-height:1;margin-top:5px;flex:none}.spine .symbol{font-size:clamp(14px,4vw,18px);line-height:1;margin-bottom:7px;color:#ffedbc;flex:none}.spine:hover,.spine:focus-visible{filter:brightness(1.12)}.spine.pulled{transform:translateY(-12px);filter:brightness(1.18);outline:3px solid #ffe18c;outline-offset:0}.spine.pulled .symbol{color:#fff}
+.counter{border-top:5px solid var(--ink);padding:13px 14px 15px;background:var(--paper);min-height:190px}.counter-title{font-size:13px;font-weight:900;color:#6e6270;letter-spacing:.02em;margin-bottom:8px}.peek-placeholder{background:#f4ebde;border:2px dashed #cdbba9;border-radius:12px;min-height:150px;display:grid;place-items:center;text-align:center;color:#817580;font-size:14px;padding:15px;font-weight:750}.peek{display:flex;gap:14px;align-items:stretch}.cover{width:116px;min-width:116px;min-height:164px;border:4px solid var(--ink);border-radius:4px 8px 8px 4px;padding:10px 7px;display:flex;flex-direction:column;justify-content:space-between;text-align:center;color:white;background:var(--color);box-shadow:inset 9px 0 #ffffff27,5px 6px 0 #d0b2a0;transform:rotate(-3deg);overflow:hidden}.cover .cover-symbol{font-size:32px;margin:5px 0}.cover .bookname{font-size:15px;font-weight:1000;line-height:1.05;letter-spacing:-.045em}.cover .by{font-size:10px;font-weight:900;letter-spacing:.03em;margin-top:9px;overflow-wrap:anywhere}.details{min-width:0;flex:1;display:flex;flex-direction:column;justify-content:center;gap:9px}.details h2{font-size:18px;line-height:1.14;letter-spacing:-.045em;margin:0}.details .author-name{font-size:13px;line-height:1.2;color:#45344e;font-weight:900;overflow-wrap:anywhere}.details p{font-size:12px;line-height:1.35;color:#736771;margin:0}.actions{display:flex;gap:8px;align-items:stretch}.btn{border:3px solid var(--ink);border-radius:10px;padding:10px;min-height:48px;font-weight:1000;font-size:13px;line-height:1.15;color:var(--ink)}.btn.main{background:var(--gold);box-shadow:0 4px 0 #c5a36d;flex:1}.btn.alt{background:var(--mint);box-shadow:0 4px 0 #94bcae;flex:1}.btn:active{transform:translateY(3px);box-shadow:none}.feedback{display:none;text-align:center;padding:17px 8px 12px}.feedback.show{display:block}.feedback h2{margin:0 0 7px;font-size:25px;letter-spacing:-.05em}.feedback p{margin:0 auto 15px;font-size:14px;color:#6f6270;line-height:1.5;max-width:330px}.feedback .btn{width:min(100%,300px)}.result-number{font-size:49px;line-height:1;font-weight:1000;color:var(--teal);letter-spacing:-.055em;margin:6px 0 12px}.footer{text-align:center;color:#826f77;font-size:11px;padding:13px 12px 0;line-height:1.4}
+@media(max-width:420px){.app{padding:12px 8px 24px}.frame{border-width:4px;border-radius:18px}.request{padding:11px 11px 10px;gap:9px}.avatar{height:52px;width:52px}.avatar .head{transform:scale(.8);transform-origin:top left}.avatar .hair{transform:scale(.8) rotate(-8deg);transform-origin:top left}.avatar .body{left:3px;top:37px}.avatar:after{top:21px;left:20px;font-size:12px;letter-spacing:5px}.library{padding:10px 8px}.stack{padding:7px 5px 3px;border-width:4px}.shelf-row{height:134px;gap:3px;padding:1px 4px 0}.spine{border-width:2px}.spine .initial{font-size:10px;letter-spacing:0}.counter{padding:11px 10px 13px}.cover{width:98px;min-width:98px;min-height:155px;padding:7px 5px}.cover .bookname{font-size:13px}.details h2{font-size:16px}.actions{gap:6px}.btn{font-size:12px;padding:8px 5px}}
+@media(max-width:355px){.spine .initial{font-size:9px;letter-spacing:0}.spine .symbol{font-size:13px}.shelf-row{gap:2px}.request blockquote{font-size:14px}}
+@media(prefers-reduced-motion:reduce){.spine,.cover{transition:none}}
+
+/* Book Seek compact edition: the bookshelf stays in view; details never push it down. */
+.app{max-width:570px;padding:9px 9px 16px}
+.mast{align-items:center;margin-bottom:7px}
+.mast h1{font-size:clamp(28px,6vw,34px);margin:0}
+.mast .eyebrow{font-size:9px}
+.mast .aside{max-width:185px;font-size:10px;padding-top:0}
+.topbar{padding:6px 10px;min-height:40px}
+.topbar .ticket{padding:5px 7px;font-size:11px}
+.help{width:30px;height:30px;font-size:17px}
+.request{min-height:0;padding:9px 11px 8px;gap:9px;position:sticky;top:0;z-index:4;box-shadow:0 2px 0 #30283d24}
+.avatar{width:42px;height:42px;border-width:2px;border-radius:9px}
+.avatar .head{transform:scale(.66);transform-origin:top left;left:9px;top:8px}
+.avatar .hair{transform:scale(.66) rotate(-8deg);transform-origin:top left;left:6px;top:5px}
+.avatar .body{left:3px;top:29px;height:20px;width:36px;border-width:2px}
+.avatar:after{top:14px;left:13px;font-size:10px;letter-spacing:5px}
+.request .small{font-size:9px}
+.request blockquote{font-size:clamp(12px,3.45vw,14px);line-height:1.3;margin-top:2px}
+.library{padding:9px 8px 8px}
+.stack{padding:6px 5px 1px;border-width:4px}
+.shelf-row{height:113px;gap:3px;padding:1px 5px 0}
+.spine{height:min(var(--height),98px);border-width:2px}
+.spine .initial{font-size:10px;margin-top:3px}
+.spine .symbol{font-size:15px;margin-bottom:4px}
+.spine:before{top:3px}.spine:after{bottom:3px}
+.plank{height:9px;border-width:2px;margin-bottom:4px;box-shadow:0 2px 0 #784b37}
+/* Selected book replaces the empty lower counter; no page travel to inspect. */
+.counter{position:relative;z-index:5;min-height:0;overflow:visible;border:0;border-top:3px solid var(--ink);border-radius:0;padding:10px 12px;background:var(--paper);box-shadow:none}
+.counter-title{display:none}
+.peek-placeholder{display:none!important}
+.peek{gap:11px;align-items:center}
+.cover{width:78px;min-width:78px;min-height:112px;height:112px;padding:5px 4px;border-width:3px;box-shadow:inset 6px 0 #ffffff27,3px 4px 0 #d0b2a0;transform:rotate(-2deg)}
+.cover .cover-symbol{font-size:23px;margin:2px 0}
+.cover .bookname{font-size:10px;line-height:1.05}
+.cover .by{font-size:9px;margin-top:3px}
+.details{gap:3px;justify-content:center}
+.details h2{font-size:16px;line-height:1.1}
+.details .author-name{font-size:12px;line-height:1.1}
+.details p{font-size:11px;line-height:1.25;max-height:2.5em;overflow:hidden}
+.actions{margin-top:5px;gap:7px}
+.btn{padding:8px 7px;min-height:39px;font-size:12px;border-width:2px;border-radius:8px}
+.feedback{padding:5px 4px}
+.feedback h2{font-size:22px}
+.feedback p{margin-bottom:11px;font-size:13px}
+.result-number{font-size:42px}
+.footer{padding:10px 12px 0;font-size:10px}
+@media(max-width:420px){
+ .app{padding:8px 6px 14px}
+ .frame{border-width:4px}
+ .mast h1{font-size:29px}
+ .mast .aside{display:none}
+ .request{padding:8px;gap:7px}
+ .library{padding:6px}
+ .stack{padding:4px 3px 1px}
+ .shelf-row{height:108px;gap:2px;padding:1px 3px 0}
+ .spine{height:min(var(--height),94px)}
+ .spine .initial{font-size:10px}
+ .counter{padding:9px 10px}
+ .cover{width:68px;min-width:68px;height:101px;min-height:101px}
+ .cover .bookname{font-size:9px}
+ .details h2{font-size:14px}
+ .details p{font-size:10px}
+ .actions{gap:4px}.btn{font-size:11px}
+}
+@media(max-width:355px){.shelf-row{height:102px}.spine{height:min(var(--height),88px)}.spine .initial{font-size:9px}.spine .symbol{font-size:12px}}
+/* Extremely short screens get a floating inspection drawer; regular phones remain entirely in flow. */
+@media(max-height:610px) and (max-width:620px){
+ .counter{position:fixed;z-index:20;bottom:calc(6px + env(safe-area-inset-bottom,0px));left:50%;transform:translateX(-50%);width:calc(100% - 12px);max-height:54dvh;overflow:auto;border:3px solid var(--ink);border-radius:14px;box-shadow:0 6px 20px #30283d55}
+}
+@media(max-height:710px) and (max-width:620px){.mast .eyebrow{display:none}.mast{margin-bottom:5px}.shelf-row{height:99px}.spine{height:min(var(--height),86px)}.spine .initial{font-size:9px}.spine .symbol{font-size:13px}.library{padding:5px}.request{padding:6px 8px}.request blockquote{font-size:12px}}
+
+</style>
+</head>
+<body>
+<main class="app">
+<header class="mast"><div><div class="eyebrow">The little town · bookshop lab</div><h1>The <em>Bookshop.</em></h1></div><div class="aside">A place for stories and customers with selective memories.</div></header>
+<section class="frame" aria-label="Book finding minigame">
+<div class="topbar"><span class="ticket" id="ticket">CUSTOMER 01/03</span><strong>Book Seek</strong><button class="help" id="help" type="button" aria-label="Toggle instructions" aria-expanded="false">?</button></div>
+<div class="helptext" id="helptext" hidden>A customer remembers bits of a title, cover, or author's name. Tap a spine to pull out a book and inspect it. Put it back or hand it to the customer. Wrong choices are allowed. No timer.</div>
+<div class="request" id="request"><div class="avatar" aria-hidden="true"><div class="head"></div><div class="hair"></div><div class="body"></div></div><div class="request-text"><div class="small" id="customerName">A CUSTOMER SAYS</div><blockquote id="clue">“It was a reddish book, with a little cup. Something about tea?”</blockquote></div></div>
+<div class="library"><div class="stack" id="shelf" aria-label="Bookshelf with three rows of books"></div></div>
+<div class="counter" id="counter" role="region" aria-label="Selected book details" hidden>
+<div id="active"><div class="counter-title" id="countertitle">Find the book on the shelf</div><div id="empty" class="peek-placeholder">Tap any book spine to pull it out and inspect the cover. 📚</div><div class="peek" id="peek" hidden><div class="cover" id="cover"><div class="cover-symbol" id="coverIcon">☾</div><div class="bookname" id="bookTitle">Book Title</div><div class="by" id="coverAuthor">BY SOMEONE</div></div><div class="details"><h2 id="detailTitle">Book title</h2><p class="author-name" id="detailAuthor">By Someone</p><p id="detailNote">A very peculiar book.</p><div class="actions"><button class="btn alt" id="putBack">Put back</button><button class="btn main" id="handOver">Hand over ✓</button></div></div></div></div>
+<div id="feedback" class="feedback" aria-live="polite"><h2 id="feedbackTitle">Found it!</h2><p id="feedbackText"></p><button class="btn main" id="continue">Next customer →</button></div>
+<div id="end" class="feedback"><h2>Bookshop shift complete</h2><div class="result-number" id="final">3 / 3</div><p id="endText">Your customers have left with books.</p><button class="btn main" id="replay">Another shift ↻</button></div>
+</div>
+</section><div class="footer">A little observation game · Plays offline</div>
+</main>
+<script>
+(()=>{'use strict';
+const COLORS={berry:'#bd6b70',blue:'#6688ad',moss:'#60967a',plum:'#8c79a9',gold:'#c3965a',teal:'#438f94'};
+const CATALOG=[
+ ['Alder','Birds in Charge','plum','♫','A startlingly practical guide to being managed by pigeons.'],
+ ['Bram','A Guide to Quieter Stars','blue','✦','The astronomer insists they are much too loud.'],
+ ['Cove','How to Train Your Houseplant','plum','♣','A leafy instructional classic.'],
+ ['Dunn','The Last Teapot in June','berry','◉','One teapot. Seven very suspicious guests.'],
+ ['Eames','A Small History of Rain','blue','☾','Weather, regret, and one unnecessary umbrella.'],
+ ['Firth','The Door That Wasn’t There','teal','◆','For people who keep getting lost in familiar buildings.'],
+ ['Glass','A Very Quiet Volcano','gold','✦','A geological disagreement over breakfast.'],
+ ['Hart','The Very Professional Sparrow','moss','♫','This bird has completed its probationary period.'],
+ ['Ives','The Fanciest Napkin','berry','♣','A textile with unreasonable ambitions.'],
+ ['Jones','The Society of Lost Socks','teal','☾','An investigation with a single surviving witness.'],
+ ['Kerr','The Landlord of Dreams','gold','☾','Rent is due in the morning.'],
+ ['Lark','Small Questions for Large Cats','moss','✦','The cats have declined to comment.'],
+ ['Moss','The Knitting Detective','plum','◆','A crime in every stitch.'],
+ ['North','The Ghost of Laundromat Four','blue','✦','A wash cycle that never ends.'],
+ ['Oak','The Afternoon Nobody Ordered','gold','◉','A perfectly serviceable day, briefly misplaced.'],
+ ['Pike','The Last Known Umbrella','teal','♣','A rain-soaked family saga.'],
+ ['Quill','How to Keep a Mug','berry','◉','Care, feeding, and occasional arguments.'],
+ ['Reed','A Map of Misplaced Doorways','teal','◆','A travel guide for places that move.'],
+ ['Stone','How to Fold a Mountain','plum','☾','Folding instructions are not included.'],
+ ['Tern','Dream Renters Association','gold','☾','The sequel nobody was awake to request.'],
+ ['Upton','The Wednesday Conspiracy','berry','✦','Wednesday has been acting strangely.'],
+ ['Vale','Tuesday’s Last Pigeon','moss','♫','A mystery with more feathers than clues.'],
+ ['Wells','The Fern Knows Everything','plum','♣','Houseplants are terrible at keeping secrets.'],
+ ['Yarrow','When the Sea Forgot','blue','◆','A memoir written mostly in salt.']
+].map(([author,title,color,symbol,note],id)=>({id,author,title,color,symbol,note}));
+const QUEUES=[
+ [{target:3,name:'Customer with a vague memory',clue:'“It was red, with a little circle on the spine. Something about a teapot?”'},
+  {target:13,name:'Customer with laundry-related concerns',clue:'“A ghost in a laundromat. The author’s last name was a direction, I think. Which one? No idea.”'},
+  {target:21,name:'Customer who definitely read the title',clue:'“Something about a pigeon on a Tuesday. The writer had a short name, like a little valley.”'}],
+ [{target:10,name:'Customer who dreamt about it',clue:'“Someone charged rent for dreams. The author’s name sounded like ‘care,’ but I’m not quite sure.”'},
+  {target:22,name:'Customer who knows too much',clue:'“I think a fern knew everyone’s secrets. The writer’s surname was something you could draw water from.”'},
+  {target:17,name:'Customer in need of directions',clue:'“It was a map of missing doorways. The author’s last name was some kind of plant, maybe?”'}]
+];
+const $=id=>document.getElementById(id);let queueNumber=0,turn=0,found=0,selected=null,mode='active',answered=[];
+const order=[5,0,17,1,13,6,16,11,20,8,21,10,18,3,12,23,9,2,22,14,7,15,19,4];
+function shelf(){const container=$('shelf');container.replaceChildren();for(let r=0;r<3;r++){const row=document.createElement('div');row.className='shelf-row';for(let c=0;c<8;c++){const b=CATALOG[order[r*8+c]];const e=document.createElement('button');e.type='button';e.className='spine'+(selected===b.id?' pulled':'');e.dataset.id=String(b.id);e.setAttribute('aria-label','Inspect book by '+b.author+', '+b.color+' spine, symbol '+b.symbol);e.style.setProperty('--height',(112+(b.id*7)%13)+'px');e.style.setProperty('--color',COLORS[b.color]);const a=document.createElement('span');a.className='initial';a.textContent=b.author.toUpperCase();const s=document.createElement('span');s.className='symbol';s.textContent=b.symbol;e.append(a,s);e.addEventListener('click',()=>inspect(b.id));row.append(e);}const plank=document.createElement('div');plank.className='plank';container.append(row,plank);}}
+function update(){const item=QUEUES[queueNumber%2][turn];$('ticket').textContent='CUSTOMER '+String(turn+1).padStart(2,'0')+'/03';$('customerName').textContent=item.name.toUpperCase();$('clue').textContent=item.clue;$('request').hidden=false;$('active').hidden=false;$('feedback').classList.remove('show');$('end').classList.remove('show');$('countertitle').textContent='Find the book on the shelf';selected=null;showInspect();}
+function showInspect(){for(const e of document.querySelectorAll('.spine'))e.classList.toggle('pulled',selected===Number(e.dataset.id));$('peek').hidden=selected===null;$('empty').hidden=selected!==null;$('counter').hidden=selected===null;if(selected===null)return;const b=CATALOG[selected];$('cover').style.setProperty('--color',COLORS[b.color]);$('coverIcon').textContent=b.symbol;$('bookTitle').textContent=b.title;$('coverAuthor').textContent=b.author.toUpperCase();$('detailTitle').textContent=b.title;$('detailAuthor').textContent='By '+b.author;$('detailNote').textContent=b.note;}
+function inspect(id){if(mode!=='active')return;selected=id;showInspect();}
+function submit(){if(selected===null||mode!=='active')return;mode='feedback';const item=QUEUES[queueNumber%2][turn],right=selected===item.target;answered.push({target:item.target,chosen:selected,right});if(right)found++;$('active').hidden=true;$('counter').hidden=false;$('feedback').classList.add('show');$('feedbackTitle').textContent=right?'That’s the one! ✦':'Well, that is a book.';$('feedbackText').textContent=right?'The customer recognizes “'+CATALOG[selected].title+'” by '+CATALOG[selected].author+'. A rare moment of retail certainty.':'They were actually looking for “'+CATALOG[item.target].title+'” by '+CATALOG[item.target].author+'. But your selection is also technically literature.';$('continue').textContent=turn===2?'Finish shift ✓':'Next customer →';}
+function next(){if(mode!=='feedback')return;turn++;if(turn===3){mode='end';$('feedback').classList.remove('show');$('end').classList.add('show');$('counter').hidden=false;$('request').hidden=true;$('final').textContent=found+' / 3';$('endText').textContent=found===3?'All three customers found exactly what they came for. Suspiciously impressive.':found===0?'Three customers. Three unexpected reading recommendations.':'Some customers found their books. The others discovered new genres.';$('ticket').textContent='SHIFT COMPLETE';}else{mode='active';update()}}
+function startNew(){queueNumber++;turn=0;found=0;answered=[];selected=null;mode='active';shelf();update()}
+$('help').addEventListener('click',()=>{const hidden=!$('helptext').hidden;$('helptext').hidden=hidden;$('help').setAttribute('aria-expanded',String(!hidden))});
+$('putBack').addEventListener('click',()=>{selected=null;showInspect()});$('handOver').addEventListener('click',submit);$('continue').addEventListener('click',next);$('replay').addEventListener('click',startNew);
+shelf();update();
+})();
+</script>
+</body>
+</html>
