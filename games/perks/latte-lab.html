@@ -78,7 +78,7 @@ header{align-items:center;margin:4px 2px 10px}h1{font-size:clamp(29px,7vw,38px)}
 .house-reference{display:block;margin:10px auto 0;padding:5px 12px;border:0;background:transparent;color:#665c68;font-size:12px;font-weight:850;text-decoration:underline;text-underline-offset:3px}
 .house-menu{border:1px solid #dec9a8;border-radius:10px;margin-top:6px;text-align:center;font-size:12px}
 .titleline,.explain,.flow-row,.gauge,.cocoa-note{display:none!important}
-.actions{margin-top:8px;justify-content:center}.action.secondary{flex:none;min-height:32px;padding:5px 12px;font-size:12px;border:1px solid #c4b5a8;background:transparent;box-shadow:none;color:#6b6069}
+.actions{margin-top:8px;justify-content:center;flex-wrap:wrap}.actions #serveCup{flex:1;min-width:130px}.actions #cocoaTool{flex:1;min-width:110px;background:#f4d6b5;border:2px solid var(--ink);color:var(--ink);font-size:14px;min-height:44px}.actions #cocoaTool[aria-pressed='true']{background:#c7e9d6}.actions #guideToggle{flex-basis:100%;margin:auto}.action.secondary{flex:none;min-height:32px;padding:5px 12px;font-size:12px;border:1px solid #c4b5a8;background:transparent;box-shadow:none;color:#6b6069}
 .tip{margin:8px auto 0;min-height:0;font-size:12px}
 .result{margin-top:12px}
 @media(max-width:530px){.scene{padding:65px 8px 12px}.cupwrap{width:min(335px,calc(100vw - 48px))}.workarea{padding:12px 11px}.recipe-picker .recipe-choice{font-size:13px}}
@@ -97,7 +97,7 @@ header{align-items:center;margin:4px 2px 10px}h1{font-size:clamp(29px,7vw,38px)}
 <p class="explain" id="instructions">Pick a house finish, then pour it into the cup.</p><div id="cocoaNote" class="cocoa-note" hidden>🍫 Cocoa shaker · Sweep across the cup twice</div>
 <div class="flow-row" id="milkRow"><strong>MILK IN THE PITCHER</strong><span id="milkText">100%</span></div><div class="gauge" id="milkGauge" aria-label="Milk remaining"><div class="gauge-fill" id="milkFill"></div></div>
 <div class="result" id="results" aria-live="polite"><h3 id="resultTitle">Nicely done.</h3><div class="grade"><span id="scoreValue">88</span><small>out of<br>100</small></div><div class="stats"><div class="stat"><b id="coverageScore">—</b><small>Shape</small></div><div class="stat"><b id="controlScore">—</b><small>Finesse</small></div><div class="stat"><b id="flowScore">—</b><small>Flow</small></div><div class="stat" id="cocoaStat" hidden><b id="cocoaScore">—</b><small>Cocoa</small></div></div><p id="resultNote"></p></div>
-<div class="shift-summary" id="shiftSummary" hidden></div><div class="actions"><button class="action" id="tryAgain" hidden>Another three-cup shift ↻</button><button class="action secondary" id="guideToggle" aria-pressed="true">Guide: on</button></div>
+<div class="shift-summary" id="shiftSummary" hidden></div><div class="actions"><button class="action" id="tryAgain" hidden>Another three-cup shift ↻</button><button class="action secondary" id="cocoaTool" hidden aria-pressed="false">🍫 Cocoa</button><button class="action" id="serveCup" hidden>Order up! ↗</button><button class="action secondary" id="guideToggle" aria-pressed="true">Guide: on</button></div>
 <div class="tip" id="tip" aria-live="polite">Slow = wide foam. Fast = fine lines. Start at the yellow dot.</div>
 </div></div>
 
@@ -136,7 +136,7 @@ function rebuild(){samples=path();reset()}
 function reset(){
  if(animationFrame)cancelAnimationFrame(animationFrame);animationFrame=0;
  foam.clearRect(0,0,SIZE,SIZE);cocoaPaint.clearRect(0,0,SIZE,SIZE);points=[];drawing=false;done=false;milk=100;startTime=0;lastMoveTime=0;lastSpeed=350;lastPointerId=null;stage='foam';cocoaDrawing=false;cocoaPointer=null;cocoaPasses=0;cocoaTravel=0;cocoaLast=null;cocoaZones.clear();pendingFoam=null;
- $('results').classList.remove('show');$('shiftSummary').hidden=true;$('cocoaNote').hidden=true;$('cocoaStat').hidden=true;$('milkRow').hidden=false;$('milkGauge').hidden=false;$('milkFill').classList.remove('low');$('milkFill').style.width='100%';$('milkText').textContent='100%';
+ $('results').classList.remove('show');$('shiftSummary').hidden=true;$('serveCup').hidden=true;$('cocoaTool').hidden=true;$('cocoaTool').setAttribute('aria-pressed','false');$('cocoaNote').hidden=true;$('cocoaStat').hidden=true;$('milkRow').hidden=false;$('milkGauge').hidden=false;$('milkFill').classList.remove('low');$('milkFill').style.width='100%';$('milkText').textContent='100%';
  $('tip').textContent=guideOn?'Slow = wide foam. Fast = fine lines. Start at the yellow dot.':'Free pour! Slow = wide foam. Fast = fine lines.';
  $('sceneLabel').textContent='READY TO POUR';draw();
 }
@@ -245,13 +245,9 @@ function finish(){
  const meanRad=points.reduce((t,p)=>t+p.r,0)/Math.max(1,points.length);
  const fluidity=clamp((points.length-8)/45,0,1)*clamp(meanRad/17,0.65,1);
  pendingFoam={covered,fidelity,fluidity};
- if(DRINKS[drink].cocoa){
-   stage='cocoa';$('cocoaNote').hidden=true;$('milkRow').hidden=true;$('milkGauge').hidden=true;
-   $('challengeTitle').textContent='Dust with cocoa';$('challengeTag').textContent='TWO SWEEPS';
-   $('instructions').textContent='Two sweeps, straight across or wherever you like.';
-   $('sceneLabel').textContent='SWIPE TO DUST COCOA';$('tip').textContent='Two sweeps across the cup.';draw();return;
- }
- completeOrder(0);
+ stage='finish';$('serveCup').hidden=false;$('cocoaTool').hidden=false;
+ $('sceneLabel').textContent='ADD COCOA OR SERVE';$('tip').textContent='Optional cocoa finish. Serve when ready.';draw();
+
 }
 function cocoaMark(x,y){
  const dx=x-CX,dy=y-CY;if(dx*dx+dy*dy>240*240)return;
@@ -276,21 +272,23 @@ function cocoaMove(e){if(!cocoaDrawing||e.pointerId!==cocoaPointer)return;e.prev
 }
 function cocoaUp(e){if(!cocoaDrawing||e.pointerId!==cocoaPointer)return;e.preventDefault();
  cocoaDrawing=false;cocoaPointer=null;cocoaLast=null;cocoaPasses++;$('tip').textContent=cocoaPasses<2?'One more cocoa sweep…':'Cocoa finished ✓';draw();
- if(cocoaPasses>=2){const dustScore=Math.round(10*cocoaZones.size/9);completeOrder(dustScore)}
+ $('tip').textContent='Cocoa added. Serve whenever you like.';
 }
 function completeOrder(dustScore){
  if(stage==='served')return;done=true;stage='served';const {covered,fidelity,fluidity}=pendingFoam;
  const mocha=DRINKS[drink].cocoa;
- const shapeMax=mocha?54:60, finesseMax=mocha?27:30, flowMax=mocha?9:10;
+ const usedCocoa=cocoaPasses>0;
+ const shapeMax=54, finesseMax=27, flowMax=9;
  const shapeScore=Math.round(shapeMax*covered),finesseScore=Math.round(finesseMax*fidelity),flowScore=Math.round(flowMax*fluidity);
  const match=pattern===DRINKS[drink].art;const matchPenalty=match?0:25;
- const final=clamp(shapeScore+finesseScore+flowScore+dustScore-matchPenalty,0,100);
+ const cocoaAdjustment=mocha?(usedCocoa?dustScore:0):(usedCocoa?-Math.min(15,5+cocoaPasses*5):0);
+ const final=clamp(shapeScore+finesseScore+flowScore+(mocha?10:10)+cocoaAdjustment-(mocha&&!usedCocoa?10:0)-matchPenalty,0,100);
  $('coverageScore').textContent=shapeScore+'/'+shapeMax;$('controlScore').textContent=finesseScore+'/'+finesseMax;
- $('flowScore').textContent=flowScore+'/'+flowMax;$('cocoaStat').hidden=!mocha;if(mocha)$('cocoaScore').textContent=dustScore+'/10';
+ $('flowScore').textContent=flowScore+'/'+flowMax;$('cocoaStat').hidden=!usedCocoa&&!mocha;if(usedCocoa||mocha)$('cocoaScore').textContent=(cocoaAdjustment>0?'+':'')+cocoaAdjustment;
  $('scoreValue').textContent=final;
  $('resultTitle').textContent=!match?'Lovely pour, wrong signature.':final>=96?'House special!':final>=83?'Well poured!':final>=65?'That has character.':'An experimental pour.';
- $('resultNote').textContent=!match?'Perks pairs '+DRINKS[drink].name.toLowerCase()+' with a '+patterns[DRINKS[drink].art].name.toLowerCase()+' design.':mocha?'Mocha finished with cocoa. '+(dustScore>=8?'Nicely distributed.':'Try sweeping across more of the cup next time.'):'A little more practice makes for a beautiful '+DRINKS[drink].name.toLowerCase()+'.';
- shiftScores.push(final);$('results').classList.add('show');$('tip').textContent=shiftIndex<SHIFT_LENGTH-1?'Next order coming up…':'Final order served!';$('sceneLabel').textContent='CUP SERVED ✓';$('cocoaNote').hidden=true;
+ $('resultNote').textContent=!match?'Wrong house pattern.':mocha&&!usedCocoa?'Mocha missing its cocoa finish.':!mocha&&usedCocoa?'Creative cocoa addition, but not the house recipe.':mocha?'Mocha finished with cocoa.':'House finish served.';
+ shiftScores.push(final);$('serveCup').hidden=true;$('cocoaTool').hidden=true;$('results').classList.add('show');$('tip').textContent=shiftIndex<SHIFT_LENGTH-1?'Next order coming up…':'Final order served!';$('sceneLabel').textContent='CUP SERVED ✓';$('cocoaNote').hidden=true;
  if(!validScore(best[drink])||final>best[drink]){best[drink]=final;try{localStorage.setItem('perks-latte-best-v3',JSON.stringify(best))}catch{}}setBest();draw();
  if(shiftIndex<SHIFT_LENGTH-1)nextTimer=setTimeout(()=>{if(stage==='served')nextCup()},1450);else endShift();
 }
@@ -298,6 +296,8 @@ C.addEventListener('pointerdown',down);C.addEventListener('pointermove',move);C.
 C.addEventListener('pointercancel',up);C.addEventListener('lostpointercapture',()=>{if(drawing)finish();if(cocoaDrawing)cocoaUp({pointerId:cocoaPointer,preventDefault(){}})});C.addEventListener('contextmenu',e=>e.preventDefault());
 $('workarea').addEventListener('selectstart',e=>e.preventDefault());window.addEventListener('blur',()=>{if(drawing)finish();if(cocoaDrawing)cocoaUp({pointerId:cocoaPointer,preventDefault(){}})});
 $('tryAgain').addEventListener('click',beginShift);
+$('cocoaTool').addEventListener('click',()=>{if(stage!=='finish'&&stage!=='cocoa')return;stage=stage==='cocoa'?'finish':'cocoa';const active=stage==='cocoa';$('cocoaTool').setAttribute('aria-pressed',String(active));$('cocoaTool').textContent=active?'🍫 Cocoa ✓':'🍫 Cocoa';$('sceneLabel').textContent=active?'SWIPE COCOA ON CUP':'READY TO SERVE';$('tip').textContent=active?'Swipe across the cup to dust cocoa.':'Serve when ready.';draw()});
+$('serveCup').addEventListener('click',()=>{if(stage!=='finish'&&stage!=='cocoa'||cocoaDrawing)return;const dustScore=cocoaPasses?Math.round(10*cocoaZones.size/9):0;completeOrder(dustScore)});
 document.querySelectorAll('[data-recipe]').forEach(btn=>btn.addEventListener('click',()=>chooseDesign(btn.dataset.recipe)));
 $('recipeHelp').addEventListener('click',()=>{const show=$('houseMenu').hidden;$('houseMenu').hidden=!show;$('recipeHelp').setAttribute('aria-expanded',String(show));$('recipeHelp').textContent=show?'Hide recipes ▴':'House recipes ▾'});
 $('guideToggle').addEventListener('click',()=>{
