@@ -82,6 +82,18 @@ header{align-items:center;margin:4px 2px 10px}h1{font-size:clamp(29px,7vw,38px)}
 .tip{margin:8px auto 0;min-height:0;font-size:12px}
 .result{margin-top:12px}
 @media(max-width:530px){.scene{padding:65px 8px 12px}.cupwrap{width:min(335px,calc(100vw - 48px))}.workarea{padding:12px 11px}.recipe-picker .recipe-choice{font-size:13px}}
+
+/* Physical tools flank the cup, freeing vertical space. */
+.scene{padding:64px 6px 18px;gap:3px}
+.cupwrap{width:min(320px,calc(100vw - 156px));flex:0 1 320px;min-width:0}
+.tool{position:relative;z-index:3;flex:0 0 clamp(54px,14vw,72px);width:clamp(54px,14vw,72px);min-height:84px;border:2px solid #463849;border-radius:13px;background:#fff5dc;box-shadow:2px 3px 0 #94b8a8;color:#34283a;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:5px 2px;gap:2px;font-weight:900;font-size:11px;line-height:1.1;touch-action:manipulation}
+.tool[hidden]{visibility:hidden;display:flex!important;pointer-events:none}
+.tool svg{width:100%;max-width:60px;height:61px;display:block}
+.tool.active{background:#d3ead6;box-shadow:0 0 0 3px #5eab8b}
+.tool:active{transform:translateY(2px);box-shadow:none}
+.tool:focus-visible{outline:3px solid #dd8846;outline-offset:3px}
+.bell-tool{background:#ffe5a3}
+@media(max-width:390px){.scene{padding:64px 3px 17px;gap:2px}.cupwrap{width:calc(100vw - 142px)}.tool{flex-basis:52px;width:52px;min-height:76px;font-size:10px}.tool svg{height:52px}}
 </style>
 </head>
 <body>
@@ -91,13 +103,13 @@ header{align-items:center;margin:4px 2px 10px}h1{font-size:clamp(29px,7vw,38px)}
 <div class="bar"><span id="shiftIcons" aria-label="Shift progress">○ ○ ○</span><span class="best">BEST <strong id="bestLabel">— / 100</strong></span><span id="orderLabel" hidden>FLAT WHITE</span></div>
 
 
-<div class="scene"><div class="customer-ticket" role="status" aria-live="polite"><span>ORDER UP</span><strong id="customerDrink">FLAT WHITE</strong></div><div class="cupwrap"><canvas id="latteCanvas" width="720" height="720" role="img" tabindex="0" aria-label="Interactive latte cup. Pour a foam pattern with a finger or mouse. Moving slowly makes wider foam; moving quickly makes thinner lines."></canvas></div><div class="scene-label" id="sceneLabel" aria-live="polite">READY TO POUR</div></div>
+<div class="scene"><div class="customer-ticket" role="status" aria-live="polite"><span>ORDER UP</span><strong id="customerDrink">FLAT WHITE</strong></div><button class="tool cocoa-tool" type="button" id="cocoaTool" hidden aria-label="Cocoa shaker: tap to sprinkle cocoa" aria-pressed="false" title="Cocoa shaker"><svg viewBox="0 0 64 82" aria-hidden="true"><path d="M17 21h30l-3 47q-12 9-24 0z" fill="#b8764d" stroke="#34283a" stroke-width="3"/><path d="M13 16q19-9 38 0v12H13z" fill="#e7d3b4" stroke="#34283a" stroke-width="3"/><path d="M18 16V9q14-8 28 0v7" fill="#e7d3b4" stroke="#34283a" stroke-width="3"/><circle cx="24" cy="20" r="2" fill="#5b453f"/><circle cx="32" cy="20" r="2" fill="#5b453f"/><circle cx="40" cy="20" r="2" fill="#5b453f"/><rect x="21" y="41" width="22" height="17" rx="4" fill="#f6e5c5"/><path d="M26 48q6-8 12 0" stroke="#75482f" stroke-width="3" fill="none"/><text x="32" y="55" font-size="7" text-anchor="middle" font-weight="bold" fill="#75482f">COCOA</text></svg><span>Cocoa</span></button><div class="cupwrap"><canvas id="latteCanvas" width="720" height="720" role="img" tabindex="0" aria-label="Interactive latte cup. Pour a foam pattern with a finger or mouse. Moving slowly makes wider foam; moving quickly makes thinner lines."></canvas></div><button class="tool bell-tool" type="button" id="serveCup" hidden aria-label="Ring the bell: order up" title="Order up!"><svg viewBox="0 0 76 76" aria-hidden="true"><circle cx="38" cy="15" r="7" fill="#e6ac42" stroke="#34283a" stroke-width="3"/><path d="M38 23c-16 0-27 12-28 29h56C65 35 54 23 38 23Z" fill="#f5c766" stroke="#34283a" stroke-width="3"/><path d="M18 46q20-17 40 0" stroke="#fff1be" stroke-width="5" fill="none" stroke-linecap="round"/><rect x="7" y="52" width="62" height="10" rx="5" fill="#c78a4b" stroke="#34283a" stroke-width="3"/></svg><span>Order up!</span></button><div class="scene-label" id="sceneLabel" aria-live="polite">READY TO POUR</div></div>
 <div class="workarea" id="workarea"><div class="recipe-picker" role="group" aria-label="Choose foam design"><button class="recipe-choice" type="button" data-recipe="heart" aria-pressed="true">♥ Heart</button><button class="recipe-choice" type="button" data-recipe="leaf" aria-pressed="false">🌿 Leaf</button><button class="recipe-choice" type="button" data-recipe="swirl" aria-pressed="false">◉ Swirl</button></div><button id="recipeHelp" class="house-reference" type="button" aria-expanded="false">House recipes ▾</button><div class="house-menu" id="houseMenu" hidden>Flat white → ♥ Heart · Cappuccino → 🌿 Leaf · Mocha → ◉ Swirl + cocoa</div>
 <div class="titleline"><h2 id="challengeTitle">Choose a finish</h2><span class="badge" id="challengeTag">HOUSE SPECIAL</span></div>
 <p class="explain" id="instructions">Pick a house finish, then pour it into the cup.</p><div id="cocoaNote" class="cocoa-note" hidden>🍫 Cocoa shaker · Sweep across the cup twice</div>
 <div class="flow-row" id="milkRow"><strong>MILK IN THE PITCHER</strong><span id="milkText">100%</span></div><div class="gauge" id="milkGauge" aria-label="Milk remaining"><div class="gauge-fill" id="milkFill"></div></div>
 <div class="result" id="results" aria-live="polite"><h3 id="resultTitle">Nicely done.</h3><div class="grade"><span id="scoreValue">88</span><small>out of<br>100</small></div><div class="stats"><div class="stat"><b id="coverageScore">—</b><small>Shape</small></div><div class="stat"><b id="controlScore">—</b><small>Finesse</small></div><div class="stat"><b id="flowScore">—</b><small>Flow</small></div><div class="stat" id="cocoaStat" hidden><b id="cocoaScore">—</b><small>Cocoa</small></div></div><p id="resultNote"></p></div>
-<div class="shift-summary" id="shiftSummary" hidden></div><div class="actions"><button class="action" id="tryAgain" hidden>Another three-cup shift ↻</button><button class="action secondary" id="cocoaTool" hidden aria-pressed="false">🍫 Cocoa</button><button class="action" id="serveCup" hidden>Order up! ↗</button><button class="action secondary" id="guideToggle" aria-pressed="true">Guide: on</button></div>
+<div class="shift-summary" id="shiftSummary" hidden></div><div class="actions"><button class="action" id="tryAgain" hidden>Another three-cup shift ↻</button><button class="action secondary" id="guideToggle" aria-pressed="true">Guide: on</button></div>
 <div class="tip" id="tip" aria-live="polite">Slow = wide foam. Fast = fine lines. Start at the yellow dot.</div>
 </div></div>
 
@@ -136,7 +148,7 @@ function rebuild(){samples=path();reset()}
 function reset(){
  if(animationFrame)cancelAnimationFrame(animationFrame);animationFrame=0;
  foam.clearRect(0,0,SIZE,SIZE);cocoaPaint.clearRect(0,0,SIZE,SIZE);points=[];drawing=false;done=false;milk=100;startTime=0;lastMoveTime=0;lastSpeed=350;lastPointerId=null;stage='foam';cocoaDrawing=false;cocoaPointer=null;cocoaPasses=0;cocoaTravel=0;cocoaLast=null;cocoaZones.clear();pendingFoam=null;
- $('results').classList.remove('show');$('shiftSummary').hidden=true;$('serveCup').hidden=true;$('cocoaTool').hidden=true;$('cocoaTool').setAttribute('aria-pressed','false');$('cocoaNote').hidden=true;$('cocoaStat').hidden=true;$('milkRow').hidden=false;$('milkGauge').hidden=false;$('milkFill').classList.remove('low');$('milkFill').style.width='100%';$('milkText').textContent='100%';
+ $('results').classList.remove('show');$('shiftSummary').hidden=true;$('serveCup').hidden=true;$('cocoaTool').hidden=true;$('cocoaTool').setAttribute('aria-pressed','false');$('cocoaTool').classList.remove('active');$('cocoaNote').hidden=true;$('cocoaStat').hidden=true;$('milkRow').hidden=false;$('milkGauge').hidden=false;$('milkFill').classList.remove('low');$('milkFill').style.width='100%';$('milkText').textContent='100%';
  $('tip').textContent=guideOn?'Slow = wide foam. Fast = fine lines. Start at the yellow dot.':'Free pour! Slow = wide foam. Fast = fine lines.';
  $('sceneLabel').textContent='READY TO POUR';draw();
 }
@@ -296,7 +308,7 @@ C.addEventListener('pointerdown',down);C.addEventListener('pointermove',move);C.
 C.addEventListener('pointercancel',up);C.addEventListener('lostpointercapture',()=>{if(drawing)finish();if(cocoaDrawing)cocoaUp({pointerId:cocoaPointer,preventDefault(){}})});C.addEventListener('contextmenu',e=>e.preventDefault());
 $('workarea').addEventListener('selectstart',e=>e.preventDefault());window.addEventListener('blur',()=>{if(drawing)finish();if(cocoaDrawing)cocoaUp({pointerId:cocoaPointer,preventDefault(){}})});
 $('tryAgain').addEventListener('click',beginShift);
-$('cocoaTool').addEventListener('click',()=>{if(stage!=='finish'&&stage!=='cocoa')return;stage=stage==='cocoa'?'finish':'cocoa';const active=stage==='cocoa';$('cocoaTool').setAttribute('aria-pressed',String(active));$('cocoaTool').textContent=active?'🍫 Cocoa ✓':'🍫 Cocoa';$('sceneLabel').textContent=active?'SWIPE COCOA ON CUP':'READY TO SERVE';$('tip').textContent=active?'Swipe across the cup to dust cocoa.':'Serve when ready.';draw()});
+$('cocoaTool').addEventListener('click',()=>{if(stage!=='finish'&&stage!=='cocoa')return;stage=stage==='cocoa'?'finish':'cocoa';const active=stage==='cocoa';$('cocoaTool').setAttribute('aria-pressed',String(active));$('cocoaTool').classList.toggle('active',active);$('sceneLabel').textContent=active?'SWIPE COCOA ON CUP':'READY TO SERVE';$('tip').textContent=active?'Swipe across the cup to dust cocoa.':'Serve when ready.';draw()});
 $('serveCup').addEventListener('click',()=>{if(stage!=='finish'&&stage!=='cocoa'||cocoaDrawing)return;const dustScore=cocoaPasses?Math.round(10*cocoaZones.size/9):0;completeOrder(dustScore)});
 document.querySelectorAll('[data-recipe]').forEach(btn=>btn.addEventListener('click',()=>chooseDesign(btn.dataset.recipe)));
 $('recipeHelp').addEventListener('click',()=>{const show=$('houseMenu').hidden;$('houseMenu').hidden=!show;$('recipeHelp').setAttribute('aria-expanded',String(show));$('recipeHelp').textContent=show?'Hide recipes ▴':'House recipes ▾'});
