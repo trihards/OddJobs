@@ -49,14 +49,14 @@
 @media(max-width:520px){.scene{height:430px}.scene-svg{height:69%}.tea-shelf{top:92px}.tea-ticket{align-items:flex-start}.tea-ticket span{padding-top:3px}.tea-shelf .ingredient{min-height:64px}.workarea{min-height:0;padding:9px 11px}.scene-svg{transform:none!important}}
 
 /* Two shelves frame the infuser; steeping begins only on the player's command. */
-.tea-shelf{top:183px;right:auto;left:7px;width:clamp(84px,25%,116px);padding:4px 3px 7px;border-bottom:7px solid #896b5b;box-shadow:0 5px 0 -1px #d7b39a}
+.tea-shelf{top:148px;right:auto;left:7px;width:clamp(84px,25%,116px);padding:4px 3px 7px;border-bottom:7px solid #896b5b;box-shadow:0 5px 0 -1px #d7b39a}
 .tea-shelf.shelf-right{left:auto;right:7px}
 .tea-shelf .ingredients{grid-template-columns:1fr;gap:4px}
 .tea-shelf .ingredient{min-height:38px;padding:3px;display:grid;grid-template-columns:25px 1fr;grid-template-rows:1fr 1fr;align-items:center;text-align:left;column-gap:4px}
 .tea-shelf .ingredient .emoji{grid-row:1/3;font-size:21px}
 .tea-shelf .ingredient strong{font-size:11px;align-self:end}.tea-shelf .ingredient small{font-size:8px;align-self:start}
 .steep-start{max-width:260px;min-height:46px;margin:8px auto 2px;font-size:15px}.selection-count{margin:3px auto 0}
-@media(max-width:520px){.tea-shelf,.tea-shelf.shelf-right{top:183px;width:clamp(79px,25%,104px)}.tea-shelf .ingredient{grid-template-columns:22px 1fr;column-gap:2px}.tea-shelf .ingredient .emoji{font-size:18px}.tea-shelf .ingredient strong{font-size:10px}.scene{height:430px}}
+@media(max-width:520px){.tea-shelf,.tea-shelf.shelf-right{top:148px;width:clamp(79px,25%,104px)}.tea-shelf .ingredient{grid-template-columns:22px 1fr;column-gap:2px}.tea-shelf .ingredient .emoji{font-size:18px}.tea-shelf .ingredient strong{font-size:10px}.scene{height:430px}}
 </style>
 </head>
 <body>
@@ -72,8 +72,6 @@
 <radialGradient id="teaInfusion" cx="50%" cy="50%" r="50%"><stop offset="0" stop-color="#6a392e" stop-opacity=".75"/><stop offset="45%" stop-color="#885038" stop-opacity=".32"/><stop offset="100%" stop-color="#975b42" stop-opacity="0"/></radialGradient>
 </defs>
 <rect x="0" y="214" width="560" height="91" fill="#d6a18b" opacity=".02"/>
-<!-- shelf items -->
-<path d="M430 78 H530" stroke="#886779" stroke-width="8" stroke-linecap="round"/><rect x="441" y="36" width="36" height="39" rx="5" fill="#f8d686" stroke="#49385d" stroke-width="3"/><path d="M442 43 H476" stroke="#49385d" stroke-width="3"/><text x="459" y="61" text-anchor="middle" fill="#49385d" font-size="10" font-weight="900">TEA</text><rect x="484" y="43" width="30" height="32" rx="5" fill="#8bcaba" stroke="#49385d" stroke-width="3"/>
 <!-- plate -->
 <ellipse cx="280" cy="266" rx="141" ry="20" fill="#644d5b" opacity=".23"/><ellipse cx="280" cy="255" rx="125" ry="19" fill="#fdf2da" stroke="#49385d" stroke-width="4"/>
 <!-- cup and handle -->
@@ -88,7 +86,7 @@
 <ellipse cx="270" cy="116" rx="105" ry="12" fill="#efd6a8" id="surfaceColor"/>
 <ellipse id="teaSurfaceBloom" cx="279" cy="117" rx="12" ry="5" fill="#704335" opacity="0"/>
 <!-- tea bag and string; animate together -->
-<g id="bag" tabindex="0" role="button" aria-label="Lift the tea infuser"><rect x="244" y="6" width="72" height="164" rx="8" fill="transparent" pointer-events="all"/><rect x="248" y="14" width="64" height="27" rx="12" fill="#f7dc9a" stroke="#49385d" stroke-width="3"/><text x="280" y="32" text-anchor="middle" fill="#49385d" font-size="12" font-weight="1000" pointer-events="none">LIFT ↑</text><path d="M278 1 V125" stroke="#786775" stroke-width="2.5" fill="none"/><path d="M252 121 H305 L302 162 Q297 175 280 173 Q264 175 257 162Z" fill="#e4d0a1" opacity=".91" stroke="#7d624f" stroke-width="3"/><path d="M259 139 Q280 133 299 139 V158 Q278 171 262 158Z" fill="#ab8557" opacity=".7"/><path d="M264 147 H296 M264 153 H296" stroke="#f2ddb4" stroke-width="2" opacity=".7"/></g>
+<g id="bag" tabindex="0" role="button" aria-label="Lift the tea infuser"><rect x="244" y="6" width="72" height="164" rx="8" fill="transparent" pointer-events="all"/><path d="M280 41 V125" stroke="#786775" stroke-width="2.5" fill="none"/><rect x="248" y="8" width="64" height="29" rx="12" fill="#f7dc9a" stroke="#49385d" stroke-width="3"/><text x="280" y="27" text-anchor="middle" fill="#49385d" font-size="12" font-weight="1000" pointer-events="none">LIFT ↑</text><path d="M252 121 H305 L302 162 Q297 175 280 173 Q264 175 257 162Z" fill="#e4d0a1" opacity=".91" stroke="#7d624f" stroke-width="3"/><path d="M259 139 Q280 133 299 139 V158 Q278 171 262 158Z" fill="#ab8557" opacity=".7"/><path d="M264 147 H296 M264 153 H296" stroke="#f2ddb4" stroke-width="2" opacity=".7"/></g>
 <path class="steam" d="M206 84 Q192 65 211 48 Q220 37 207 27" fill="none" stroke="#fff" stroke-width="5" stroke-linecap="round" opacity=".6"/><path class="steam" d="M341 89 Q356 70 341 55 Q333 44 344 29" fill="none" stroke="#fff" stroke-width="5" stroke-linecap="round" opacity=".6"/>
 <!-- customer sample -->
 <g transform="translate(426,226)"><rect x="-6" y="-14" width="116" height="76" rx="11" fill="#fff7e8" stroke="#49385d" stroke-width="3"/><text x="52" y="2" text-anchor="middle" fill="#665366" font-size="10" font-weight="900" letter-spacing=".5">THE GOAL</text><ellipse cx="53" cy="29" rx="30" ry="17" fill="#fff9ed" stroke="#49385d" stroke-width="3"/><ellipse cx="53" cy="28" rx="24" ry="12" fill="#bd8856" id="sampleColor"/><path d="M83 24 Q103 18 98 31 Q95 39 84 34" fill="none" stroke="#49385d" stroke-width="4"/></g>
